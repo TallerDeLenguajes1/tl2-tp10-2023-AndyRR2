@@ -2,7 +2,7 @@
     ViewData["Title"] = "Editar Usuario";
 }
 
-@model Tp11.Models.Usuario
+@model Tp11.ViewModels.EditarUsuarioViewModel
 
 <h1>@ViewData["Title"]</h1>
 <form asp-controller="Usuario" asp-action="EditarUsuarioFromForm" method="post">
@@ -10,6 +10,9 @@
     <div class="form-group">
         <label asp-for="@Model.Nombre"></label>
         <input asp-for="@Model.Nombre" class="form-control" id="nombre" />
+        <span asp-validation-for="@Model.Nombre" class="text-danger"></span> 
     </div>
     <button type="submit" class="btn btn-primary" >Enviar</button>
 </form>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

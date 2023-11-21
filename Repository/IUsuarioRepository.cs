@@ -8,5 +8,5 @@ public interface IUsuarioRepository{
     public void Create(CrearUsuarioViewModel newUsuario);
     public Usuario GetById(int? idUsuario);
     public void Remove(int? idUsuario);
-    public void Update(Usuario usuarioAEditar);
+    public void Update(EditarUsuarioViewModel usuarioAEditar);
 }

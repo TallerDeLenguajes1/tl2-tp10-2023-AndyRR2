@@ -44,10 +44,11 @@ public class UsuarioController : Controller{
         if(!isLogin()) return RedirectToAction("Index","Login"); 
 
         Usuario usuarioAEditar = repo.GetById(idUsuario);
-        return View(usuarioAEditar);
+        EditarUsuarioViewModel editarUsuarioVM = EditarUsuarioViewModel.FromUsuario(usuarioAEditar);//convertir de Usuario a EditarUsuarioViewModel
+        return View(editarUsuarioVM);
     }
     [HttpPost]
-    public IActionResult EditarUsuarioFromForm([FromForm] Usuario usuarioAEditar){
+    public IActionResult EditarUsuarioFromForm([FromForm] EditarUsuarioViewModel usuarioAEditar){
         if(!ModelState.IsValid) return RedirectToAction("Index","Login");
         if(!isLogin()) return RedirectToAction("Index","Login"); 
 
