@@ -2,12 +2,15 @@
     ViewData["Title"] = "Usuarios";
 }
 
-@model List<Usuario>
+@model List<Tp11.ViewModels.ListarUsuarioViewModel>
 
 <h2>Usuario List</h2>
 
 <table class="table table-dark">
     <thead>
+            <tr>
+                <a asp-controller="Tablero" asp-action="Index" asp-route-idUsuario=null>Ver Tableros de Todos los Usuarios</a>
+            </tr>
         <tr>
             <th hidden>ID</th>
             <th>Nombre</th>
@@ -21,8 +24,9 @@
                 <td hidden>@usuario.Id</td>
                 <td>@usuario.Nombre</td>
                 <td>
+                    <a asp-controller="Tablero" asp-action="Index" asp-route-idUsuario="@usuario.Id">Ver Tableros de este Usuario</a>
                     <a asp-controller="Usuario" asp-action="EditarUsuario" asp-route-idUsuario="@usuario.Id">Editar</a>
-                    <a asp-controller="Usuario" asp-action="DeleteUsuario" asp-route-idUsuario="@usuario.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">Eliminar</a>                      
+                    <a asp-controller="Usuario" asp-action="EliminarUsuario" asp-route-idUsuario="@usuario.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">Eliminar</a>                      
                 </td>
             </tr>
         }
@@ -33,3 +37,5 @@
         </tr>
     </tfoot>
 </table>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

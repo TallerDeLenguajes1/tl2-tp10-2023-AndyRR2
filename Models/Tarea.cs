@@ -1,4 +1,4 @@
-namespace Tp10.Models;
+namespace Tp11.Models;
 
 public enum EstadoTarea{
   Ideas=1, 
@@ -8,16 +8,16 @@ public enum EstadoTarea{
   Done=5
 }
 public class Tarea{
-    private int id;
-    private int idTablero;
+    private int? id;
+    private int? idTablero;
     private string? nombre;
     private EstadoTarea estado;
     private string? descripcion;
     private string? color;
     private int? idUsuarioAsignado;
    
-    public int Id { get => id; set => id = value; }
-    public int IdTablero { get => idTablero; set => idTablero = value; }
+    public int? Id { get => id; set => id = value; }
+    public int? IdTablero { get => idTablero; set => idTablero = value; }
     public string? Nombre { get => nombre; set => nombre = value; }
     public string? Descripcion { get => descripcion; set => descripcion = value; }
     public string? Color { get => color; set => color = value; }
@@ -28,7 +28,7 @@ public class Tarea{
 
     }
 
-    public Tarea(int Id, int IdTablero, string? Nombre, string? Descripcion, string? Color, EstadoTarea Estado, int IdUsuario){
+    public Tarea(int? Id, int? IdTablero, string? Nombre, string? Descripcion, string? Color, EstadoTarea Estado, int? IdUsuario){
       id=Id;
       idTablero=IdTablero;
       nombre=Nombre;

@@ -1,0 +1,12 @@
+@{ 
+    ViewData["Title"] = "Eliminar Tablero";
+}
+
+@model Tp11.Models.Tablero
+
+<h2>Confirmar eliminación</h2>
+
+<form asp-controller="Tablero" asp-action="EliminarFromForm">
+    <input asp-for="@Model.Id" type="hidden" />
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+</form>

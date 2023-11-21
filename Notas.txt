@@ -1,0 +1,94 @@
+dotnet new webapi
+dotnet add package System.Data.SQLite
+dotnet new mvc
+
+//---------------------------------------------------------------------------------------------------------------------------------------
+1-Hacer Models  comunes correspondientes, con sus Repository e IRepository
+//---------------------------------------------------------------------------------------------------------------------------------------
+
+2-Hacer Model de ErrorViewModel.cs:
+//---------------------------------------------------------------------------------------------------------------------------------------
+public class ErrorViewModel
+{
+    public string? RequestId { get; set; }
+
+    public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+}
+//---------------------------------------------------------------------------------------------------------------------------------------
+
+6-Hacer Controllers de los Models básicos: (agregar si o si el logger y el Erro del final, los del medio dependen de la implementacion)
+//---------------------------------------------------------------------------------------------------------------------------------------
+using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+
+using UsuariosRepository;
+
+public class UsuarioController : Controller{
+    private readonly ILogger<HomeController> _logger;//declaro variable tipo ILogger<HomeController>
+    private static List<Usuario> usuarios = new List<Usuario>();
+    UsuarioRepository repo = new UsuarioRepository();// instancia del repository de usuario para usar metodos
+    public UsuarioController(ILogger<HomeController> logger) //constructor de Usuario que recibe un parametro tipo ILogger<HomeController> 
+    {
+        _logger = logger;
+    }
+
+     public IActionResult Index()
+    {
+        var usuarios = repo.GetAll();
+        return View(usuarios);//retorna la lista usuarios al view de Usuario
+    }
+
+    [HttpGet]
+    public IActionResult AgregarUsuario()
+    {
+        Usuario newUsuario = new Usuario();
+        return View(newUsuario);
+    }
+
+    [HttpPost]
+    public IActionResult AgregarUsuarioFromForm([FromForm] Usuario usuario)
+    {
+        repo.Create(usuario);
+        return RedirectToAction("Index");
+    }
+    //..
+
+    //Editar Usuario
+    [HttpGet]
+    public IActionResult EditarUsuario(int idUsuario)
+    {  
+        Usuario usuario = repo.GetById(idUsuario);
+        return View(usuario);
+    }
+
+    [HttpPost]
+    public IActionResult EditarUsuarioFromForm([FromForm] Usuario usuario)
+    {  
+        repo.Update(usuario);
+        return RedirectToAction("Index");
+    }
+
+    //Eliminar Usuario
+    public IActionResult DeleteUsuario(int idUsuario)
+    {
+        return View(repo.GetById(idUsuario));
+    }
+
+    [HttpPost]
+    public IActionResult EliminarFromForm(Usuario user)
+    {
+        repo.Remove(user.Id);
+        return RedirectToAction("Index");
+    }
+    //..
+
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error()
+    {
+        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    }
+}
+//---------------------------------------------------------------------------------------------------------------------------------------
+
+7-Hacer los Views de los Models básicos : (para cada método del Controller va un View individual)
+//---------------------------------------------------------------------------------------------------------------------------------------

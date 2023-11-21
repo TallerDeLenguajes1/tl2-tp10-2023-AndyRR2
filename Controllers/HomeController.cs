@@ -1,7 +1,8 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Tp10.Controllers;
+using Tp11.Models;
+namespace Tp11.Controllers;
 
 public class HomeController : Controller
 {

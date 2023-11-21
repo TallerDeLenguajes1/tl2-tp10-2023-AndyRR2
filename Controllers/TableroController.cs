@@ -1,84 +1,99 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
+using Tp11.Models;
 using EspacioTableroRepository;
-using Tp10.Models;
-namespace Tp10.Controllers;
 
-public class TableroController : Controller
-{
+namespace Tp11.Controllers;
+
+public class TableroController : Controller{
+    TableroRepository repo = new TableroRepository();
+
     private readonly ILogger<HomeController> _logger;
-    private static List<Tablero> tableros = new List<Tablero>();
-    TablerosRepository repo;
-
-    public TableroController(ILogger<HomeController> logger)
+    public TableroController(ILogger<HomeController> logger) //constructor de Tablero que recibe un parametro tipo ILogger<HomeController> 
     {
         _logger = logger;
-        repo = new TablerosRepository();
     }
 
-    //Mostrar Tableros
-    public IActionResult Index()
-    {
-        var tableros = repo.GetAll();
+    public IActionResult Index(int? idUsuario){
+        List<Tablero> tableros = null;
+        if(!isLogin()) return RedirectToAction("Index","Login");
+        
+        if (isAdmin()){
+            tableros = repo.GetAll();
+        }else if(idUsuario.HasValue){
+            tableros = repo.GetTablerosDeUsuario(idUsuario);//ver como poner el parametro adecuado segun el id del usuario logueado
+        }else{
+            return NotFound();
+        }
         return View(tableros);
     }
-    //..
-    
-    //Agregar Tablero
+
     [HttpGet]
-    public IActionResult AgregarTablero()
-    {
-        return View(new Tablero());
-    }
+    public IActionResult AgregarTablero(){
+        if(!isLogin()) return RedirectToAction("Index","Login");
 
+        Tablero newTablero = new Tablero();
+        return View(newTablero);
+    }
     [HttpPost]
-    public IActionResult AgregarTableroFromForm([FromForm] Tablero tablero)
-    {
-        repo.Create(tablero);
+    public IActionResult AgregarTableroFromForm([FromForm] Tablero newTablero){
+        if(!ModelState.IsValid) return RedirectToAction("Index","Login");
+        if(!isLogin()) return RedirectToAction("Index","Login");
+
+        repo.Create(newTablero);
         return RedirectToAction("Index");
     }
-    //..
-    
-    //Editar Tablero
     [HttpGet]
-    public IActionResult EditarTablero(int idTablero)
-    {  
-        return View(repo.GetById(idTablero));
-    }
+    public IActionResult EditarTablero(int? idTablero){
+        if(!isLogin()) return RedirectToAction("Index","Login");
 
+        Tablero tableroAEditar = repo.GetById(idTablero);
+        return View(tableroAEditar);
+    }
     [HttpPost]
-    public IActionResult EditarTableroFromForm([FromForm] Tablero tablero)
-    {  
-        repo.Update(tablero);
+    public IActionResult EditarTableroFromForm([FromForm] Tablero tableroAEditar){
+        if(!ModelState.IsValid) return RedirectToAction("Index","Login");
+        if(!isLogin()) return RedirectToAction("Index","Login");
+
+        repo.Update(tableroAEditar);
         return RedirectToAction("Index");
     }
-    //..
-
     
-    //Eliminar Tablero
-    public IActionResult DeleteTablero(int idTablero)
-    {
-        return View(repo.GetById(idTablero));
-    }
+    [HttpGet]
+    public IActionResult EliminarTablero(int? idTablero){
+        if(!isLogin()) return RedirectToAction("Index","Login");
 
+        Tablero tableroAEliminar = repo.GetById(idTablero);
+        return View(tableroAEliminar);
+    }
     [HttpPost]
-    public IActionResult DeleteFromForm([FromForm] Tablero tablero)
-    {
-        repo.Remove(tablero.Id);
+    public IActionResult EliminarFromForm(Tablero tableroAEliminar){
+        if(!isLogin()) return RedirectToAction("Index","Login");
+        
+        repo.Remove(tableroAEliminar.Id);
         return RedirectToAction("Index");
     }
-    //..
-
-
-
-
-
+    private bool isAdmin()
+    {
+        if (HttpContext.Session != null && HttpContext.Session.GetString("NivelDeAcceso") == "admin"){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    private bool isLogin()
+    {
+        if (HttpContext.Session != null && HttpContext.Session.GetString("NivelDeAcceso") == "admin" || HttpContext.Session.GetString("NivelDeAcceso") == "simple"){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
-    
 }

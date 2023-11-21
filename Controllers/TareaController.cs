@@ -1,77 +1,97 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
+using Tp11.Models;
 using EspacioTareaRepository;
-using Tp10.Models;
-namespace Tp10.Controllers;
 
-public class TareaController : Controller
-{
+namespace Tp11.Controllers;
+
+public class TareaController : Controller{
+    TareaRepository repo = new TareaRepository();
+    
     private readonly ILogger<HomeController> _logger;
-    private static List<Tarea> tareas = new List<Tarea>();
-    TareasRepository repo;
-
     public TareaController(ILogger<HomeController> logger)
     {
         _logger = logger;
-        repo = new TareasRepository();
     }
 
-    //Mostrar Tareas
-    public IActionResult Index()
-    {
-        var tareas = repo.GetAll();
+    public IActionResult Index(int? idTablero){
+        List<Tarea> tareas = null;
+        if(!isLogin()) return RedirectToAction("Index","Login");
+        
+        if (isAdmin()){
+            tareas = repo.GetAll();
+        }else if(idTablero.HasValue){
+            tareas = repo.GetTareasDeTablero(idTablero);//ver como poner el parametro adecuado segun el id del usuario logueado
+        }else{
+            return NotFound();
+        }
         return View(tareas);
     }
-    //..
     
-    //Agregar Tarea
     [HttpGet]
-    public IActionResult AgregarTarea()
-    {
-        return View(new Tarea());
-    }
+    public IActionResult AgregarTarea(){
+        if(!isLogin()) return RedirectToAction("Index","Login");
 
+        Tarea newTarea = new Tarea();
+        return View(newTarea);
+    }
     [HttpPost]
-    public IActionResult AgregarTareaFromForm([FromForm] Tarea tarea)
-    {
-        repo.Create(tarea);
+    public IActionResult AgregarTareaFromForm([FromForm] Tarea newTarea){
+        if(!ModelState.IsValid) return RedirectToAction("Index","Login");
+        if(!isLogin()) return RedirectToAction("Index","Login");
+
+        repo.Create(newTarea);
         return RedirectToAction("Index");
     }
-    //..
     
-    //Editar Tarea
     [HttpGet]
-    public IActionResult EditarTarea(int idTarea)
-    {  
-        return View(repo.GetById(idTarea));
-    }
+    public IActionResult EditarTarea(int? idTarea){  
+        if(!isLogin()) return RedirectToAction("Index","Login");
 
+        Tarea tareaAEditar = repo.GetById(idTarea);
+        return View(tareaAEditar);
+    }
     [HttpPost]
-    public IActionResult EditarTareaFromForm([FromForm] Tarea tarea)
-    {  
-        repo.Update(tarea);
+    public IActionResult EditarTareaFromForm([FromForm] Tarea tareaAEditar){ 
+        if(!ModelState.IsValid) return RedirectToAction("Index","Login");
+        if(!isLogin()) return RedirectToAction("Index","Login"); 
+
+        repo.Update(tareaAEditar);
         return RedirectToAction("Index");
     }
-    //..
-    //Eliminar Tarea
-    public IActionResult DeleteTarea(int idTarea)
-    {
-        return View(repo.GetById(idTarea));
-    }
 
+    [HttpGet]
+    public IActionResult EliminarTarea(int? idTarea){
+        if(!isLogin()) return RedirectToAction("Index","Login");
+
+        Tarea tareaAEliminar = repo.GetById(idTarea);
+        return View(tareaAEliminar);
+    }
     [HttpPost]
-    public IActionResult DeleteFromForm([FromForm] Tarea tarea)
-    {
-        repo.Remove(tarea.Id);
+    public IActionResult EliminarFromForm([FromForm] Tarea tareaAEliminar){
+        if(!isLogin()) return RedirectToAction("Index","Login");
+
+        repo.Remove(tareaAEliminar.Id);
         return RedirectToAction("Index");
     }
-    //..
-
-
-
-
-
+   
+    private bool isAdmin()
+    {
+        if (HttpContext.Session != null && HttpContext.Session.GetString("NivelDeAcceso") == "admin"){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    private bool isLogin()
+    {
+        if (HttpContext.Session != null && HttpContext.Session.GetString("NivelDeAcceso") == "admin" || HttpContext.Session.GetString("NivelDeAcceso") == "simple"){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
