@@ -4,7 +4,7 @@ using Tp11.Models;
 
 namespace EspacioTareaRepository{
     public class TareaRepository : ITareaRepository{
-        private string direccionBD = "Data Source=C:/Taller_2/Tp10-11/tl2-tp10-2023-AndyRR2/DataBase/kamban.db;Cache=Shared";
+        private readonly string direccionBD = "Data Source = DataBase/kamban.db;Cache=Shared";
         public List<Tarea> GetAll(){
             List<Tarea> tareas = new List<Tarea>();
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);

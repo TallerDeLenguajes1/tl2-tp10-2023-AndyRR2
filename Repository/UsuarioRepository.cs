@@ -5,8 +5,7 @@ using Tp11.Models;
 using Tp11.ViewModels;
 
 public class UsuarioRepository : IUsuarioRepository{
-    private string direccionBD = "Data Source = C:/Taller_2/Tp10-11/tl2-tp10-2023-AndyRR2/DataBase/kamban.db;Cache=Shared";
-    //private string direccionBD = "./DataBase/kamban.db;Cache=Shared";
+    private readonly string direccionBD = "Data Source = DataBase/kamban.db;Cache=Shared";
     public List<ListarUsuarioViewModel> GetAll(){
         List<ListarUsuarioViewModel> usuarios = new List<ListarUsuarioViewModel>();
         SQLiteConnection connectionC = new SQLiteConnection(direccionBD);

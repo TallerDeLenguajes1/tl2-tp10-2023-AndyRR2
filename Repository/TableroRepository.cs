@@ -4,7 +4,7 @@ using System.Data.SQLite;
 using Tp11.Models;
 
 public class TableroRepository : ITableroRepository{
-    private string direccionBD = "Data Source = C:/Taller_2/Tp10-11/tl2-tp10-2023-AndyRR2/DataBase/kamban.db;Cache=Shared"; 
+    private readonly string direccionBD = "Data Source = DataBase/kamban.db;Cache=Shared"; 
     public List<Tablero> GetAll(){
         List<Tablero> tableros = new List<Tablero>();
         SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
