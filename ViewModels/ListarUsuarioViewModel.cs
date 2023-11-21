@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Tp11.ViewModels;
+using Tp11.Models;
 public class ListarUsuarioViewModel{
     private int? id;
 
@@ -14,4 +15,18 @@ public class ListarUsuarioViewModel{
     [Required(ErrorMessage = "Este campo es requerido.")]
     [Display(Name = "Nombre")]
     public string? Nombre { get => nombre; set => nombre = value; }
+
+    public static List<ListarUsuarioViewModel> FromUsuario(List<Usuario> usuarios)
+    {
+        List<ListarUsuarioViewModel> listaUsuariosVM = new List<ListarUsuarioViewModel>();
+        
+            foreach (var usuario in usuarios)
+            {
+                ListarUsuarioViewModel newUVM = new ListarUsuarioViewModel();
+                newUVM.id = usuario.Id;
+                newUVM.nombre = usuario.Nombre;
+                listaUsuariosVM.Add(newUVM);
+            }
+            return(listaUsuariosVM);
+    }
 }

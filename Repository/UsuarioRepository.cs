@@ -6,8 +6,8 @@ using Tp11.ViewModels;
 
 public class UsuarioRepository : IUsuarioRepository{
     private readonly string direccionBD = "Data Source = DataBase/kamban.db;Cache=Shared";
-    public List<ListarUsuarioViewModel> GetAll(){
-        List<ListarUsuarioViewModel> usuarios = new List<ListarUsuarioViewModel>();
+    public List<Usuario> GetAll(){
+        List<Usuario> usuarios = new List<Usuario>();
         SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
         string queryC = "SELECT * FROM Usuario;";
@@ -21,7 +21,7 @@ public class UsuarioRepository : IUsuarioRepository{
             {
                 while (readerC.Read())
                 {
-                    ListarUsuarioViewModel usuarioPorAgregar = new ListarUsuarioViewModel();
+                    Usuario usuarioPorAgregar = new Usuario();
                     usuarioPorAgregar.Id = Convert.ToInt32(readerC["id"]);
                     usuarioPorAgregar.Nombre = Convert.ToString(readerC["nombre_de_usuario"]);
                     usuarios.Add(usuarioPorAgregar);
@@ -31,7 +31,7 @@ public class UsuarioRepository : IUsuarioRepository{
         }
         return(usuarios);
     }
-    public void Create(CrearUsuarioViewModel newUsuario){
+    public void Create(Usuario newUsuario){
         SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
         
         string queryC = $"INSERT INTO Usuario (id, nombre_de_usuario) VALUES (@ID,@NAME)";
@@ -90,7 +90,7 @@ public class UsuarioRepository : IUsuarioRepository{
             connectionC.Close();
         }
     }
-    public void Update(EditarUsuarioViewModel newUsuario){
+    public void Update(Usuario newUsuario){
         SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
         
         string queryC = "UPDATE Usuario SET nombre_de_usuario = @NAME WHERE id = @ID";

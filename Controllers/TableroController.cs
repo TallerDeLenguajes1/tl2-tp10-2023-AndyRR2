@@ -5,6 +5,7 @@ using Tp11.Models;
 using EspacioTableroRepository;
 
 namespace Tp11.Controllers;
+using Tp11.ViewModels;
 
 public class TableroController : Controller{
     TableroRepository repo = new TableroRepository();
@@ -26,24 +27,27 @@ public class TableroController : Controller{
         }else{
             return NotFound();
         }
-        return View(tableros);
+        List<ListarTableroViewModel> listaTablerosVM = ListarTableroViewModel.FromTablero(tableros);
+        return View(listaTablerosVM);
     }
 
     [HttpGet]
     public IActionResult AgregarTablero(){
         if(!isLogin()) return RedirectToAction("Index","Login");
 
-        Tablero newTablero = new Tablero();
-        return View(newTablero);
+        CrearTableroViewModel newTableroVM = new CrearTableroViewModel();
+        return View(newTableroVM);
     }
     [HttpPost]
-    public IActionResult AgregarTableroFromForm([FromForm] Tablero newTablero){
+    public IActionResult AgregarTableroFromForm([FromForm] CrearTableroViewModel newTableroVM){
         if(!ModelState.IsValid) return RedirectToAction("Index","Login");
         if(!isLogin()) return RedirectToAction("Index","Login");
 
+        Tablero newTablero = Tablero.FromCrearTableroViewModel(newTableroVM);
         repo.Create(newTablero);
         return RedirectToAction("Index");
     }
+
     [HttpGet]
     public IActionResult EditarTablero(int? idTablero){
         if(!isLogin()) return RedirectToAction("Index","Login");

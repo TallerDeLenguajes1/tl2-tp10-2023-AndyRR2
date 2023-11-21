@@ -19,22 +19,24 @@ public class UsuarioController : Controller{
     public IActionResult Index(){
         if(!isLogin()) return RedirectToAction("Index","Login");
 
-        List<ListarUsuarioViewModel> usuarios = repo.GetAll();
-        return View(usuarios);
+        List<Usuario> usuarios = repo.GetAll();
+        List<ListarUsuarioViewModel> listaUsuariosVM = ListarUsuarioViewModel.FromUsuario(usuarios);//convertir de List<Usuario> a List<listarUsuarioViewModel>
+        return View(listaUsuariosVM);
     }
 
     [HttpGet]
     public IActionResult AgregarUsuario(){
         if(!isLogin()) return RedirectToAction("Index","Login"); 
 
-        CrearUsuarioViewModel newUsuario = new CrearUsuarioViewModel();
-        return View(newUsuario);
+        CrearUsuarioViewModel newUsuarioVM = new CrearUsuarioViewModel();
+        return View(newUsuarioVM);
     }
     [HttpPost]
-    public IActionResult AgregarUsuarioFromForm([FromForm] CrearUsuarioViewModel newUsuario){
+    public IActionResult AgregarUsuarioFromForm([FromForm] CrearUsuarioViewModel newUsuarioVM){
         if(!ModelState.IsValid) return RedirectToAction("Index","Login");
         if(!isLogin()) return RedirectToAction("Index","Login"); 
 
+        Usuario newUsuario = Usuario.FromCrearUsuarioViewModel(newUsuarioVM);//convertir de CrearUsuarioViewModel a Usuario
         repo.Create(newUsuario);
         return RedirectToAction("Index");
     }
@@ -48,10 +50,11 @@ public class UsuarioController : Controller{
         return View(editarUsuarioVM);
     }
     [HttpPost]
-    public IActionResult EditarUsuarioFromForm([FromForm] EditarUsuarioViewModel usuarioAEditar){
+    public IActionResult EditarUsuarioFromForm([FromForm] EditarUsuarioViewModel usuarioAEditarVM){
         if(!ModelState.IsValid) return RedirectToAction("Index","Login");
         if(!isLogin()) return RedirectToAction("Index","Login"); 
 
+        Usuario usuarioAEditar = Usuario.FromEditarUsuarioViewModel(usuarioAEditarVM);//convertir de EditarUsuarioViewModel a Usuario
         repo.Update(usuarioAEditar);
         return RedirectToAction("Index");
     }
