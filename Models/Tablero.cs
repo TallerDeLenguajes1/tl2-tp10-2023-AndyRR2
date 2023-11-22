@@ -31,5 +31,16 @@ public class Tablero{
             descripcion=tableroVM.Descripcion
         };
     }
+
+    public static Tablero FromEditarTableroViewModel(EditarTableroViewModel tableroVM)
+    {
+        return new Tablero
+        {
+            id = tableroVM.Id,
+            idUsuarioPropietario = tableroVM.IdUsuarioPropietario,
+            nombre = tableroVM.Nombre,
+            descripcion=tableroVM.Descripcion
+        };
+    }
     
 }

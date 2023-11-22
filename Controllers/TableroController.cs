@@ -53,13 +53,15 @@ public class TableroController : Controller{
         if(!isLogin()) return RedirectToAction("Index","Login");
 
         Tablero tableroAEditar = repo.GetById(idTablero);
-        return View(tableroAEditar);
+        EditarTableroViewModel tableroAEditarVM = EditarTableroViewModel.FromTablero(tableroAEditar);
+        return View(tableroAEditarVM);
     }
     [HttpPost]
-    public IActionResult EditarTableroFromForm([FromForm] Tablero tableroAEditar){
+    public IActionResult EditarTableroFromForm([FromForm] EditarTableroViewModel tableroAEditarVM){
         if(!ModelState.IsValid) return RedirectToAction("Index","Login");
         if(!isLogin()) return RedirectToAction("Index","Login");
 
+        Tablero tableroAEditar = Tablero.FromEditarTableroViewModel(tableroAEditarVM);
         repo.Update(tableroAEditar);
         return RedirectToAction("Index");
     }
