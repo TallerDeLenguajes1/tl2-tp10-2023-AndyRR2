@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
 using Tp11.Models;
+using Tp11.ViewModels;
 using EspacioTareaRepository;
 
 namespace Tp11.Controllers;
@@ -26,21 +27,23 @@ public class TareaController : Controller{
         }else{
             return NotFound();
         }
-        return View(tareas);
+        List<ListarTareaViewModel> listaTareasVM = ListarTareaViewModel.FromTarea(tareas);
+        return View(listaTareasVM);
     }
     
     [HttpGet]
     public IActionResult AgregarTarea(){
         if(!isLogin()) return RedirectToAction("Index","Login");
 
-        Tarea newTarea = new Tarea();
-        return View(newTarea);
+        CrearTareaViewModel newTareaVM = new CrearTareaViewModel();
+        return View(newTareaVM);
     }
     [HttpPost]
-    public IActionResult AgregarTareaFromForm([FromForm] Tarea newTarea){
+    public IActionResult AgregarTareaFromForm([FromForm] CrearTareaViewModel newTareaVM){
         if(!ModelState.IsValid) return RedirectToAction("Index","Login");
         if(!isLogin()) return RedirectToAction("Index","Login");
 
+        Tarea newTarea = Tarea.FromCrearTareaViewModel(newTareaVM);
         repo.Create(newTarea);
         return RedirectToAction("Index");
     }
@@ -50,13 +53,15 @@ public class TareaController : Controller{
         if(!isLogin()) return RedirectToAction("Index","Login");
 
         Tarea tareaAEditar = repo.GetById(idTarea);
-        return View(tareaAEditar);
+        EditarTareaViewModel tareaAEditarVM = EditarTareaViewModel.FromTarea(tareaAEditar);
+        return View(tareaAEditarVM);
     }
     [HttpPost]
-    public IActionResult EditarTareaFromForm([FromForm] Tarea tareaAEditar){ 
+    public IActionResult EditarTareaFromForm([FromForm] EditarTareaViewModel tareaAEditarVM){ 
         if(!ModelState.IsValid) return RedirectToAction("Index","Login");
         if(!isLogin()) return RedirectToAction("Index","Login"); 
 
+        Tarea tareaAEditar = Tarea.FromEditarTareaViewModel(tareaAEditarVM);
         repo.Update(tareaAEditar);
         return RedirectToAction("Index");
     }

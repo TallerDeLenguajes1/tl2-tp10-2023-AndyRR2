@@ -1,5 +1,5 @@
 namespace Tp11.Models;
-
+using Tp11.ViewModels;
 public enum EstadoTarea{
   Ideas=1, 
   ToDo=2, 
@@ -36,6 +36,33 @@ public class Tarea{
       color=Color;
       estado=Estado;
       idUsuarioAsignado=IdUsuario;
+    }
+    public static Tarea FromEditarTareaViewModel(EditarTareaViewModel tareaVM)
+    {
+        return new Tarea
+        {
+            id = tareaVM.Id,
+            idTablero = tareaVM.IdTablero,
+            nombre = tareaVM.Nombre,
+            descripcion = tareaVM.Descripcion,
+            color = tareaVM.Color,
+            estado = (Tp11.Models.EstadoTarea)tareaVM.Estado,
+            idUsuarioAsignado = tareaVM.IdUsuarioAsignado,
+        };
+    }
+
+    public static Tarea FromCrearTareaViewModel(CrearTareaViewModel tareaVM)
+    {
+        return new Tarea
+        {
+            id = tareaVM.Id,
+            idTablero = tareaVM.IdTablero,
+            nombre = tareaVM.Nombre,
+            descripcion = tareaVM.Descripcion,
+            color = tareaVM.Color,
+            estado = (Tp11.Models.EstadoTarea)tareaVM.Estado,
+            idUsuarioAsignado = tareaVM.IdUsuarioAsignado,
+        };
     }
 
 }
