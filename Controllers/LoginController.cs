@@ -24,8 +24,14 @@ public class LoginController : Controller
         loginSimple.Contrasenia = "simple";
         loginSimple.Nivel = NivelDeAcceso.simple;
 
+        Login loginSimple2 = new Login();
+        loginSimple.Nombre = "simple2";
+        loginSimple.Contrasenia = "simple2";
+        loginSimple.Nivel = NivelDeAcceso.simple;
+
         listaDeTiposDelogins.Add(loginAdmin);
         listaDeTiposDelogins.Add(loginSimple);
+        listaDeTiposDelogins.Add(loginSimple2);
     }
 
     public IActionResult Index()

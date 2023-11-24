@@ -8,12 +8,13 @@ using EspacioTareaRepository;
 namespace Tp11.Controllers;
 
 public class TareaController : Controller{
-    TareaRepository repo = new TareaRepository();
-    
+    //TareaRepository repo = new TareaRepository();
+    private readonly ITareaRepository repo;
     private readonly ILogger<HomeController> _logger;
-    public TareaController(ILogger<HomeController> logger)
+    public TareaController(ILogger<HomeController> logger, ITareaRepository TarRepo)
     {
         _logger = logger;
+        repo = TarRepo;
     }
 
     public IActionResult Index(int? idTablero){

@@ -1,8 +1,15 @@
+using EspacioUsuarioRepository;
+using EspacioTableroRepository;
+using EspacioTareaRepository;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDistributedMemoryCache();//se agrega para login***********************************
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();// se agrega para inyeccion de dependencia
+builder.Services.AddScoped<ITableroRepository, TableroRepository>();// se agrega para inyeccion de dependencia
+builder.Services.AddScoped<ITareaRepository, TareaRepository>();// se agrega para inyeccion de dependencia
 
 builder.Services.AddSession(options =>//se agrega para login***********************************
 {

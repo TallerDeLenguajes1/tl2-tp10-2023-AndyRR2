@@ -8,12 +8,13 @@ namespace Tp11.Controllers;
 using Tp11.ViewModels;
 
 public class TableroController : Controller{
-    TableroRepository repo = new TableroRepository();
-
+    //TableroRepository repo = new TableroRepository();
+    private readonly ITableroRepository repo;
     private readonly ILogger<HomeController> _logger;
-    public TableroController(ILogger<HomeController> logger) //constructor de Tablero que recibe un parametro tipo ILogger<HomeController> 
+    public TableroController(ILogger<HomeController> logger, ITableroRepository TabRepo) //constructor de Tablero que recibe un parametro tipo ILogger<HomeController> 
     {
         _logger = logger;
+        repo = TabRepo;
     }
 
     public IActionResult Index(int? idUsuario){

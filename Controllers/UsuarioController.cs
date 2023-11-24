@@ -8,15 +8,18 @@ using Tp11.ViewModels;
 namespace Tp11.Controllers;
 
 public class UsuarioController : Controller{
-    UsuarioRepository repo = new UsuarioRepository();
-    
+    //UsuarioRepository repo = new UsuarioRepository();
+    private readonly IUsuarioRepository repo;
     private readonly ILogger<HomeController> _logger;
-    public UsuarioController(ILogger<HomeController> logger) //constructor de Usuario que recibe un parametro tipo ILogger<HomeController> 
+    public UsuarioController(ILogger<HomeController> logger, IUsuarioRepository UsuRepo) //constructor de Usuario que recibe un parametro tipo ILogger<HomeController> 
     {
         _logger = logger;
+        repo = UsuRepo;
     }
 
     public IActionResult Index(){
+        /*var rutaARedireccionar = new { controller = "Login", action = "Index" };//el tipo de var es un tipo anonimo
+        return RedirectToRoute(rutaARedireccionar);*/ //tambien es valido para redireccionar
         if(!isLogin()) return RedirectToAction("Index","Login");
 
         List<Usuario> usuarios = repo.GetAll();
@@ -52,6 +55,7 @@ public class UsuarioController : Controller{
     [HttpPost]
     public IActionResult EditarUsuarioFromForm([FromForm] EditarUsuarioViewModel usuarioAEditarVM){
         if(!ModelState.IsValid) return RedirectToAction("Index","Login");
+        //RedirectToRoute (new {}).....
         if(!isLogin()) return RedirectToAction("Index","Login"); 
 
         Usuario usuarioAEditar = Usuario.FromEditarUsuarioViewModel(usuarioAEditarVM);//convertir de EditarUsuarioViewModel a Usuario
