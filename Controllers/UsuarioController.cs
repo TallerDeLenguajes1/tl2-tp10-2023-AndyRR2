@@ -18,66 +18,126 @@ public class UsuarioController : Controller{
     }
 
     public IActionResult Index(){
-        /*var rutaARedireccionar = new { controller = "Login", action = "Index" };//el tipo de var es un tipo anonimo
-        return RedirectToRoute(rutaARedireccionar);*/ //tambien es valido para redireccionar
-        if(!isLogin()) return RedirectToAction("Index","Login");
+        try
+        {
+            /*var rutaARedireccionar = new { controller = "Login", action = "Index" };//el tipo de var es un tipo anonimo
+            return RedirectToRoute(rutaARedireccionar);*/ //tambien es valido para redireccionar
+            if(!isLogin()) return RedirectToAction("Index","Login");
 
-        List<Usuario> usuarios = repo.GetAll();
-        List<ListarUsuarioViewModel> listaUsuariosVM = ListarUsuarioViewModel.FromUsuario(usuarios);//convertir de List<Usuario> a List<listarUsuarioViewModel>
-        return View(listaUsuariosVM);
+            List<Usuario> usuarios = repo.GetAll();
+            List<ListarUsuarioViewModel> listaUsuariosVM = ListarUsuarioViewModel.FromUsuario(usuarios);//convertir de List<Usuario> a List<listarUsuarioViewModel>
+            return View(listaUsuariosVM);
+        }
+        catch (Exception ex)
+        {
+            
+            _logger.LogError(ex.ToString());
+            return BadRequest();
+        }
     }
 
     [HttpGet]
     public IActionResult AgregarUsuario(){
-        if(!isLogin()) return RedirectToAction("Index","Login"); 
+        try
+        {
+            if(!isLogin()) return RedirectToAction("Index","Login");
 
-        CrearUsuarioViewModel newUsuarioVM = new CrearUsuarioViewModel();
-        return View(newUsuarioVM);
+            CrearUsuarioViewModel newUsuarioVM = new CrearUsuarioViewModel();
+            return View(newUsuarioVM);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+            return BadRequest();
+        }
     }
+
     [HttpPost]
     public IActionResult AgregarUsuarioFromForm([FromForm] CrearUsuarioViewModel newUsuarioVM){
-        if(!ModelState.IsValid) return RedirectToAction("Index","Login");
-        if(!isLogin()) return RedirectToAction("Index","Login"); 
+        try
+        {
+            if(!ModelState.IsValid) return RedirectToAction("Index","Login");
+            if(!isLogin()) return RedirectToAction("Index","Login");
 
-        Usuario newUsuario = Usuario.FromCrearUsuarioViewModel(newUsuarioVM);//convertir de CrearUsuarioViewModel a Usuario
-        repo.Create(newUsuario);
-        return RedirectToAction("Index");
+            Usuario newUsuario = Usuario.FromCrearUsuarioViewModel(newUsuarioVM);//convertir de CrearUsuarioViewModel a Usuario
+            repo.Create(newUsuario);
+            return RedirectToAction("Index");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+            return BadRequest();
+        }
     }
 
     [HttpGet]
     public IActionResult EditarUsuario(int? idUsuario){
-        if(!isLogin()) return RedirectToAction("Index","Login"); 
+        try
+        {
+            if(!isLogin()) return RedirectToAction("Index","Login"); 
 
-        Usuario usuarioAEditar = repo.GetById(idUsuario);
-        EditarUsuarioViewModel editarUsuarioVM = EditarUsuarioViewModel.FromUsuario(usuarioAEditar);//convertir de Usuario a EditarUsuarioViewModel
-        return View(editarUsuarioVM);
+            Usuario usuarioAEditar = repo.GetById(idUsuario);
+            EditarUsuarioViewModel editarUsuarioVM = EditarUsuarioViewModel.FromUsuario(usuarioAEditar);//convertir de Usuario a EditarUsuarioViewModel
+            return View(editarUsuarioVM);
+        }
+        catch (Exception ex)
+        {
+            
+            _logger.LogError(ex.ToString());
+            return BadRequest();
+        }
     }
     [HttpPost]
     public IActionResult EditarUsuarioFromForm([FromForm] EditarUsuarioViewModel usuarioAEditarVM){
-        if(!ModelState.IsValid) return RedirectToAction("Index","Login");
-        //RedirectToRoute (new {}).....
-        if(!isLogin()) return RedirectToAction("Index","Login"); 
+        try
+        {
+            if(!ModelState.IsValid) return RedirectToAction("Index","Login");
+            //RedirectToRoute (new {}).....
+            if(!isLogin()) return RedirectToAction("Index","Login"); 
 
-        Usuario usuarioAEditar = Usuario.FromEditarUsuarioViewModel(usuarioAEditarVM);//convertir de EditarUsuarioViewModel a Usuario
-        repo.Update(usuarioAEditar);
-        return RedirectToAction("Index");
+            Usuario usuarioAEditar = Usuario.FromEditarUsuarioViewModel(usuarioAEditarVM);//convertir de EditarUsuarioViewModel a Usuario
+            repo.Update(usuarioAEditar);
+            return RedirectToAction("Index");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+            return BadRequest();
+        }
     }
 
     [HttpGet]
     public IActionResult EliminarUsuario(int? idUsuario){
-        if(!isLogin()) return RedirectToAction("Index","Login"); 
+        try
+        {
+            if(!isLogin()) return RedirectToAction("Index","Login"); 
 
-        Usuario usuarioAEliminar = repo.GetById(idUsuario);
-        return View(usuarioAEliminar);
+            Usuario usuarioAEliminar = repo.GetById(idUsuario);
+            return View(usuarioAEliminar);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+            return BadRequest();
+        }
     }
     [HttpPost]
     public IActionResult EliminarFromForm(Usuario usuarioAEliminar){
-        if(!isLogin()) return RedirectToAction("Index","Login"); 
+        try
+        {
+            if(!isLogin()) return RedirectToAction("Index","Login"); 
         
-        repo.Remove(usuarioAEliminar.Id);
-        return RedirectToAction("Index");
+            repo.Remove(usuarioAEliminar.Id);
+            return RedirectToAction("Index");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+            return BadRequest();
+        }
     }
 
+    //preguntar si los try catch van en los de abajo tambien
     private bool isAdmin()
     {
         if (HttpContext.Session != null && HttpContext.Session.GetString("NivelDeAcceso") == "admin"){

@@ -34,6 +34,9 @@ namespace EspacioTareaRepository{
                 }
                 connectionC.Close();
             }
+            if (tareas == null){
+                throw new Exception("Lista de tareas no encontrada.");
+            }
             return tareas;
         }
         public void Create(Tarea newTarea){
@@ -62,6 +65,9 @@ namespace EspacioTareaRepository{
                 
                 commandC.ExecuteNonQuery();
                 connectionC.Close();   
+            }
+            if (newTarea == null){
+                throw new Exception("La Tarea no se creo correctamente.");
             }
         }
         public Tarea GetById(int? idUsuario){
@@ -92,6 +98,9 @@ namespace EspacioTareaRepository{
                 }
                 connectionC.Close();
             }
+            if (tareaSelec == null){
+                throw new Exception("La Tarea no esta creada.");
+            }
             return(tareaSelec);
         }
         public void Remove(int? idUsuario){
@@ -106,8 +115,11 @@ namespace EspacioTareaRepository{
                 SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
                 commandC.Parameters.Add(parameterId);
 
-                commandC.ExecuteNonQuery();      
+                int rowsAffected = commandC.ExecuteNonQuery();
                 connectionC.Close();
+                if (rowsAffected == 0){
+                    throw new Exception("No se encontró ninguna tarea con el ID proporcionado.");
+                }
             }
         }
 
@@ -134,8 +146,11 @@ namespace EspacioTareaRepository{
                 commandC.Parameters.Add(parameterColor);
                 commandC.Parameters.Add(parameterIdUsu);
 
-                commandC.ExecuteNonQuery();
-                connectionC.Close();   
+                int rowsAffected = commandC.ExecuteNonQuery();
+                connectionC.Close();
+                if (rowsAffected == 0){
+                    throw new Exception("No se encontró ninguna tarea con el ID proporcionado.");
+                }   
             }
         }
         public List<Tarea> GetTareasDeTablero(int? Id){
@@ -169,6 +184,9 @@ namespace EspacioTareaRepository{
                 }
                 connection.Close();
             }
+            if (tareas == null){
+                throw new Exception("El tablero proporcionado no tiene tareas.");
+            } 
             return(tareas);
         }
 
@@ -202,6 +220,9 @@ namespace EspacioTareaRepository{
                     }
                 }
                 connection.Close();
+            }
+            if (tareas == null){
+                throw new Exception("El usuario proporcionado no tiene tareas.");
             }
             return(tareas);
         }

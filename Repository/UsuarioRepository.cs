@@ -29,6 +29,9 @@ public class UsuarioRepository : IUsuarioRepository{
             }
             connectionC.Close();
         }
+        if (usuarios==null){
+            throw new Exception("Lista de usuarios no encontrada.");
+        }
         return(usuarios);
     }
     public void Create(Usuario newUsuario){
@@ -47,6 +50,9 @@ public class UsuarioRepository : IUsuarioRepository{
 
             commandC.ExecuteNonQuery();
             connectionC.Close();
+        }
+        if (newUsuario==null){
+            throw new Exception("El Usuario no se creo correctamente.");
         }
     }
     public Usuario GetById(int? Id){
@@ -73,6 +79,9 @@ public class UsuarioRepository : IUsuarioRepository{
             }
             connectionC.Close();
         }
+        if (usuarioSelec==null){
+            throw new Exception("El usuario no esta creado.");
+        }
         return(usuarioSelec);
     }
     public void Remove(int? idUsuario){
@@ -86,9 +95,14 @@ public class UsuarioRepository : IUsuarioRepository{
             connectionC.Open();
             SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
             commandC.Parameters.Add(parameterId);
-            commandC.ExecuteNonQuery();
+            
+            int rowsAffected = commandC.ExecuteNonQuery();
             connectionC.Close();
+            if (rowsAffected == 0){
+                throw new Exception("No se encontró ningún usuario con el ID proporcionado.");
+            }
         }
+        
     }
     public void Update(Usuario newUsuario){
         SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
@@ -104,8 +118,11 @@ public class UsuarioRepository : IUsuarioRepository{
             commandC.Parameters.Add(parameterId);
             commandC.Parameters.Add(parameterNombre);
             
-            commandC.ExecuteNonQuery();
+            int rowsAffected = commandC.ExecuteNonQuery();
             connectionC.Close();
+            if (rowsAffected == 0){
+                throw new Exception("No se encontró ningún usuario con el ID proporcionado.");
+            }
         }
     }
 }

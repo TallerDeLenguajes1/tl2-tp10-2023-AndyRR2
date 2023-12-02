@@ -30,6 +30,9 @@ public class TableroRepository : ITableroRepository{
             }
             connectionC.Close();
         }
+        if (tableros==null){
+            throw new Exception("Lista de tableros no encontrada.");
+        }
         return(tableros);
     }
     public void Create(Tablero newTablero){
@@ -50,6 +53,9 @@ public class TableroRepository : ITableroRepository{
             commandC.Parameters.Add(parameterDescripcion);
             commandC.ExecuteNonQuery();
             connectionC.Close();
+        }
+        if (newTablero==null){
+            throw new Exception("El Tablero no se creo correctamente.");
         }
     }
     public Tablero GetById(int? Id){
@@ -78,6 +84,9 @@ public class TableroRepository : ITableroRepository{
             }
             connectionC.Close();
         }
+        if (tableroSelec==null){
+            throw new Exception("El Tablero no esta creado.");
+        }
         return(tableroSelec);
     }
     public void Remove(int? Id){
@@ -91,8 +100,12 @@ public class TableroRepository : ITableroRepository{
             connectionC.Open();
             SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
             commandC.Parameters.Add(parameterId);
-            commandC.ExecuteNonQuery();
+
+            int rowAffected =  commandC.ExecuteNonQuery();
             connectionC.Close();
+            if (rowAffected == 0){
+                throw new Exception("No se encontró ningún tablero con el ID proporcionado.");
+            }
         }
     }
     public void Update(Tablero newTablero){
@@ -113,8 +126,11 @@ public class TableroRepository : ITableroRepository{
             commandC.Parameters.Add(parameterNombre);
             commandC.Parameters.Add(parameterDescripcion);
             
-            commandC.ExecuteNonQuery();
+            int rowAffected =  commandC.ExecuteNonQuery();
             connectionC.Close();
+            if (rowAffected == 0){
+                throw new Exception("No se encontró ningún tablero con el ID proporcionado.");
+            }
         }
     }
     public List<Tablero> GetTablerosDeUsuario(int? idUsuario){
@@ -144,6 +160,9 @@ public class TableroRepository : ITableroRepository{
                 }
             } 
             connectionC.Close();           
+        }
+        if (tableros == null){
+            throw new Exception("El usuario proporcionado no tiene tableros.");
         }
         return(tableros);
     }

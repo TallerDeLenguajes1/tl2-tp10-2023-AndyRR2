@@ -36,32 +36,50 @@ public class LoginController : Controller
 
     public IActionResult Index()
     {
-        LoginViewModel login = new LoginViewModel();
-        return View(login);
+        try
+        {
+            LoginViewModel login = new LoginViewModel();
+            return View(login);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+            return BadRequest();
+        }
     }
     public IActionResult Login(Login login)
     {
-        Login usuarioPorLoguear=null;
-        //existe el usuario?
-        /*foreach (var usuario in listaDeTiposDelogins)
+        try
         {
-            if (usuario.Nombre == login.Nombre && usuario.Contrasenia == login.Contrasenia)
+            Login usuarioPorLoguear=null;
+            //existe el usuario?
+            /*foreach (var usuario in listaDeTiposDelogins)
             {
-                usuarioPorLoguear = login;
-            }
-        }*/
-        usuarioPorLoguear = listaDeTiposDelogins.FirstOrDefault(u => u.Nombre == login.Nombre && u.Contrasenia == login.Contrasenia);
+                if (usuario.Nombre == login.Nombre && usuario.Contrasenia == login.Contrasenia)
+                {
+                    usuarioPorLoguear = login;
+                }
+            }*/
+            usuarioPorLoguear = listaDeTiposDelogins.FirstOrDefault(u => u.Nombre == login.Nombre && u.Contrasenia == login.Contrasenia);
 
-        // si el usuario no existe devuelvo al index, sino Registro el usuario
-        if (usuarioPorLoguear == null){
-            return RedirectToAction("Index");
-        }else{
-            //Registro el usuario
-            logearUsuario(usuarioPorLoguear);
-            //Devuelvo el usuario al Home
-            var rutaARedireccionar = new { controller = "Usuario", action = "Index" };//el tipo de var es un tipo anonimo
-            return RedirectToRoute(rutaARedireccionar);
-        } 
+            // si el usuario no existe devuelvo al index, sino Registro el usuario
+            if (usuarioPorLoguear == null){
+                _logger.LogWarning($"Intento de acceso inválido - Usuario: {login.Nombre} Clave ingresada: {login.Contrasenia}");
+                return RedirectToAction("Index");
+            }else{
+                _logger.LogInformation($"El usuario {usuarioPorLoguear.Nombre} ingresó correctamente");
+                //Registro el usuario
+                logearUsuario(usuarioPorLoguear);
+                //Devuelvo el usuario al Home
+                var rutaARedireccionar = new { controller = "Usuario", action = "Index" };//el tipo de var es un tipo anonimo
+                return RedirectToRoute(rutaARedireccionar);
+            } 
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+            return BadRequest();
+        }
     }
     private void logearUsuario(Login usuarioPorLoguear)
     {
