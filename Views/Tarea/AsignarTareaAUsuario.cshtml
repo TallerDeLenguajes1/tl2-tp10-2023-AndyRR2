@@ -1,0 +1,18 @@
+@{ 
+    ViewData["Title"] = "Asignar Tarea";
+}
+
+@model Tp11.ViewModels.AsignarTareaViewModel
+
+<h1>@ViewData["Title"]</h1>
+<form asp-controller="Tarea" asp-action="AsignarTareaAUsuarioFromForm" method="post">
+    <input hidden asp-for="@Model.Id">
+    <div class="form-group">
+        <label asp-for="@Model.IdUsuarioAsignado"></label>
+        <input asp-for="@Model.IdUsuarioAsignado" class="form-control" id="idIdUsuarioAsignado" />
+        <span asp-validation-for="@Model.IdUsuarioAsignado" class="text-danger"></span> 
+    </div>
+    <button type="submit" class="btn btn-primary" >Enviar</button>
+</form>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

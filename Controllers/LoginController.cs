@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using System.Data.SQLite;
 
 using Tp11.Models;
 using Tp11.ViewModels;
@@ -8,30 +9,12 @@ namespace Tp11.Controllers;
 
 public class LoginController : Controller
 {
-    List<Login> listaDeTiposDelogins = new List<Login>();
+    private readonly string direccionBD = "Data Source = DataBase/kamban.db;Cache=Shared";
+    //List<Login> listaDeTiposDelogins = new List<Login>();
     private readonly ILogger<LoginController> _logger;
     public LoginController(ILogger<LoginController> logger)
     {
         _logger = logger;
-
-        Login loginAdmin = new Login();
-        loginAdmin.Nombre = "admin";
-        loginAdmin.Contrasenia = "admin";
-        loginAdmin.Nivel = NivelDeAcceso.admin;
-
-        Login loginSimple = new Login();
-        loginSimple.Nombre = "simple";
-        loginSimple.Contrasenia = "simple";
-        loginSimple.Nivel = NivelDeAcceso.simple;
-
-        Login loginSimple2 = new Login();
-        loginSimple.Nombre = "simple2";
-        loginSimple.Contrasenia = "simple2";
-        loginSimple.Nivel = NivelDeAcceso.simple;
-
-        listaDeTiposDelogins.Add(loginAdmin);
-        listaDeTiposDelogins.Add(loginSimple);
-        listaDeTiposDelogins.Add(loginSimple2);
     }
 
     public IActionResult Index()
@@ -51,19 +34,38 @@ public class LoginController : Controller
     {
         try
         {
-            Login usuarioPorLoguear=null;
-            //existe el usuario?
-            /*foreach (var usuario in listaDeTiposDelogins)
+            bool validacion = false;
+            Login usuarioPorLoguear = new Login();
+            
+            SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
+
+            string queryC = "SELECT * FROM Usuario WHERE contrasenia = @PASS AND nombre_de_usuario = @USER";
+            SQLiteParameter parameterUser = new SQLiteParameter("@USER", login.Nombre);
+            SQLiteParameter parameterPass = new SQLiteParameter("@PASS", login.Contrasenia);
+
+            using (connectionC)
             {
-                if (usuario.Nombre == login.Nombre && usuario.Contrasenia == login.Contrasenia)
+                connectionC.Open();
+                SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
+                commandC.Parameters.Add(parameterUser);
+                commandC.Parameters.Add(parameterPass);
+
+                SQLiteDataReader readerC = commandC.ExecuteReader();
+                using (readerC)
                 {
-                    usuarioPorLoguear = login;
+                    while (readerC.Read())
+                    {
+                        validacion = true;
+                        usuarioPorLoguear.Contrasenia = Convert.ToString(readerC["contrasenia"]);
+                        usuarioPorLoguear.Nombre = Convert.ToString(readerC["nombre_de_usuario"]);
+                        usuarioPorLoguear.Nivel = (NivelDeAcceso)Enum.Parse(typeof(NivelDeAcceso), Convert.ToString(readerC["nivel_de_acceso"]), true); //convierte de string a enum
+                    }
                 }
-            }*/
-            usuarioPorLoguear = listaDeTiposDelogins.FirstOrDefault(u => u.Nombre == login.Nombre && u.Contrasenia == login.Contrasenia);
+                connectionC.Close();
+            }
 
             // si el usuario no existe devuelvo al index, sino Registro el usuario
-            if (usuarioPorLoguear == null){
+            if (validacion == false){
                 _logger.LogWarning($"Intento de acceso inválido - Usuario: {login.Nombre} Clave ingresada: {login.Contrasenia}");
                 return RedirectToAction("Index");
             }else{
@@ -87,4 +89,5 @@ public class LoginController : Controller
         HttpContext.Session.SetString("Contrasenia", usuarioPorLoguear.Contrasenia);
         HttpContext.Session.SetString("NivelDeAcceso", Convert.ToString(usuarioPorLoguear.Nivel));
     }
+    
 }

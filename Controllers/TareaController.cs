@@ -93,9 +93,9 @@ public class TareaController : Controller{
         {
             if(!isLogin()) return RedirectToAction("Index","Login");
 
-        Tarea tareaAEditar = repo.GetById(idTarea);
-        EditarTareaViewModel tareaAEditarVM = EditarTareaViewModel.FromTarea(tareaAEditar);
-        return View(tareaAEditarVM);
+            Tarea tareaAEditar = repo.GetById(idTarea);
+            EditarTareaViewModel tareaAEditarVM = EditarTareaViewModel.FromTarea(tareaAEditar);
+            return View(tareaAEditarVM);
         }
         catch (Exception ex)
         {
@@ -151,7 +151,40 @@ public class TareaController : Controller{
             return BadRequest();
         }
     }
-    
+    [HttpGet]
+    public IActionResult AsignarTareaAUsuario(int idTarea){
+        try
+        {
+            if(!isLogin()) return RedirectToAction("Index","Login");
+
+            Tarea tareaSelec = repo.GetById(idTarea);
+            
+            AsignarTareaViewModel tareaSelecVM = AsignarTareaViewModel.FromTarea(tareaSelec);
+            return View(tareaSelecVM);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+            return BadRequest();
+        }
+    }
+    [HttpPost]
+    public IActionResult AsignarTareaAUsuarioFromForm([FromForm] AsignarTareaViewModel tareaSelecVM){
+        try
+        {
+            //if(!ModelState.IsValid) return RedirectToAction("Index","Login");
+            if(!isLogin()) return RedirectToAction("Index","Login");
+
+            Tarea tareaSelec = Tarea.FromAsignarTareaViewModel(tareaSelecVM);
+            repo.AsignarUsuario(tareaSelec);
+            return RedirectToAction("Index");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+            return BadRequest();
+        }
+    }
     //preguntar si los try catch van en los de abajo tambien
     private bool isAdmin()
     {

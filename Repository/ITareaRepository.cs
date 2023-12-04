@@ -10,5 +10,6 @@ public interface ITareaRepository{
     //public int ContarTareasEstado(int estado);
     public List<Tarea> GetTareasDeTablero(int? Id);
     public List<Tarea> GetTareasDeUsuario(int? Id);
+    public void AsignarUsuario(Tarea tareaModificada);
     
 }

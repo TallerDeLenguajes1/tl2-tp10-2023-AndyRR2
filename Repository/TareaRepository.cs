@@ -1,6 +1,8 @@
 using System.Data.SQLite;
 
 using Tp11.Models;
+using EspacioUsuarioRepository;
+using EspacioTableroRepository;
 
 namespace EspacioTareaRepository{
     public class TareaRepository : ITareaRepository{
@@ -227,6 +229,16 @@ namespace EspacioTareaRepository{
             return(tareas);
         }
 
+        public void AsignarUsuario(Tarea tareaModificada){
+            Console.WriteLine("Si pasa hasta aqui");
+            //hacer funcionar con base de datos
+            TableroRepository repoTab = new TableroRepository();
+            repoTab.GetById(tareaModificada.IdTablero).IdUsuarioPropietario = tareaModificada.IdUsuarioAsignado;
+            if (tareaModificada == null )
+            {
+                throw new Exception("No se asigno correctamente el usuario.");
+            }
+        }
         /*public int ContarTareasEstado(int estado){
             int cantidad = 0;
             SQLiteConnection connection = new SQLiteConnection(cadenaConexion);

@@ -32,6 +32,7 @@
                 <td>@tarea.IdUsuarioAsignado</td>
                 <td>
                     <a asp-controller="Tarea" asp-action="EditarTarea" asp-route-idTarea="@tarea.Id">Editar</a>
+                    <a asp-controller="Tarea" asp-action="AsignarTareaAUsuario" asp-route-idTarea="@tarea.Id">Asignar a Usuario</a>
                     <a asp-controller="Tarea" asp-action="EliminarTarea" asp-route-idTarea="@tarea.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">Eliminar</a>                      
                 </td>
             </tr>
