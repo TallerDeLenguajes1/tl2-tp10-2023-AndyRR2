@@ -230,13 +230,24 @@ namespace EspacioTareaRepository{
         }
 
         public void AsignarUsuario(Tarea tareaModificada){
-            Console.WriteLine("Si pasa hasta aqui");
-            //hacer funcionar con base de datos
-            TableroRepository repoTab = new TableroRepository();
-            repoTab.GetById(tareaModificada.IdTablero).IdUsuarioPropietario = tareaModificada.IdUsuarioAsignado;
-            if (tareaModificada == null )
+            SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
+
+            string queryC = "UPDATE Tarea SET id_usuario_asignado = @IDUSU WHERE id = @ID;";
+            SQLiteParameter parameterId = new SQLiteParameter("@ID",tareaModificada.Id);
+            SQLiteParameter parameterIdUsu = new SQLiteParameter("@IDUSU",tareaModificada.IdUsuarioAsignado);
+            
+            using (connectionC)
             {
-                throw new Exception("No se asigno correctamente el usuario.");
+                connectionC.Open();
+                SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
+                commandC.Parameters.Add(parameterId);
+                commandC.Parameters.Add(parameterIdUsu);
+
+                int rowsAffected = commandC.ExecuteNonQuery();
+                connectionC.Close();
+                if (rowsAffected == 0){
+                    throw new Exception("No se encontró ninguna tarea con el ID proporcionado.");
+                } 
             }
         }
         /*public int ContarTareasEstado(int estado){

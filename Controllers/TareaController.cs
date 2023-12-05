@@ -158,7 +158,6 @@ public class TareaController : Controller{
             if(!isLogin()) return RedirectToAction("Index","Login");
 
             Tarea tareaSelec = repo.GetById(idTarea);
-            
             AsignarTareaViewModel tareaSelecVM = AsignarTareaViewModel.FromTarea(tareaSelec);
             return View(tareaSelecVM);
         }
@@ -172,7 +171,7 @@ public class TareaController : Controller{
     public IActionResult AsignarTareaAUsuarioFromForm([FromForm] AsignarTareaViewModel tareaSelecVM){
         try
         {
-            //if(!ModelState.IsValid) return RedirectToAction("Index","Login");
+            if(!ModelState.IsValid) return RedirectToAction("Index","Login");
             if(!isLogin()) return RedirectToAction("Index","Login");
 
             Tarea tareaSelec = Tarea.FromAsignarTareaViewModel(tareaSelecVM);

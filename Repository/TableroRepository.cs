@@ -137,9 +137,9 @@ public class TableroRepository : ITableroRepository{
         List<Tablero> tableros = new List<Tablero>();
         SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
         
-        string queryC = "SELECT * FROM Tablero WHERE id_usuario_propietario = @IDUSU";
+        string queryC = "SELECT * FROM Tablero WHERE id_usuario_propietario = @IDUSU OR id IN (SELECT id_tablero FROM Tarea WHERE id_usuario_asignado = @IDUSU)";
         SQLiteParameter parameterIdUsu = new SQLiteParameter("@IDUSU",idUsuario);
-        
+
         using(connectionC)
         {
             connectionC.Open();
@@ -158,7 +158,7 @@ public class TableroRepository : ITableroRepository{
                     newTablero.Descripcion = Convert.ToString(readerC["descripcion"]);
                     tableros.Add(newTablero);
                 }
-            } 
+            }
             connectionC.Close();           
         }
         if (tableros == null){
