@@ -21,8 +21,9 @@ public class TableroController : Controller{
     public IActionResult Index(int? idUsuario){
         try
         {
-            List<Tablero> tableros = null;
             if(!isLogin()) return RedirectToAction("Index","Login");
+            
+            List<Tablero> tableros = null;
             
             if (isAdmin()){
                 tableros = repo.GetAll();
@@ -154,8 +155,7 @@ public class TableroController : Controller{
                 }else{
                     return NotFound();
                 }
-            }else
-            {
+            }else{
                 return NotFound();
             }
         }

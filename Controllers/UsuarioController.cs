@@ -2,13 +2,14 @@ namespace Tp11.Controllers;
 
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using System.Data.SQLite;
 
 using Tp11.Models;
 using Tp11.ViewModels;
 using EspacioUsuarioRepository;
 
 public class UsuarioController : Controller{
-    //UsuarioRepository repo = new UsuarioRepository();
+    private readonly string direccionBD = "Data Source = DataBase/kamban.db;Cache=Shared";
     private readonly IUsuarioRepository repo;
     private readonly ILogger<HomeController> _logger;
     public UsuarioController(ILogger<HomeController> logger, IUsuarioRepository UsuRepo) //constructor de Usuario que recibe un parametro tipo ILogger<HomeController> 
@@ -41,6 +42,7 @@ public class UsuarioController : Controller{
         try
         {
             if(!isLogin()) return RedirectToAction("Index","Login");
+            if(!isAdmin()) return RedirectToAction("Index","Login");
 
             UsuarioViewModel newUsuarioVM = new UsuarioViewModel();
             return View(newUsuarioVM);
@@ -57,6 +59,7 @@ public class UsuarioController : Controller{
         {
             if(!ModelState.IsValid) return RedirectToAction("Index","Login");
             if(!isLogin()) return RedirectToAction("Index","Login");
+            if(!isAdmin()) return RedirectToAction("Index","Login");
 
             Usuario newUsuario = Usuario.FromUsuarioViewModel(newUsuarioVM);//convertir de CrearUsuarioViewModel a Usuario
             repo.Create(newUsuario);
@@ -76,7 +79,20 @@ public class UsuarioController : Controller{
             if(!isLogin()) return RedirectToAction("Index","Login"); 
 
             Usuario usuarioAEditar = repo.GetById(idUsuario);
-            UsuarioViewModel editarUsuarioVM = UsuarioViewModel.FromUsuario(usuarioAEditar);//convertir de Usuario a EditarUsuarioViewModel
+            UsuarioViewModel editarUsuarioVM = null;
+
+            if (isAdmin()){
+                editarUsuarioVM = UsuarioViewModel.FromUsuario(usuarioAEditar);
+            }else if(idUsuario.HasValue){
+                int? ID = ObtenerIDDelUsuarioLogueado(direccionBD);
+                if (ID == idUsuario){
+                    editarUsuarioVM = UsuarioViewModel.FromUsuario(usuarioAEditar);
+                }else{
+                    return NotFound();
+                }
+            }else{
+                return NotFound();
+            }
             return View(editarUsuarioVM);
         }
         catch (Exception ex)
@@ -93,7 +109,7 @@ public class UsuarioController : Controller{
             if(!ModelState.IsValid) return RedirectToAction("Index","Login");
             //RedirectToRoute (new {}).....
             if(!isLogin()) return RedirectToAction("Index","Login"); 
-
+            
             Usuario usuarioAEditar = Usuario.FromUsuarioViewModel(usuarioAEditarVM);//convertir de EditarUsuarioViewModel a Usuario
             repo.Update(usuarioAEditar);
             return RedirectToAction("Index");
@@ -110,8 +126,21 @@ public class UsuarioController : Controller{
         try
         {
             if(!isLogin()) return RedirectToAction("Index","Login"); 
-
             Usuario usuarioAEliminar = repo.GetById(idUsuario);
+            
+            if (isAdmin()){
+                return View(usuarioAEliminar);
+            }else if(idUsuario.HasValue){
+                int? ID = ObtenerIDDelUsuarioLogueado(direccionBD);
+                
+                if (ID == idUsuario){
+                    return View(usuarioAEliminar);
+                }else{
+                    return NotFound();
+                }
+            }else{
+                return NotFound();
+            }
             return View(usuarioAEliminar);
         }
         catch (Exception ex)
@@ -152,6 +181,35 @@ public class UsuarioController : Controller{
         }else{
             return false;
         }
+    }
+
+    private int? ObtenerIDDelUsuarioLogueado(string? direccionBD){// se agrego para poder hacer el control cuando se seleccione editar/agregar/eliminar tableros que no son del usuario logueado y este no es Admin
+        int? ID = 0;
+        Usuario usuarioSelec = new Usuario();
+        SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
+
+        string queryC = "SELECT * FROM Usuario WHERE nombre_de_usuario = @NAME AND contrasenia = @PASS";
+        SQLiteParameter parameterName = new SQLiteParameter("@NAME", HttpContext.Session.GetString("Nombre"));
+        SQLiteParameter parameterPass = new SQLiteParameter("@PASS", HttpContext.Session.GetString("Contrasenia"));
+
+        using (connectionC)
+        {
+            connectionC.Open();
+            SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
+            commandC.Parameters.Add(parameterName);
+            commandC.Parameters.Add(parameterPass);
+            
+            SQLiteDataReader readerC = commandC.ExecuteReader();
+            using (readerC)
+            {
+                while (readerC.Read())
+                {
+                    ID = Convert.ToInt32(readerC["id"]);
+                }
+            }
+            connectionC.Close();
+        }
+        return(ID);
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
