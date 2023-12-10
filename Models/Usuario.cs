@@ -7,6 +7,7 @@ public class Usuario{
     private string? nombre;
     private string contrasenia;
     private int nivel;
+    
     public int? Id { get => id; set => id = value; }
     public string? Nombre { get => nombre; set => nombre = value; }
     public string Contrasenia { get => contrasenia; set => contrasenia = value; }

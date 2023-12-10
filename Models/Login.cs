@@ -10,6 +10,7 @@ public class Login{
     private NivelDeAcceso nivel;
     private string? nombre;
     private string contrasenia;
+    
     public string? Nombre { get => nombre; set => nombre = value; }
     public NivelDeAcceso Nivel { get => nivel; set => nivel = value; }
     public string Contrasenia { get => contrasenia; set => contrasenia = value; }

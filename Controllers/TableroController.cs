@@ -30,7 +30,7 @@ public class TableroController : Controller{
             }else{
                 return NotFound();
             }
-            List<ListarTableroViewModel> listaTablerosVM = ListarTableroViewModel.FromTablero(tableros);
+            List<TableroViewModel> listaTablerosVM = TableroViewModel.FromTablero(tableros);
             return View(listaTablerosVM);
         }
         catch (Exception ex)
@@ -46,7 +46,7 @@ public class TableroController : Controller{
         {
             if(!isLogin()) return RedirectToAction("Index","Login");
 
-            CrearTableroViewModel newTableroVM = new CrearTableroViewModel();
+            TableroViewModel newTableroVM = new TableroViewModel();
             return View(newTableroVM);
         }
         catch (Exception ex)
@@ -56,7 +56,7 @@ public class TableroController : Controller{
         }
     }
     [HttpPost]
-    public IActionResult AgregarTableroFromForm([FromForm] CrearTableroViewModel newTableroVM){
+    public IActionResult AgregarTableroFromForm([FromForm] TableroViewModel newTableroVM){
         try
         {
             if(!ModelState.IsValid) return RedirectToAction("Index","Login");
@@ -80,7 +80,7 @@ public class TableroController : Controller{
             if(!isLogin()) return RedirectToAction("Index","Login");
 
             Tablero tableroAEditar = repo.GetById(idTablero);
-            EditarTableroViewModel tableroAEditarVM = EditarTableroViewModel.FromTablero(tableroAEditar);
+            TableroViewModel tableroAEditarVM = TableroViewModel.FromTablero(tableroAEditar);
             return View(tableroAEditarVM);
         }
         catch (Exception ex)
@@ -91,7 +91,7 @@ public class TableroController : Controller{
         
     }
     [HttpPost]
-    public IActionResult EditarTableroFromForm([FromForm] EditarTableroViewModel tableroAEditarVM){
+    public IActionResult EditarTableroFromForm([FromForm] TableroViewModel tableroAEditarVM){
         try
         {
             if(!ModelState.IsValid) return RedirectToAction("Index","Login");

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 using Tp11.Models;
 
-public class ListarTableroViewModel{
+public class TableroViewModel{
     private int? id;
     [Required(ErrorMessage = "Este campo es requerido.")]
     [Display(Name = "Id")]
@@ -22,13 +22,23 @@ public class ListarTableroViewModel{
     [Display(Name = "Descripcion")] 
     public string? Descripcion { get => descripcion; set => descripcion = value; }
 
-    public static List<ListarTableroViewModel> FromTablero(List<Tablero> tableros)
+    public static TableroViewModel FromTablero(Tablero tablero)
     {
-        List<ListarTableroViewModel> ListarTableroVM = new List<ListarTableroViewModel>();
+        return new TableroViewModel
+        {
+            id = tablero.Id,
+            idUsuarioPropietario = tablero.IdUsuarioPropietario,
+            nombre = tablero.Nombre,
+            descripcion=tablero.Descripcion
+        };
+    }
+    public static List<TableroViewModel> FromTablero(List<Tablero> tableros)
+    {
+        List<TableroViewModel> ListarTableroVM = new List<TableroViewModel>();
         
             foreach (var tablero in tableros)
             {
-                ListarTableroViewModel newTVM = new ListarTableroViewModel();
+                TableroViewModel newTVM = new TableroViewModel();
                 newTVM.id = tablero.Id;
                 newTVM.idUsuarioPropietario = tablero.IdUsuarioPropietario;
                 newTVM.nombre = tablero.Nombre;

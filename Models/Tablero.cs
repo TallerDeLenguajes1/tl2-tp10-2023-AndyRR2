@@ -22,7 +22,7 @@ public class Tablero{
         nombre=Nombre;
         descripcion=Descripcion;
     }
-    public static Tablero FromCrearTableroViewModel(CrearTableroViewModel tableroVM)
+    public static Tablero FromCrearTableroViewModel(TableroViewModel tableroVM)
     {
         return new Tablero
         {
@@ -32,7 +32,7 @@ public class Tablero{
             descripcion=tableroVM.Descripcion
         };
     }
-    public static Tablero FromEditarTableroViewModel(EditarTableroViewModel tableroVM)
+    public static Tablero FromEditarTableroViewModel(TableroViewModel tableroVM)
     {
         return new Tablero
         {
@@ -42,5 +42,4 @@ public class Tablero{
             descripcion=tableroVM.Descripcion
         };
     }
-    
 }
