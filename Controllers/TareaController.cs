@@ -26,7 +26,7 @@ public class TareaController : Controller{
             if (isAdmin()){
                 tareas = repo.GetAll();
             }else if(idTablero.HasValue){
-                tareas = repo.GetTareasDeTablero(idTablero);//ver como poner el parametro adecuado segun el id del usuario logueado
+                tareas = repo.GetTareasDeTablero(idTablero);
             }else{
                 return NotFound();
             }
@@ -63,8 +63,9 @@ public class TareaController : Controller{
             if(!isLogin()) return RedirectToAction("Index","Login");
 
             Tarea newTarea = Tarea.FromTareaViewModel(newTareaVM);
+            int? ID = newTarea.IdUsuarioAsignado;
             repo.Create(newTarea);
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { idUsuario = ID });
         }
         catch (Exception ex)
         {
@@ -97,8 +98,9 @@ public class TareaController : Controller{
             if(!isLogin()) return RedirectToAction("Index","Login"); 
 
             Tarea tareaAEditar = Tarea.FromTareaViewModel(tareaAEditarVM);
+            int? ID = tareaAEditar.IdUsuarioAsignado;
             repo.Update(tareaAEditar);
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { idUsuario = ID });
         }
         catch (Exception ex)
         {
@@ -129,7 +131,7 @@ public class TareaController : Controller{
             if(!isLogin()) return RedirectToAction("Index","Login");
 
             repo.Remove(tareaAEliminar.Id);
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Usuario");
         }
         catch (Exception ex)
         {

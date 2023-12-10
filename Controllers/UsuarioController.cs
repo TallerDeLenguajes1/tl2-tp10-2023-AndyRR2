@@ -51,7 +51,6 @@ public class UsuarioController : Controller{
             return BadRequest();
         }
     }
-
     [HttpPost]
     public IActionResult AgregarUsuarioFromForm([FromForm] UsuarioViewModel newUsuarioVM){
         try
