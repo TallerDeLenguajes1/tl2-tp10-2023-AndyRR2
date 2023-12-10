@@ -30,7 +30,7 @@ public class TareaController : Controller{
             }else{
                 return NotFound();
             }
-            List<ListarTareaViewModel> listaTareasVM = ListarTareaViewModel.FromTarea(tareas);
+            List<TareaViewModel> listaTareasVM = TareaViewModel.FromTarea(tareas);
             return View(listaTareasVM);
         }
         catch (Exception ex)
@@ -46,7 +46,7 @@ public class TareaController : Controller{
         {
             if(!isLogin()) return RedirectToAction("Index","Login");
 
-            CrearTareaViewModel newTareaVM = new CrearTareaViewModel();
+            TareaViewModel newTareaVM = new TareaViewModel();
             return View(newTareaVM);
         }
         catch (Exception ex)
@@ -56,13 +56,13 @@ public class TareaController : Controller{
         }
     }
     [HttpPost]
-    public IActionResult AgregarTareaFromForm([FromForm] CrearTareaViewModel newTareaVM){
+    public IActionResult AgregarTareaFromForm([FromForm] TareaViewModel newTareaVM){
         try
         {
             if(!ModelState.IsValid) return RedirectToAction("Index","Login");
             if(!isLogin()) return RedirectToAction("Index","Login");
 
-            Tarea newTarea = Tarea.FromCrearTareaViewModel(newTareaVM);
+            Tarea newTarea = Tarea.FromTareaViewModel(newTareaVM);
             repo.Create(newTarea);
             return RedirectToAction("Index");
         }
@@ -80,7 +80,7 @@ public class TareaController : Controller{
             if(!isLogin()) return RedirectToAction("Index","Login");
 
             Tarea tareaAEditar = repo.GetById(idTarea);
-            EditarTareaViewModel tareaAEditarVM = EditarTareaViewModel.FromTarea(tareaAEditar);
+            TareaViewModel tareaAEditarVM = TareaViewModel.FromTarea(tareaAEditar);
             return View(tareaAEditarVM);
         }
         catch (Exception ex)
@@ -90,13 +90,13 @@ public class TareaController : Controller{
         }
     }
     [HttpPost]
-    public IActionResult EditarTareaFromForm([FromForm] EditarTareaViewModel tareaAEditarVM){
+    public IActionResult EditarTareaFromForm([FromForm] TareaViewModel tareaAEditarVM){
         try
         {
             if(!ModelState.IsValid) return RedirectToAction("Index","Login");
             if(!isLogin()) return RedirectToAction("Index","Login"); 
 
-            Tarea tareaAEditar = Tarea.FromEditarTareaViewModel(tareaAEditarVM);
+            Tarea tareaAEditar = Tarea.FromTareaViewModel(tareaAEditarVM);
             repo.Update(tareaAEditar);
             return RedirectToAction("Index");
         }
@@ -144,7 +144,7 @@ public class TareaController : Controller{
             if(!isLogin()) return RedirectToAction("Index","Login");
 
             Tarea tareaSelec = repo.GetById(idTarea);
-            AsignarTareaViewModel tareaSelecVM = AsignarTareaViewModel.FromTarea(tareaSelec);
+            TareaViewModel tareaSelecVM = TareaViewModel.FromTarea(tareaSelec);
             return View(tareaSelecVM);
         }
         catch (Exception ex)
@@ -154,13 +154,13 @@ public class TareaController : Controller{
         }
     }
     [HttpPost]
-    public IActionResult AsignarTareaAUsuarioFromForm([FromForm] AsignarTareaViewModel tareaSelecVM){
+    public IActionResult AsignarTareaAUsuarioFromForm([FromForm] TareaViewModel tareaSelecVM){
         try
         {
             if(!ModelState.IsValid) return RedirectToAction("Index","Login");
             if(!isLogin()) return RedirectToAction("Index","Login");
 
-            Tarea tareaSelec = Tarea.FromAsignarTareaViewModel(tareaSelecVM);
+            Tarea tareaSelec = Tarea.FromTareaViewModel(tareaSelecVM);
             repo.AsignarUsuario(tareaSelec);
             return RedirectToAction("Index");
         }

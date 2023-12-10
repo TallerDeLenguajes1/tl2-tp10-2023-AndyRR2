@@ -32,5 +32,4 @@ public class Usuario{
             nivel = usuarioVM.Nivel
         };
     }
-
 }
