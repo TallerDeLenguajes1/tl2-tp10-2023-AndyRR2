@@ -154,7 +154,7 @@ public class UsuarioController : Controller{
         try
         {
             if(!isLogin()) return RedirectToAction("Index","Login"); 
-        
+            
             repo.Remove(usuarioAEliminar.Id);
             return RedirectToAction("Index");
         }

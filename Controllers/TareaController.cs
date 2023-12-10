@@ -2,13 +2,14 @@ namespace Tp11.Controllers;
 
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using System.Data.SQLite;
 
 using Tp11.Models;
 using Tp11.ViewModels;
 using EspacioTareaRepository;
 
 public class TareaController : Controller{
-    //TareaRepository repo = new TareaRepository();
+    private readonly string direccionBD = "Data Source = DataBase/kamban.db;Cache=Shared";
     private readonly ITareaRepository repo;
     private readonly ILogger<HomeController> _logger;
     public TareaController(ILogger<HomeController> logger, ITareaRepository TarRepo)
@@ -20,13 +21,22 @@ public class TareaController : Controller{
     public IActionResult Index(int? idTablero){
         try
         {
-            List<Tarea> tareas = null;
             if(!isLogin()) return RedirectToAction("Index","Login");
+
+            List<Tarea> tareas = null;
             
             if (isAdmin()){
                 tareas = repo.GetAll();
             }else if(idTablero.HasValue){
-                tareas = repo.GetTareasDeTablero(idTablero);
+
+                int? ID = ObtenerIDDelUsuarioLogueado(direccionBD);
+                if (repo.GetById(idTablero).IdUsuarioAsignado == null){
+                    tareas = repo.GetTareasDeTablero(idTablero);
+                }else if (ID == repo.GetById(idTablero).IdUsuarioAsignado){
+                    tareas = repo.GetTareasDeTablero(idTablero);
+                }else{
+                    return NotFound();
+                }
             }else{
                 return NotFound();
             }
@@ -45,6 +55,7 @@ public class TareaController : Controller{
         try
         {
             if(!isLogin()) return RedirectToAction("Index","Login");
+            if(!isAdmin()) return RedirectToAction("Index","Login");
 
             TareaViewModel newTareaVM = new TareaViewModel();
             return View(newTareaVM);
@@ -61,11 +72,12 @@ public class TareaController : Controller{
         {
             if(!ModelState.IsValid) return RedirectToAction("Index","Login");
             if(!isLogin()) return RedirectToAction("Index","Login");
+            if(!isAdmin()) return RedirectToAction("Index","Login");
 
             Tarea newTarea = Tarea.FromTareaViewModel(newTareaVM);
-            int? ID = newTarea.IdUsuarioAsignado;
+            int? ID = newTarea.IdTablero;
             repo.Create(newTarea);
-            return RedirectToAction("Index", new { idUsuario = ID });
+            return RedirectToAction("Index", new { iTablero = ID });
         }
         catch (Exception ex)
         {
@@ -81,7 +93,21 @@ public class TareaController : Controller{
             if(!isLogin()) return RedirectToAction("Index","Login");
 
             Tarea tareaAEditar = repo.GetById(idTarea);
-            TareaViewModel tareaAEditarVM = TareaViewModel.FromTarea(tareaAEditar);
+            TareaViewModel tareaAEditarVM = null;
+
+            if (isAdmin()){
+                 tareaAEditarVM = TareaViewModel.FromTarea(tareaAEditar);
+            }else if(idTarea.HasValue){
+                int? ID = ObtenerIDDelUsuarioLogueado(direccionBD);
+                
+                if (ID == tareaAEditar.IdUsuarioAsignado){
+                    tareaAEditarVM = TareaViewModel.FromTarea(tareaAEditar);
+                }else{
+                    return NotFound();
+                }
+            }else{
+                return NotFound();
+            }
             return View(tareaAEditarVM);
         }
         catch (Exception ex)
@@ -98,9 +124,9 @@ public class TareaController : Controller{
             if(!isLogin()) return RedirectToAction("Index","Login"); 
 
             Tarea tareaAEditar = Tarea.FromTareaViewModel(tareaAEditarVM);
-            int? ID = tareaAEditar.IdUsuarioAsignado;
+            int? ID = tareaAEditar.IdTablero;
             repo.Update(tareaAEditar);
-            return RedirectToAction("Index", new { idUsuario = ID });
+            return RedirectToAction("Index", new { idTablero = ID });
         }
         catch (Exception ex)
         {
@@ -116,7 +142,21 @@ public class TareaController : Controller{
             if(!isLogin()) return RedirectToAction("Index","Login");
 
             Tarea tareaAEliminar = repo.GetById(idTarea);
-            return View(tareaAEliminar);
+            int? idUsuarioTarea = tareaAEliminar.IdUsuarioAsignado;
+            
+            if (isAdmin()){
+                return View(tareaAEliminar);
+            }else if(idTarea.HasValue){
+                int? ID = ObtenerIDDelUsuarioLogueado(direccionBD);
+                
+                if (ID == idUsuarioTarea){
+                    return View(tareaAEliminar);
+                }else{
+                    return NotFound();
+                }
+            }else{
+                return NotFound();
+            }
         }
         catch (Exception ex)
         {
@@ -188,6 +228,34 @@ public class TareaController : Controller{
         }else{
             return false;
         }
+    }
+    private int? ObtenerIDDelUsuarioLogueado(string? direccionBD){// se agrego para poder hacer el control cuando se seleccione editar/agregar/eliminar tableros que no son del usuario logueado y este no es Admin
+        int? ID = 0;
+        Usuario usuarioSelec = new Usuario();
+        SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
+
+        string queryC = "SELECT * FROM Usuario WHERE nombre_de_usuario = @NAME AND contrasenia = @PASS";
+        SQLiteParameter parameterName = new SQLiteParameter("@NAME", HttpContext.Session.GetString("Nombre"));
+        SQLiteParameter parameterPass = new SQLiteParameter("@PASS", HttpContext.Session.GetString("Contrasenia"));
+
+        using (connectionC)
+        {
+            connectionC.Open();
+            SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
+            commandC.Parameters.Add(parameterName);
+            commandC.Parameters.Add(parameterPass);
+            
+            SQLiteDataReader readerC = commandC.ExecuteReader();
+            using (readerC)
+            {
+                while (readerC.Read())
+                {
+                    ID = Convert.ToInt32(readerC["id"]);
+                }
+            }
+            connectionC.Close();
+        }
+        return(ID);
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

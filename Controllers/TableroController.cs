@@ -28,12 +28,11 @@ public class TableroController : Controller{
             if (isAdmin()){
                 tableros = repo.GetAll();
             }else if(idUsuario.HasValue){
+
                 int? ID = ObtenerIDDelUsuarioLogueado(direccionBD);
-                if (ID == idUsuario)
-                {
+                if (ID == idUsuario){
                     tableros = repo.GetTablerosDeUsuario(ID);
-                }else
-                {
+                }else{
                     return NotFound();
                 }
 
