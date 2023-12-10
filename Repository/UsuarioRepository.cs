@@ -9,9 +9,11 @@ public class UsuarioRepository : IUsuarioRepository{
     public void Create(Usuario newUsuario){
         SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
         
-        string queryC = $"INSERT INTO Usuario (id, nombre_de_usuario) VALUES (@ID,@NAME)";
+        string queryC = $"INSERT INTO Usuario (id, nombre_de_usuario, contrasenia, nivel_de_acceso) VALUES (@ID,@NAME,@PASS,@NIVEL)";
         SQLiteParameter parameterId = new SQLiteParameter("@ID",newUsuario.Id);
         SQLiteParameter parameterNombre = new SQLiteParameter("@NAME",newUsuario.Nombre);
+        SQLiteParameter parameterPass = new SQLiteParameter("@PASS",newUsuario.Contrasenia);
+        SQLiteParameter parameterNivel = new SQLiteParameter("@NIVEL",newUsuario.Nivel);
 
         using (connectionC)
         {
@@ -19,6 +21,8 @@ public class UsuarioRepository : IUsuarioRepository{
             SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
             commandC.Parameters.Add(parameterId);
             commandC.Parameters.Add(parameterNombre);
+            commandC.Parameters.Add(parameterPass);
+            commandC.Parameters.Add(parameterNivel);
 
             commandC.ExecuteNonQuery();
             connectionC.Close();

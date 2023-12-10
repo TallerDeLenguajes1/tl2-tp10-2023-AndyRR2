@@ -23,8 +23,10 @@
     </div>
     <div class="form-group">
         <label asp-for="@Model.Nivel"></label>
-        <input asp-for="@Model.Nivel" class="form-control" id="nivel" />
-        <span asp-validation-for="@Model.Nivel" class="text-danger"></span>   
+        <select asp-for="@Model.Nivel" asp-items="Html.GetEnumSelectList<NivelDeAcceso>()" class="form-control">
+            <option value="">Seleccionar Nivel</option>
+        </select>
+        <span asp-validation-for="@Model.Nivel" class="text-danger"></span> 
     </div>
     <button type="submit" class="btn btn-primary" >Enviar</button>
 </form>
