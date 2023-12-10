@@ -30,9 +30,11 @@ public class UsuarioRepository : IUsuarioRepository{
     public void Update(Usuario newUsuario){
         SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
         
-        string queryC = "UPDATE Usuario SET nombre_de_usuario = @NAME WHERE id = @ID";
+        string queryC = "UPDATE Usuario SET nombre_de_usuario = @NAME, contrasenia = @PASS, nivel_de_acceso = @NIVEL WHERE id = @ID";
         SQLiteParameter parameterId = new SQLiteParameter("@ID",newUsuario.Id);
         SQLiteParameter parameterNombre = new SQLiteParameter("@NAME",newUsuario.Nombre);
+        SQLiteParameter parameterPass = new SQLiteParameter("@PASS",newUsuario.Contrasenia);
+        SQLiteParameter parameterNivel = new SQLiteParameter("@NIVEL",newUsuario.Nivel);
 
         using (connectionC)
         {
@@ -40,6 +42,8 @@ public class UsuarioRepository : IUsuarioRepository{
             SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
             commandC.Parameters.Add(parameterId);
             commandC.Parameters.Add(parameterNombre);
+            commandC.Parameters.Add(parameterPass);
+            commandC.Parameters.Add(parameterNivel);
             
             int rowsAffected = commandC.ExecuteNonQuery();
             connectionC.Close();

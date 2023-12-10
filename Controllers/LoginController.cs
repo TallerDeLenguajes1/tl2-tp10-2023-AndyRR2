@@ -30,7 +30,7 @@ public class LoginController : Controller
             return BadRequest();
         }
     }
-    public IActionResult Login(Login login)
+    public IActionResult Login(Login login)//endpoint de control de acceso
     {
         try
         {

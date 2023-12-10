@@ -1,11 +1,11 @@
+namespace Tp11.Controllers;
+
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
 using Tp11.Models;
 using EspacioUsuarioRepository;
 using Tp11.ViewModels;
-
-namespace Tp11.Controllers;
 
 public class UsuarioController : Controller{
     //UsuarioRepository repo = new UsuarioRepository();
@@ -42,7 +42,7 @@ public class UsuarioController : Controller{
         {
             if(!isLogin()) return RedirectToAction("Index","Login");
 
-            CrearUsuarioViewModel newUsuarioVM = new CrearUsuarioViewModel();
+            UsuarioViewModel newUsuarioVM = new UsuarioViewModel();
             return View(newUsuarioVM);
         }
         catch (Exception ex)
@@ -53,13 +53,13 @@ public class UsuarioController : Controller{
     }
 
     [HttpPost]
-    public IActionResult AgregarUsuarioFromForm([FromForm] CrearUsuarioViewModel newUsuarioVM){
+    public IActionResult AgregarUsuarioFromForm([FromForm] UsuarioViewModel newUsuarioVM){
         try
         {
             if(!ModelState.IsValid) return RedirectToAction("Index","Login");
             if(!isLogin()) return RedirectToAction("Index","Login");
 
-            Usuario newUsuario = Usuario.FromCrearUsuarioViewModel(newUsuarioVM);//convertir de CrearUsuarioViewModel a Usuario
+            Usuario newUsuario = Usuario.FromUsuarioViewModel(newUsuarioVM);//convertir de CrearUsuarioViewModel a Usuario
             repo.Create(newUsuario);
             return RedirectToAction("Index");
         }
@@ -77,7 +77,7 @@ public class UsuarioController : Controller{
             if(!isLogin()) return RedirectToAction("Index","Login"); 
 
             Usuario usuarioAEditar = repo.GetById(idUsuario);
-            EditarUsuarioViewModel editarUsuarioVM = EditarUsuarioViewModel.FromUsuario(usuarioAEditar);//convertir de Usuario a EditarUsuarioViewModel
+            UsuarioViewModel editarUsuarioVM = UsuarioViewModel.FromUsuario(usuarioAEditar);//convertir de Usuario a EditarUsuarioViewModel
             return View(editarUsuarioVM);
         }
         catch (Exception ex)
@@ -88,14 +88,14 @@ public class UsuarioController : Controller{
         }
     }
     [HttpPost]
-    public IActionResult EditarUsuarioFromForm([FromForm] EditarUsuarioViewModel usuarioAEditarVM){
+    public IActionResult EditarUsuarioFromForm([FromForm] UsuarioViewModel usuarioAEditarVM){
         try
         {
             if(!ModelState.IsValid) return RedirectToAction("Index","Login");
             //RedirectToRoute (new {}).....
             if(!isLogin()) return RedirectToAction("Index","Login"); 
 
-            Usuario usuarioAEditar = Usuario.FromEditarUsuarioViewModel(usuarioAEditarVM);//convertir de EditarUsuarioViewModel a Usuario
+            Usuario usuarioAEditar = Usuario.FromUsuarioViewModel(usuarioAEditarVM);//convertir de EditarUsuarioViewModel a Usuario
             repo.Update(usuarioAEditar);
             return RedirectToAction("Index");
         }
@@ -146,7 +146,6 @@ public class UsuarioController : Controller{
             return false;
         }
     }
-
     private bool isLogin()
     {
         if (HttpContext.Session != null && HttpContext.Session.GetString("NivelDeAcceso") == "admin" || HttpContext.Session.GetString("NivelDeAcceso") == "simple"){
