@@ -1,6 +1,7 @@
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 namespace Tp11.ViewModels;
+
+using System.ComponentModel.DataAnnotations;
+
 using Tp11.Models;
 
 public class EditarTableroViewModel{

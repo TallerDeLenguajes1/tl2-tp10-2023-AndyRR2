@@ -1,25 +1,11 @@
-/*
-Para Proyecto Final únicamente.
-Implemente la funcionalidad de asignar usuarios a tareas. El funcionamiento debería
-ser el siguiente:
-c. El usuario logueado debe poder asignar un usuario a las tareas de las que es
-propietario.
-d. El usuario logueado debería poder ver en la lista de tableros, además de los
-tableros que le pertenecen, todos los tableros donde tenga tareas asignadas.
-Los permisos del usuario logueado para tableros que no le pertenecen son:
-i. Tableros: Solo lectura
-ii. Tareas no asignadas: Solo lectura.
-iii. Tareas asignadas: Lectura y mod
-*/
+namespace Tp11.Controllers;
+
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
 using Tp11.Models;
 using Tp11.ViewModels;
 using EspacioTareaRepository;
-using Microsoft.AspNetCore.Http.HttpResults;
-
-namespace Tp11.Controllers;
 
 public class TareaController : Controller{
     //TareaRepository repo = new TareaRepository();

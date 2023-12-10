@@ -1,8 +1,9 @@
-using System.ComponentModel;
+namespace Tp11.ViewModels;
+
 using System.ComponentModel.DataAnnotations;
 
-namespace Tp11.ViewModels;
 using Tp11.Models;
+
 public class ListarUsuarioViewModel{
     private int? id;
 

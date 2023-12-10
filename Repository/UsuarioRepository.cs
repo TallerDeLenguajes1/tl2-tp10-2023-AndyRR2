@@ -1,6 +1,7 @@
 namespace EspacioUsuarioRepository;
 
 using System.Data.SQLite;
+
 using Tp11.Models;
 
 public class UsuarioRepository : IUsuarioRepository{

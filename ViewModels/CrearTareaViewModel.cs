@@ -1,15 +1,7 @@
-using System.ComponentModel;
+namespace Tp11.ViewModels;
+
 using System.ComponentModel.DataAnnotations;
 
-namespace Tp11.ViewModels;
-using Tp11.Models;
-/*public enum EstadoTarea{
-  Ideas=1, 
-  ToDo=2, 
-  Doing=3, 
-  Review=4, 
-  Done=5
-}*/
 public class CrearTareaViewModel{
     private int? id;
     [Required(ErrorMessage = "Este campo es requerido.")]

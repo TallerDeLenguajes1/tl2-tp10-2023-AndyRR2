@@ -1,11 +1,11 @@
+namespace Tp11.Controllers;
+
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
 using Tp11.Models;
-using EspacioTableroRepository;
-
-namespace Tp11.Controllers;
 using Tp11.ViewModels;
+using EspacioTableroRepository;
 
 public class TableroController : Controller{
     //TableroRepository repo = new TableroRepository();

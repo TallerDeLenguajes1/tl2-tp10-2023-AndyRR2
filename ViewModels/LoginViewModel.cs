@@ -1,7 +1,8 @@
+namespace Tp11.ViewModels;
+
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Tp11.ViewModels;
 public class LoginViewModel{
     private string nombre;
     

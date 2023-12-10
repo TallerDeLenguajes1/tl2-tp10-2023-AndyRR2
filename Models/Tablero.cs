@@ -2,7 +2,6 @@ namespace Tp11.Models;
 
 using Tp11.ViewModels;
 
-
 public class Tablero{
     private int? id;
     private int? idUsuarioPropietario;

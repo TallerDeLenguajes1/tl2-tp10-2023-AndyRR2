@@ -1,7 +1,6 @@
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 namespace Tp11.ViewModels;
-using Tp11.Models;
+
+using System.ComponentModel.DataAnnotations;
 
 public class CrearTableroViewModel{
     private int? id;

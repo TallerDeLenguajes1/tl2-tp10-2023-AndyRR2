@@ -1,14 +1,12 @@
-using System.Diagnostics;
+namespace Tp11.Controllers;
+
 using Microsoft.AspNetCore.Mvc;
 using System.Data.SQLite;
 
 using Tp11.Models;
 using Tp11.ViewModels;
 
-namespace Tp11.Controllers;
-
-public class LoginController : Controller
-{
+public class LoginController : Controller{
     private readonly string direccionBD = "Data Source = DataBase/kamban.db;Cache=Shared";
     //List<Login> listaDeTiposDelogins = new List<Login>();
     private readonly ILogger<LoginController> _logger;

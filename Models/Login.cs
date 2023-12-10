@@ -1,6 +1,6 @@
-using Tp11.ViewModels;
-
 namespace Tp11.Models;
+
+using Tp11.ViewModels;
 
 public enum NivelDeAcceso{
     simple = 1,

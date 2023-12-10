@@ -4,8 +4,8 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
 using Tp11.Models;
-using EspacioUsuarioRepository;
 using Tp11.ViewModels;
+using EspacioUsuarioRepository;
 
 public class UsuarioController : Controller{
     //UsuarioRepository repo = new UsuarioRepository();

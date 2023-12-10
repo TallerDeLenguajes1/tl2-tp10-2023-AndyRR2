@@ -1,4 +1,5 @@
 namespace EspacioTableroRepository;
+
 using Tp11.Models;
 
 public interface ITableroRepository{

@@ -1,6 +1,7 @@
 namespace Tp11.ViewModels;
 
 using System.ComponentModel.DataAnnotations;
+
 using Tp11.Models;
 
 public class UsuarioViewModel{
