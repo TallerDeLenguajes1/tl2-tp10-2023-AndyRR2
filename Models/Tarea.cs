@@ -1,5 +1,7 @@
 namespace Tp11.Models;
+
 using Tp11.ViewModels;
+
 public enum EstadoTarea{
   Ideas=1, 
   ToDo=2, 
@@ -27,7 +29,6 @@ public class Tarea{
     public Tarea(){
 
     }
-
     public Tarea(int? Id, int? IdTablero, string? Nombre, string? Descripcion, string? Color, EstadoTarea Estado, int? IdUsuario){
       id=Id;
       idTablero=IdTablero;
@@ -50,7 +51,6 @@ public class Tarea{
             idUsuarioAsignado = tareaVM.IdUsuarioAsignado,
         };
     }
-
     public static Tarea FromCrearTareaViewModel(CrearTareaViewModel tareaVM)
     {
         return new Tarea
@@ -64,7 +64,6 @@ public class Tarea{
             idUsuarioAsignado = tareaVM.IdUsuarioAsignado,
         };
     }
-
     public static Tarea FromAsignarTareaViewModel(AsignarTareaViewModel tareaVM)
     {
         return new Tarea

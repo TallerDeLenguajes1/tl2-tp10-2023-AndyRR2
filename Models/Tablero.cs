@@ -1,5 +1,8 @@
 namespace Tp11.Models;
+
 using Tp11.ViewModels;
+
+
 public class Tablero{
     private int? id;
     private int? idUsuarioPropietario;
@@ -20,7 +23,6 @@ public class Tablero{
         nombre=Nombre;
         descripcion=Descripcion;
     }
-
     public static Tablero FromCrearTableroViewModel(CrearTableroViewModel tableroVM)
     {
         return new Tablero
@@ -31,7 +33,6 @@ public class Tablero{
             descripcion=tableroVM.Descripcion
         };
     }
-
     public static Tablero FromEditarTableroViewModel(EditarTableroViewModel tableroVM)
     {
         return new Tablero

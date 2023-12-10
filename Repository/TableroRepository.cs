@@ -5,36 +5,7 @@ using Tp11.Models;
 
 public class TableroRepository : ITableroRepository{
     private readonly string direccionBD = "Data Source = DataBase/kamban.db;Cache=Shared"; 
-    public List<Tablero> GetAll(){
-        List<Tablero> tableros = new List<Tablero>();
-        SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
-        string queryC = "SELECT * FROM Tablero;";
-        
-        using(connectionC){
-            connectionC.Open();
-            SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
-            
-            SQLiteDataReader readerC = commandC.ExecuteReader();
-            using (readerC)
-            {
-                while (readerC.Read())
-                {
-                    Tablero tableroPorAgregar = new Tablero();
-                    tableroPorAgregar.Id = Convert.ToInt32(readerC["id"]);
-                    tableroPorAgregar.IdUsuarioPropietario = Convert.ToInt32(readerC["id_usuario_propietario"]);
-                    tableroPorAgregar.Nombre = Convert.ToString(readerC["nombre_tablero"]);
-                    tableroPorAgregar.Descripcion = Convert.ToString(readerC["descripcion"]);
-                    tableros.Add(tableroPorAgregar);
-                }   
-            }
-            connectionC.Close();
-        }
-        if (tableros==null){
-            throw new Exception("Lista de tableros no encontrada.");
-        }
-        return(tableros);
-    }
     public void Create(Tablero newTablero){
         string queryC = $"INSERT INTO Tablero (id,id_usuario_propietario,nombre_tablero,descripcion) VALUES(@ID,@IDUSU,@NAME,@DESCRIPCION)";
         SQLiteParameter parameterId = new SQLiteParameter("@ID",newTablero.Id);
@@ -56,6 +27,31 @@ public class TableroRepository : ITableroRepository{
         }
         if (newTablero==null){
             throw new Exception("El Tablero no se creo correctamente.");
+        }
+    }
+    public void Update(Tablero newTablero){
+        SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
+        
+        string queryC = "UPDATE Tablero SET id_usuario_propietario = @IDUSU, nombre_tablero = @NAME, descripcion = @DESCRIPCION WHERE id = @ID";
+        SQLiteParameter parameterId = new SQLiteParameter("@ID",newTablero.Id);
+        SQLiteParameter parameterIdUsu = new SQLiteParameter("@IDUSU",newTablero.IdUsuarioPropietario);
+        SQLiteParameter parameterNombre = new SQLiteParameter("@NAME",newTablero.Nombre);
+        SQLiteParameter parameterDescripcion = new SQLiteParameter("@DESCRIPCION",newTablero.Descripcion);
+
+        using (connectionC)
+        {
+            connectionC.Open();
+            SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
+            commandC.Parameters.Add(parameterId);
+            commandC.Parameters.Add(parameterIdUsu);
+            commandC.Parameters.Add(parameterNombre);
+            commandC.Parameters.Add(parameterDescripcion);
+            
+            int rowAffected =  commandC.ExecuteNonQuery();
+            connectionC.Close();
+            if (rowAffected == 0){
+                throw new Exception("No se encontró ningún tablero con el ID proporcionado.");
+            }
         }
     }
     public Tablero GetById(int? Id){
@@ -89,49 +85,35 @@ public class TableroRepository : ITableroRepository{
         }
         return(tableroSelec);
     }
-    public void Remove(int? Id){
+    public List<Tablero> GetAll(){
+        List<Tablero> tableros = new List<Tablero>();
         SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
-        string queryC = "DELETE FROM Tablero WHERE id = @ID";
-        SQLiteParameter parameterId = new SQLiteParameter("@ID",Id);
-
-        using(connectionC)
-        {
-            connectionC.Open();
-            SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
-            commandC.Parameters.Add(parameterId);
-
-            int rowAffected =  commandC.ExecuteNonQuery();
-            connectionC.Close();
-            if (rowAffected == 0){
-                throw new Exception("No se encontró ningún tablero con el ID proporcionado.");
-            }
-        }
-    }
-    public void Update(Tablero newTablero){
-        SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
+        string queryC = "SELECT * FROM Tablero;";
         
-        string queryC = "UPDATE Tablero SET id_usuario_propietario = @IDUSU, nombre_tablero = @NAME, descripcion = @DESCRIPCION WHERE id = @ID";
-        SQLiteParameter parameterId = new SQLiteParameter("@ID",newTablero.Id);
-        SQLiteParameter parameterIdUsu = new SQLiteParameter("@IDUSU",newTablero.IdUsuarioPropietario);
-        SQLiteParameter parameterNombre = new SQLiteParameter("@NAME",newTablero.Nombre);
-        SQLiteParameter parameterDescripcion = new SQLiteParameter("@DESCRIPCION",newTablero.Descripcion);
-
-        using (connectionC)
-        {
+        using(connectionC){
             connectionC.Open();
             SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
-            commandC.Parameters.Add(parameterId);
-            commandC.Parameters.Add(parameterIdUsu);
-            commandC.Parameters.Add(parameterNombre);
-            commandC.Parameters.Add(parameterDescripcion);
             
-            int rowAffected =  commandC.ExecuteNonQuery();
-            connectionC.Close();
-            if (rowAffected == 0){
-                throw new Exception("No se encontró ningún tablero con el ID proporcionado.");
+            SQLiteDataReader readerC = commandC.ExecuteReader();
+            using (readerC)
+            {
+                while (readerC.Read())
+                {
+                    Tablero tableroPorAgregar = new Tablero();
+                    tableroPorAgregar.Id = Convert.ToInt32(readerC["id"]);
+                    tableroPorAgregar.IdUsuarioPropietario = Convert.ToInt32(readerC["id_usuario_propietario"]);
+                    tableroPorAgregar.Nombre = Convert.ToString(readerC["nombre_tablero"]);
+                    tableroPorAgregar.Descripcion = Convert.ToString(readerC["descripcion"]);
+                    tableros.Add(tableroPorAgregar);
+                }   
             }
+            connectionC.Close();
         }
+        if (tableros==null){
+            throw new Exception("Lista de tableros no encontrada.");
+        }
+        return(tableros);
     }
     public List<Tablero> GetTablerosDeUsuario(int? idUsuario){
         List<Tablero> tableros = new List<Tablero>();
@@ -166,4 +148,25 @@ public class TableroRepository : ITableroRepository{
         }
         return(tableros);
     }
+    public void Remove(int? Id){
+        SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
+
+        string queryC = "DELETE FROM Tablero WHERE id = @ID";
+        SQLiteParameter parameterId = new SQLiteParameter("@ID",Id);
+
+        using(connectionC)
+        {
+            connectionC.Open();
+            SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
+            commandC.Parameters.Add(parameterId);
+
+            int rowAffected =  commandC.ExecuteNonQuery();
+            connectionC.Close();
+            if (rowAffected == 0){
+                throw new Exception("No se encontró ningún tablero con el ID proporcionado.");
+            }
+        }
+    }
+    
+    
 }
