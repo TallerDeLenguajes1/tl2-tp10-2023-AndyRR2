@@ -8,7 +8,8 @@ public enum EstadoTarea{
   ToDo=2, 
   Doing=3, 
   Review=4, 
-  Done=5
+  Done=5,
+  Unnactive=6
 }
 public class TareaViewModel{
     private int? id;
@@ -39,6 +40,10 @@ public class TareaViewModel{
     [Required(ErrorMessage = "Este campo es requerido.")]
     [Display(Name = "Id Usuario Asignado")]
     public int? IdUsuarioAsignado { get => idUsuarioAsignado; set => idUsuarioAsignado = value; }
+    private int? idUsuarioPropietario;
+    [Required(ErrorMessage = "Este campo es requerido.")]
+    [Display(Name = "Id Usuario Propietario")]
+    public int? IdUsuarioPropietario { get => idUsuarioPropietario; set => idUsuarioPropietario = value; }
 
     public static TareaViewModel FromTarea(Tarea newTarea)
     {
@@ -50,6 +55,7 @@ public class TareaViewModel{
         newTVM.descripcion = newTarea.Descripcion;
         newTVM.color = newTarea.Color;
         newTVM.idUsuarioAsignado = newTarea.IdUsuarioAsignado;
+        newTVM.idUsuarioPropietario = newTarea.IdUsuarioPropietario;
         return(newTVM);
     }
     public static List<TareaViewModel> FromTarea(List<Tarea> tareas)
@@ -66,6 +72,7 @@ public class TareaViewModel{
                 newTVM.descripcion = tarea.Descripcion;
                 newTVM.color = tarea.Color;
                 newTVM.idUsuarioAsignado = tarea.IdUsuarioAsignado;
+                newTVM.idUsuarioPropietario = tarea.IdUsuarioPropietario;
                 listaTareasVM.Add(newTVM);
             }
             return(listaTareasVM);

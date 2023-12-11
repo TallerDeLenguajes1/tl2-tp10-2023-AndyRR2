@@ -16,6 +16,7 @@
             <th>IdUsuarioPropietario</th>
             <th>Nombre</th>
             <th>Descripcion</th>
+            <th>Estado</th>
             <th></th>
         </tr>
     </thead>
@@ -27,6 +28,7 @@
                 <td>@tablero.IdUsuarioPropietario</td>
                 <td>@tablero.Nombre</td>
                 <td>@tablero.Descripcion</td>
+                <td>@tablero.Estado</td>
                 <td>
                     <a asp-controller="Tarea" asp-action="Index" asp-route-idTablero="@tablero.Id">Ver Tareas del Tablero</a>
                     <a asp-controller="Tablero" asp-action="EditarTablero" asp-route-idTablero="@tablero.Id">Editar</a>

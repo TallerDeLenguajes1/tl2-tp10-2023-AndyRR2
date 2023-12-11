@@ -7,11 +7,7 @@
 <h1>@ViewData["Title"]</h1>
 <form asp-controller="Tablero" asp-action="EditarTableroFromForm" method="post">
     <input hidden asp-for="@Model.Id">
-    <div class="form-group">
-        <label asp-for="@Model.IdUsuarioPropietario"></label>
-        <input asp-for="@Model.IdUsuarioPropietario" class="form-control" id="idUsuarioP" />
-        <span asp-validation-for="@Model.IdUsuarioPropietario" class="text-danger"></span>
-    </div>
+    <input hidden asp-for="@Model.IdUsuarioPropietario">
     <div class="form-group">
         <label asp-for="@Model.Nombre"></label>
         <input asp-for="@Model.Nombre" class="form-control" id="nombre" />
@@ -21,6 +17,13 @@
         <label asp-for="@Model.Descripcion"></label>
         <input asp-for="@Model.Descripcion" class="form-control" id="descripcion" />
         <span asp-validation-for="@Model.Descripcion" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="@Model.Estado"></label>
+        <select asp-for="@Model.Estado" asp-items="Html.GetEnumSelectList<EstadoTablero>()" class="form-control">
+            <option value="">Seleccionar Estado</option>
+        </select>
+        <span asp-validation-for="@Model.Estado" class="text-danger"></span> 
     </div>
     <button type="submit" class="btn btn-primary" >Enviar</button>
 </form>

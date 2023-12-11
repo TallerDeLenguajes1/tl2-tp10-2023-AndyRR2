@@ -3,6 +3,7 @@ namespace EspacioUsuarioRepository;
 using System.Data.SQLite;
 
 using Tp11.Models;
+using EspacioTableroRepository;
 
 public class UsuarioRepository : IUsuarioRepository{
     private readonly string direccionBD = "Data Source = DataBase/kamban.db;Cache=Shared";
@@ -115,11 +116,14 @@ public class UsuarioRepository : IUsuarioRepository{
         return(usuarios);
     }
     public void Remove(int? idUsuario){
+        TableroRepository repoT = new TableroRepository();
+        repoT.Inhabilitar(idUsuario);
+
         SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
         string queryC = "DELETE FROM Usuario WHERE id = @ID";
         SQLiteParameter parameterId = new SQLiteParameter("@ID",idUsuario);
-        
+
         using(connectionC)
         {
             connectionC.Open();
@@ -127,10 +131,11 @@ public class UsuarioRepository : IUsuarioRepository{
             commandC.Parameters.Add(parameterId);
             
             int rowsAffected = commandC.ExecuteNonQuery();
-            connectionC.Close();
+            
             if (rowsAffected == 0){
                 throw new Exception("No se encontró ningún usuario con el ID proporcionado.");
             }
+            connectionC.Close();
         }
     }
 }

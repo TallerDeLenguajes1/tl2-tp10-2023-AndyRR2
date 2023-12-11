@@ -3,7 +3,10 @@ namespace Tp11.ViewModels;
 using System.ComponentModel.DataAnnotations;
 
 using Tp11.Models;
-
+public enum EstadoTablero{
+  Active=1,
+  Unnactive=2
+}
 public class TableroViewModel{
     private int? id;
     [Required(ErrorMessage = "Este campo es requerido.")]
@@ -21,6 +24,10 @@ public class TableroViewModel{
     [Required(ErrorMessage = "Este campo es requerido.")]
     [Display(Name = "Descripcion")] 
     public string? Descripcion { get => descripcion; set => descripcion = value; }
+    private EstadoTablero estado;
+    [Required(ErrorMessage = "Este campo es requerido.")]
+    [Display(Name = "Estado")]
+    public EstadoTablero Estado { get => estado; set => estado = value; }
 
     public static TableroViewModel FromTablero(Tablero tablero)
     {
@@ -29,7 +36,8 @@ public class TableroViewModel{
             id = tablero.Id,
             idUsuarioPropietario = tablero.IdUsuarioPropietario,
             nombre = tablero.Nombre,
-            descripcion=tablero.Descripcion
+            descripcion=tablero.Descripcion,
+            estado = (Tp11.ViewModels.EstadoTablero)tablero.Estado
         };
     }
     public static List<TableroViewModel> FromTablero(List<Tablero> tableros)
@@ -43,6 +51,7 @@ public class TableroViewModel{
                 newTVM.idUsuarioPropietario = tablero.IdUsuarioPropietario;
                 newTVM.nombre = tablero.Nombre;
                 newTVM.Descripcion = tablero.Descripcion;
+                newTVM.estado = (Tp11.ViewModels.EstadoTablero)tablero.Estado;
                 ListarTableroVM.Add(newTVM);
             }
             return(ListarTableroVM);

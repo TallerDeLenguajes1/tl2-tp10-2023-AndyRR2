@@ -73,7 +73,7 @@ public class TableroController : Controller{
             if(!isLogin()) return RedirectToAction("Index","Login");
             if(!isAdmin()) return RedirectToAction("Index","Login");
 
-            Tablero newTablero = Tablero.FromCrearTableroViewModel(newTableroVM);
+            Tablero newTablero = Tablero.FromTableroViewModel(newTableroVM);
             int? ID = newTablero.IdUsuarioPropietario;
             repo.Create(newTablero);
             return RedirectToAction("Index", new { idUsuario = ID });//redirecciona al index con el idDelUsuario en caso de que sea un usuario Simple
@@ -123,7 +123,7 @@ public class TableroController : Controller{
             if(!ModelState.IsValid) return RedirectToAction("Index","Login");
             if(!isLogin()) return RedirectToAction("Index","Login");
 
-            Tablero tableroAEditar = Tablero.FromEditarTableroViewModel(tableroAEditarVM);
+            Tablero tableroAEditar = Tablero.FromTableroViewModel(tableroAEditarVM);
             int? ID = tableroAEditar.IdUsuarioPropietario;
             repo.Update(tableroAEditar);
             return RedirectToAction("Index", new { idUsuario = ID });

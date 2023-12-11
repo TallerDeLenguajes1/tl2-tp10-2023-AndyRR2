@@ -39,6 +39,11 @@
         <span asp-validation-for="@Model.Color" class="text-danger"></span> 
     </div>
     <div class="form-group">
+        <label asp-for="@Model.IdUsuarioPropietario"></label>
+        <input asp-for="@Model.IdUsuarioPropietario" class="form-control" id="idUsuarioP" />
+        <span asp-validation-for="@Model.IdUsuarioPropietario" class="text-danger"></span> 
+    </div>
+    <div class="form-group">
         <label asp-for="@Model.IdUsuarioAsignado"></label>
         <input asp-for="@Model.IdUsuarioAsignado" class="form-control" id="idUsuarioA" />
         <span asp-validation-for="@Model.IdUsuarioAsignado" class="text-danger"></span> 
