@@ -54,7 +54,7 @@ public class TableroController : Controller{
         try
         {
             if(!isLogin()) return RedirectToAction("Index","Login");
-            if(!isAdmin()) return RedirectToAction("Index","Login");
+            if(!isAdmin()) return NotFound();
 
             TableroViewModel newTableroVM = new TableroViewModel();
             return View(newTableroVM);
@@ -71,7 +71,7 @@ public class TableroController : Controller{
         {
             if(!ModelState.IsValid) return RedirectToAction("Index","Login");
             if(!isLogin()) return RedirectToAction("Index","Login");
-            if(!isAdmin()) return RedirectToAction("Index","Login");
+            if(!isAdmin()) return NotFound();
 
             Tablero newTablero = Tablero.FromTableroViewModel(newTableroVM);
             int? ID = newTablero.IdUsuarioPropietario;

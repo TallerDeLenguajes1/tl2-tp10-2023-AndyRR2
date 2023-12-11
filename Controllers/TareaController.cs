@@ -55,7 +55,7 @@ public class TareaController : Controller{
         try
         {
             if(!isLogin()) return RedirectToAction("Index","Login");
-            if(!isAdmin()) return RedirectToAction("Index","Login");
+            if(!isAdmin()) return NotFound();
 
             TareaViewModel newTareaVM = new TareaViewModel();
             return View(newTareaVM);
@@ -72,7 +72,7 @@ public class TareaController : Controller{
         {
             if(!ModelState.IsValid) return RedirectToAction("Index","Login");
             if(!isLogin()) return RedirectToAction("Index","Login");
-            if(!isAdmin()) return RedirectToAction("Index","Login");
+            if(!isAdmin()) return NotFound();
 
             Tarea newTarea = Tarea.FromTareaViewModel(newTareaVM);
             int? ID = newTarea.IdTablero;
@@ -94,21 +94,28 @@ public class TareaController : Controller{
 
             Tarea tareaAEditar = repo.GetById(idTarea);
             TareaViewModel tareaAEditarVM = null;
+            int? ID = ObtenerIDDelUsuarioLogueado(direccionBD);
 
-            if (isAdmin()){
-                 tareaAEditarVM = TareaViewModel.FromTarea(tareaAEditar);
-            }else if(idTarea.HasValue){
-                int? ID = ObtenerIDDelUsuarioLogueado(direccionBD);
-                
-                if (ID == tareaAEditar.IdUsuarioAsignado){
-                    tareaAEditarVM = TareaViewModel.FromTarea(tareaAEditar);
-                }else{
+            tareaAEditarVM = TareaViewModel.FromTarea(tareaAEditar);
+            if (isAdmin())
+            {
+                return View(tareaAEditarVM);
+            }else if(idTarea.HasValue)
+            {
+                if (ID == tareaAEditar.IdUsuarioPropietario)
+                {
+                    return View(tareaAEditarVM);
+                }else if (ID == tareaAEditar.IdUsuarioAsignado)
+                {
+                    return View("EditarTareaSimple",tareaAEditarVM);
+                }else
+                {
                     return NotFound();
                 }
-            }else{
+            }else
+            {
                 return NotFound();
             }
-            return View(tareaAEditarVM);
         }
         catch (Exception ex)
         {
@@ -116,6 +123,43 @@ public class TareaController : Controller{
             return BadRequest();
         }
     }
+    /*[HttpGet]
+    public IActionResult EditarTareaSimple(int? idTarea){  
+        try
+        {
+            if(!isLogin()) return RedirectToAction("Index","Login");
+
+            Tarea tareaAEditar = repo.GetById(idTarea);
+            TareaViewModel tareaAEditarVM = null;
+            int? ID = ObtenerIDDelUsuarioLogueado(direccionBD);
+
+            tareaAEditarVM = TareaViewModel.FromTarea(tareaAEditar);
+            if (isAdmin())
+            {
+                return View(tareaAEditarVM);
+            }else if(idTarea.HasValue)
+            {
+                if (ID == tareaAEditar.IdUsuarioPropietario)
+                {
+                    return View(tareaAEditarVM);
+                }else if (ID == tareaAEditar.IdUsuarioAsignado)
+                {
+                    return View("EditarTareaSimple",tareaAEditarVM.Id);
+                }else
+                {
+                    return NotFound();
+                }
+            }else
+            {
+                return NotFound();
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+            return BadRequest();
+        }
+    }*/
     [HttpPost]
     public IActionResult EditarTareaFromForm([FromForm] TareaViewModel tareaAEditarVM){
         try
@@ -184,6 +228,7 @@ public class TareaController : Controller{
         try
         {
             if(!isLogin()) return RedirectToAction("Index","Login");
+            if(!isAdmin()) return NotFound();
 
             Tarea tareaSelec = repo.GetById(idTarea);
             TareaViewModel tareaSelecVM = TareaViewModel.FromTarea(tareaSelec);
@@ -201,6 +246,7 @@ public class TareaController : Controller{
         {
             if(!ModelState.IsValid) return RedirectToAction("Index","Login");
             if(!isLogin()) return RedirectToAction("Index","Login");
+            if(!isAdmin()) return NotFound();
 
             Tarea tareaSelec = Tarea.FromTareaViewModel(tareaSelecVM);
             repo.AsignarUsuario(tareaSelec);

@@ -64,6 +64,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFyZWFcRWRpdGFyVGFyZWEuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Taller_2/Tp10-11/tl2-tp10-2023-AndyRR2/Views/Tarea/EditarTareaSimple.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFyZWFcRWRpdGFyVGFyZWFTaW1wbGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Taller_2/Tp10-11/tl2-tp10-2023-AndyRR2/Views/Tarea/EliminarTarea.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFyZWFcRWxpbWluYXJUYXJlYS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 

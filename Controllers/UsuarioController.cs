@@ -42,7 +42,6 @@ public class UsuarioController : Controller{
         try
         {
             if(!isLogin()) return RedirectToAction("Index","Login");
-            if(!isAdmin()) return RedirectToAction("Index","Login");
 
             UsuarioViewModel newUsuarioVM = new UsuarioViewModel();
             return View(newUsuarioVM);
@@ -59,7 +58,6 @@ public class UsuarioController : Controller{
         {
             if(!ModelState.IsValid) return RedirectToAction("Index","Login");
             if(!isLogin()) return RedirectToAction("Index","Login");
-            if(!isAdmin()) return RedirectToAction("Index","Login");
 
             Usuario newUsuario = Usuario.FromUsuarioViewModel(newUsuarioVM);//convertir de CrearUsuarioViewModel a Usuario
             repo.Create(newUsuario);
