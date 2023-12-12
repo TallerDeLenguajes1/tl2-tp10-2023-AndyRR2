@@ -9,4 +9,5 @@ public interface ITableroRepository{
     public List<Tablero> GetAll();
     public List<Tablero> GetTablerosDeUsuario(int? idUsuario);
     public void Remove(int? Id);
+    public void InhabilitarDeUsuario(int? IdUsuario);// se agrego para poder inhabilitar los tableros de los usuarios eliminados
 }

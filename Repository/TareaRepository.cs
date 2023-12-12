@@ -111,7 +111,7 @@ public class TareaRepository : ITareaRepository{
         }
         return(tareaSelec);
     }
-    public List<Tarea> GetTareasDeUsuario(int? Id){
+    /*public List<Tarea> GetTareasDeUsuario(int? Id){
         List<Tarea> tareas = new List<Tarea>();
         SQLiteConnection connection = new SQLiteConnection(cadenaDeConexion);
         using(connection)
@@ -144,49 +144,51 @@ public class TareaRepository : ITareaRepository{
             connection.Close();
         }
         if (tareas == null){
-            throw new Exception("El usuario proporcionado no tiene tareas.");
+            throw new Exception("El usuario no tiene tareas.");
         }
         return(tareas);
-    }
+    }*/
     public List<Tarea> GetTareasDeUsuarioEnTablero(int? IdUsuario,int? IdTablero){
         List<Tarea> tareas = new List<Tarea>();
-        SQLiteConnection connection = new SQLiteConnection(cadenaDeConexion);
-        using(connection)
+        SQLiteConnection connectionC = new SQLiteConnection(cadenaDeConexion);
+
+        string queryC = "SELECT * FROM Tarea WHERE id_tablero = @IDTAB AND ((@IDUSU = (SELECT id_usuario_propietario FROM Tablero Where id = @IDTAB))" +
+                        "OR (EXISTS (SELECT 1 FROM Tarea Where (id_usuario_propietario = @IDUSU OR id_usuario_asignado = @IDUSU) AND id_tablero = @IDTAB)))";
+        SQLiteParameter parameterIdUsu = new SQLiteParameter("@IDUSU",IdUsuario);
+        SQLiteParameter parameterIdTab = new SQLiteParameter("@IDTAB",IdTablero);
+        using(connectionC)
         {
-            connection.Open();
-            SQLiteCommand command = connection.CreateCommand();
-            using(command)
+            connectionC.Open();
+            SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
+            commandC.Parameters.Add(parameterIdUsu);
+            commandC.Parameters.Add(parameterIdTab);
+ 
+            SQLiteDataReader readerC = commandC.ExecuteReader();
+            using (readerC)
             {
-                command.CommandText = "SELECT * FROM Tarea WHERE (id_usuario_asignado = @IDUSU OR id_usuario_propietario = @IDUSU) AND id_tablero = @IDTAB";
-                command.Parameters.Add(new SQLiteParameter("@IDUSU", IdUsuario));
-                command.Parameters.Add(new SQLiteParameter("@IDTAB", IdTablero));
-                command.ExecuteNonQuery(); 
-                var reader = command.ExecuteReader();
-                using (reader)
+                while (readerC.Read())
                 {
-                    while (reader.Read())
-                    {
-                        var tarea = new Tarea();
-                        tarea.Id = Convert.ToInt32(reader["id"]);
-                        tarea.IdTablero = Convert.ToInt32(reader["id_tablero"]);
-                        tarea.Estado = (EstadoTarea)Convert.ToInt32(reader["estado"]);
-                        tarea.Nombre = reader["nombre"].ToString();
-                        tarea.Descripcion = reader["descripcion"].ToString();
-                        tarea.Color = reader["color"].ToString();
-                        tarea.IdUsuarioAsignado = Convert.ToInt32(reader["id_usuario_asignado"]);
-                        tarea.IdUsuarioPropietario = Convert.ToInt32(reader["id_usuario_propietario"]);
-                        tareas.Add(tarea);
-                    }
+                    var tarea = new Tarea();
+                    tarea.Id = Convert.ToInt32(readerC["id"]);
+                    tarea.IdTablero = Convert.ToInt32(readerC["id_tablero"]);
+                    tarea.Estado = (EstadoTarea)Convert.ToInt32(readerC["estado"]);
+                    tarea.Nombre = readerC["nombre"].ToString();
+                    tarea.Descripcion = readerC["descripcion"].ToString();
+                    tarea.Color = readerC["color"].ToString();
+                    tarea.IdUsuarioAsignado = Convert.ToInt32(readerC["id_usuario_asignado"]);
+                    tarea.IdUsuarioPropietario = Convert.ToInt32(readerC["id_usuario_propietario"]);
+                    tareas.Add(tarea);
                 }
             }
-            connection.Close();
-        }
-        if (tareas == null){
-            throw new Exception("El usuario proporcionado no tiene tareas.");
+            //int rowsAffected = commandC.ExecuteNonQuery();
+            connectionC.Close();
+            if (tareas.Count == 0){
+            throw new Exception("No puedes ver las tareas de ese tablero.");
+            }
         }
         return(tareas);
     }
-    public List<Tarea> GetTareasDeTablero(int? Id){
+    /*public List<Tarea> GetTareasDeTablero(int? Id){
         List<Tarea> tareas = new List<Tarea>();
         SQLiteConnection connection = new SQLiteConnection(cadenaDeConexion);
         using(connection)
@@ -219,10 +221,10 @@ public class TareaRepository : ITareaRepository{
             connection.Close();
         }
         if (tareas == null){
-            throw new Exception("El tablero proporcionado no tiene tareas.");
+            throw new Exception("El tablero no tiene tareas.");
         } 
         return(tareas);
-    }
+    }*/
     public void Remove(int? idUsuario){
         SQLiteConnection connectionC = new SQLiteConnection(cadenaDeConexion);
 

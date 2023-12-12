@@ -185,8 +185,8 @@ public class TableroRepository : ITableroRepository{
         }
     }
 
-    public void Inhabilitar(int? IdUsuario){// se uso try-catch para poder lanzar la excepcion sin que se detenga el proceso ya que puede existir usuarios sin tableros
-        try{
+    public void InhabilitarDeUsuario(int? IdUsuario){
+        try{// se uso try-catch para poder lanzar la excepcion sin que se detenga el proceso ya que puede existir usuarios sin tableros
             TareaRepository repoT = new TareaRepository(cadenaDeConexion);
             repoT.InhabilitarDeUsuario(IdUsuario);
 

@@ -1,94 +1,368 @@
-dotnet new webapi
-dotnet add package System.Data.SQLite
-dotnet new mvc
+Pautas a tener en cuenta para un proyecto ASP.NET (con SQLite y variables de sesion)
 
-//---------------------------------------------------------------------------------------------------------------------------------------
-1-Hacer Models  comunes correspondientes, con sus Repository e IRepository
-//---------------------------------------------------------------------------------------------------------------------------------------
+1-Tener Base de Datos con sus tablas configuradas correctamente:
+    Ejemplo:
+    Tarea
+        ○ id (int) - PK - NOT NULL
+        ○ id_tablero (int) - FK - NOT NULL
+        ○ nombre (text)- NOT NULL
+        ○ estado (int) - NOT NULL
+        ○ descripcion (text)
+        ○ color (string)
+        ○ id_usuario_asignado (int)
 
-2-Hacer Model de ErrorViewModel.cs:
-//---------------------------------------------------------------------------------------------------------------------------------------
-public class ErrorViewModel
-{
-    public string? RequestId { get; set; }
+2-Crear proyecto: dotnet new mvc
 
-    public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
-}
-//---------------------------------------------------------------------------------------------------------------------------------------
+3- Agregar el paquete de dependencias de SQLite : 
+    -dotnet add package System.Data.SQLite
 
-6-Hacer Controllers de los Models básicos: (agregar si o si el logger y el Erro del final, los del medio dependen de la implementacion)
-//---------------------------------------------------------------------------------------------------------------------------------------
-using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
+4-Agregar paquete para las librerías de variables de sesion:
+    -dotnet add package Microsoft.AspNetCore.Session
 
-using UsuariosRepository;
+5-Program:
+    -Estructura general(cambian los repositorios y las inyecciones de dependencia):
+        using EspacioUsuarioRepository;
+        using EspacioTableroRepository;
+        using EspacioTareaRepository;
 
-public class UsuarioController : Controller{
-    private readonly ILogger<HomeController> _logger;//declaro variable tipo ILogger<HomeController>
-    private static List<Usuario> usuarios = new List<Usuario>();
-    UsuarioRepository repo = new UsuarioRepository();// instancia del repository de usuario para usar metodos
-    public UsuarioController(ILogger<HomeController> logger) //constructor de Usuario que recibe un parametro tipo ILogger<HomeController> 
-    {
-        _logger = logger;
+        var builder = WebApplication.CreateBuilder(args);
+        // Add services to the container.
+        builder.Services.AddControllersWithViews();
+        var cadenaDeConexion =
+        builder.Configuration.GetConnectionString("SqliteConexion")!.ToString();
+        builder.Services.AddSingleton<string>(cadenaDeConexion);
+
+        // Add services to the container.
+        builder.Services.AddControllersWithViews();
+        builder.Services.AddDistributedMemoryCache();//se agrega para login***********************************
+        builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();// se agrega para inyeccion de dependencia
+        builder.Services.AddScoped<ITableroRepository, TableroRepository>();// se agrega para inyeccion de dependencia
+        builder.Services.AddScoped<ITareaRepository, TareaRepository>();// se agrega para inyeccion de dependencia
+
+        builder.Services.AddSession(options =>//se agrega para login***********************************
+        {
+            options.IdleTimeout = TimeSpan.FromSeconds(500000);
+            options.Cookie.HttpOnly = true;
+            options.Cookie.IsEssential = true;
+        });
+
+        var app = builder.Build();
+
+        // Configure the HTTP request pipeline.
+        if (!app.Environment.IsDevelopment())
+        {
+            app.UseExceptionHandler("/Home/Error");
+            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            app.UseHsts();
+        }
+
+        app.UseHttpsRedirection();
+        app.UseStaticFiles();
+
+        app.UseRouting();
+        app.UseSession();//se agrega para login***********************************
+        app.UseAuthorization();
+
+        app.MapControllerRoute(
+            name: "default",
+            pattern: "{controller=Home}/{action=Index}/{id?}");
+
+        app.Run();
+
+5.1-Modificar en los archivos "appsettings.json":
+    "ConnectionStrings": {
+    "SqliteConexion": "Data Source = DataBase/kamban.db;Cache=Shared"
     }
 
-     public IActionResult Index()
-    {
-        var usuarios = repo.GetAll();
-        return View(usuarios);//retorna la lista usuarios al view de Usuario
-    }
+6-Models:
+    -Deben tener metodos convertidores de ViewModel a Model
+     Ejemplo:
+        public static Usuario FromCrearUsuarioViewModel(CrearUsuarioViewModel usuarioVM)
+        {
+            return new Usuario
+            {
+                /*asignar atributos*/
+            };
+        }
+    -Crear Model de ErrorViewModel.cs: En carpeta Models
+        public class ErrorViewModel
+        {
+            public string? RequestId { get; set; }
 
-    [HttpGet]
-    public IActionResult AgregarUsuario()
-    {
-        Usuario newUsuario = new Usuario();
-        return View(newUsuario);
-    }
+            public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+        }
 
-    [HttpPost]
-    public IActionResult AgregarUsuarioFromForm([FromForm] Usuario usuario)
-    {
-        repo.Create(usuario);
-        return RedirectToAction("Index");
-    }
-    //..
+7-ViewModels:
+    -Debe haber un ViewModel diferente con los minimos atributos necesarios para cada View que se quiera mostrar en el navegador
+    -Se le agrega:
+        using System.ComponentModel.DataAnnotations;
+    -Deben tener un convertidor de Model a ViewModel
+    -Cada atributo debe tener sus controles para HTML
+     Ejemplo:
+        private string? nombre;
+        [Required(ErrorMessage = "Este campo es requerido.")]
+        [Display(Name = "Nuevo nombre de Usuario")]
+        public string? Nombre { get => nombre; set => nombre = value; }
+8-Views:
+    -Crear un View diferente por cada ViewModel
+    -Se le agrega el Modelo que va a usar:
+        @model Tp11.ViewModels.CrearUsuarioViewModel
+        En este caso la variable Model representara el objeto CrearUsuario con sus atributos
+    -Dentro del codio HTML tener en cuenta:
+        *Al agregar un link hacia algun IAction de algun controller:
+            <a asp-controller="NombreDelController" asp-action="NombreDelAction" asp-route-NombreDelParametro=ValorQueSeEnvia>Nombre del Link</a>
+        *Al usar formularios:
+            <form asp-controller="NombreDelController" asp-action="NombreDelActionFromForm" method="post">
+                //PARA ENVIAR ATRIBUTOS OCULTOS SIN QUE SE MODIFIQUEN
+                <input hidden asp-for="@Model.Atributo0">
+                //PARA MOSTRAR EL DATO QUE YA TIENE EL ATRIBUTO Y MODIFICARLO
+                <div class="form-group">
+                    <label asp-for="@Model.Atributo1"></label>
+                    <input asp-for="@Model.Atributo1" class="form-control" id="identificadorDelAtributo" />
+                    <span asp-validation-for="@Model.Atributo1" class="text-danger"></span> //SE AGREGA ESTA LINEA PARA QUE FUNCIONEN LOS CONTROLES DEL VIEWMODEL
+                </div>
+                //PARA SELECCIONAR ENTRE UNA LISTA DE OPCIONES DE UN ENUM DE LA CLASE
+                <div class="form-group">
+                    <label asp-for="@Model.Atributo2"></label>
+                    <select asp-for="@Model.Atributo2" asp-items="Html.GetEnumSelectList<NombreDelEnum>()" class="form-control">
+                        <option value="">Seleccionar Opcion</option>
+                    </select>
+                    <span asp-validation-for="@Model.Atributo2" class="text-danger"></span> //SE AGREGA ESTA LINEA PARA QUE FUNCIONEN LOS CONTROLES DEL VIEWMODEL
+                </div>
+                <button type="submit" class="btn btn-primary" >Enviar</button>
+            </form>
+    -Se le agrega al final:
+        @section Scripts{<partial name="_ValidationScriptsPartial"/>}
 
-    //Editar Usuario
-    [HttpGet]
-    public IActionResult EditarUsuario(int idUsuario)
-    {  
-        Usuario usuario = repo.GetById(idUsuario);
-        return View(usuario);
-    }
+9-IRepositorios:
+    -Deben tener declarados todos los metodos que se implementaran en el Repositorio
+    -Se crea como: public interface IRepositorio{ /*declaracion de metodos*/ }
+    
+10-Repositorios:
+    -Deben tener todos los metodos de IRepositorio implementados
+    -Cada metodo debe tener un sistema para enviar excepciones en caso de que ocurran
+    -Se cran como: 
+        public class Repository : IRepository{ ... }
+    -Dentro de estos en su constructor agregada como inyeccion la cadenaDeConexion agregada en el Program:
+        private readonly string cadenaDeConexion;
+        public Repository(string cadenaDeConexion)
+        {
+            this.cadenaDeConexion = cadenaDeConexion;
+        }
+11-Controller
+    -Debe tener todos los endpoint que se usaran para el Model al que pertenezca
+    -En el constructor deben agregar todas las inyecciones de dependencia de logueo, repositorios o direcciones que usaremos:
+        private readonly string CadenaDeConexion;
+        private readonly IUsuarioRepository repo;
+        private readonly ILogger<HomeController> _logger;
+        public UsuarioController(ILogger<HomeController> logger, IUsuarioRepository UsuRepo, string cadenaDeConexion) //constructor de Usuario que recibe un parametro tipo ILogger<HomeController> 
+        {
+            _logger = logger;
+            repo = UsuRepo;
+            CadenaDeConexion = cadenaDeConexion;
+        }
+    -Cada IActionResult debe tener un bloque try-catch para verificar que todo funcione correctamente sino guarda una excepcion
+    -Excepto el "Index", para cada EndPoint hay un [HttpGet] IActionResult que intentara obtener o crear el objeto en 
+     cuestion (aqui se usan las conversiones de models), si lo logra con exito entonces te retorna al view de este 
+     mismo IActionResult el cual recibe ese objeto logrado, una vez enviado el formulario te redirecciona al [HttpPost] IActionResult
+     el cual recibe el objeto modificado o creado que envia el formulario (vuelve a hacer la conversion de models) y entonces este objeto
+     que ya esta listo sera el que se use como parametro en los metodos del repositorio en cuestion.
+    -Cada IAction debe tener segun le correspnonda el control que necesita:
+        if(!ModelState.IsValid) return RedirectToAction("Index","Login");
+        if(!isLogin()) return RedirectToAction("Index","Login");
+        if(!isAdmin()) return RedirectToAction("Index","Login");
+        Los cuales estaran Implementados en el mismo Controller:
+            private bool isAdmin()
+            {
+                if (HttpContext.Session != null && HttpContext.Session.GetString("NivelDeAcceso") == "admin"){
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+            private bool isLogin()
+            {
+                if (HttpContext.Session != null && HttpContext.Session.GetString("NivelDeAcceso") == "admin" || HttpContext.Session.GetString("NivelDeAcceso") == "simple"){
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+    -A Todos los controles se le agrega al final: 
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+    12-Model: Login:
+        namespace Tp11.Models;
 
-    [HttpPost]
-    public IActionResult EditarUsuarioFromForm([FromForm] Usuario usuario)
-    {  
-        repo.Update(usuario);
-        return RedirectToAction("Index");
-    }
+        using Tp11.ViewModels;
 
-    //Eliminar Usuario
-    public IActionResult DeleteUsuario(int idUsuario)
-    {
-        return View(repo.GetById(idUsuario));
-    }
+        public enum NivelDeAcceso{
+            simple = 1,
+            admin = 2
+        }
+        public class Login{
+            private NivelDeAcceso nivel;
+            private string? nombre;
+            private string contrasenia;
+            
+            public string? Nombre { get => nombre; set => nombre = value; }
+            public NivelDeAcceso Nivel { get => nivel; set => nivel = value; }
+            public string Contrasenia { get => contrasenia; set => contrasenia = value; }
 
-    [HttpPost]
-    public IActionResult EliminarFromForm(Usuario user)
-    {
-        repo.Remove(user.Id);
-        return RedirectToAction("Index");
-    }
-    //..
+            public Login(){
+                
+            }
+            public Login(LoginViewModel loginViewModel)
+            {          
+                Nombre = loginViewModel.Nombre;
+                Contrasenia = loginViewModel.Contrasenia;
+            }
+        }
+    13-ViewModel: LoginViewModel:
+        namespace Tp11.ViewModels;
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-    }
-}
-//---------------------------------------------------------------------------------------------------------------------------------------
+        using System.ComponentModel;
+        using System.ComponentModel.DataAnnotations;
 
-7-Hacer los Views de los Models básicos : (para cada método del Controller va un View individual)
-//---------------------------------------------------------------------------------------------------------------------------------------
+        public class LoginViewModel{
+            private string nombre;
+            
+            [Required(ErrorMessage = "Este campo es requerido.")]
+            [Display(Name = "Nombre de Usuario de Logueo")]
+            public string Nombre { get => nombre; set => nombre = value; }
+
+            private string contrasenia;
+
+            [Required(ErrorMessage = "Este campo es requerido.")]
+            [PasswordPropertyText]
+            [Display(Name = "Contraseña")]
+            public string Contrasenia { get => contrasenia; set => contrasenia = value; }
+        }
+    14-Controller: HomeController:
+        using System.Diagnostics;
+        using Microsoft.AspNetCore.Mvc;
+
+        using Tp11.Models;
+        namespace Tp11.Controllers;
+
+        public class HomeController : Controller
+        {
+            private readonly ILogger<HomeController> _logger;
+
+            public HomeController(ILogger<HomeController> logger)
+            {
+                _logger = logger;
+            }
+
+            public IActionResult Index()
+            {
+                return View();
+            }
+
+            public IActionResult Privacy()
+            {
+                return View();
+            }
+
+            [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+            public IActionResult Error()
+            {
+                return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            }
+        }
+    15-Controller: LoginController:
+        namespace Tp11.Controllers;
+
+        using Microsoft.AspNetCore.Mvc;
+        using System.Data.SQLite;
+
+        using Tp11.Models;
+        using Tp11.ViewModels;
+
+        public class LoginController : Controller{
+            private readonly string direccionBD = "Data Source = DataBase/kamban.db;Cache=Shared";
+            //List<Login> listaDeTiposDelogins = new List<Login>();
+            private readonly ILogger<LoginController> _logger;
+            public LoginController(ILogger<LoginController> logger)
+            {
+                _logger = logger;
+            }
+
+            public IActionResult Index()
+            {
+                try
+                {
+                    LoginViewModel login = new LoginViewModel();
+                    return View(login);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.ToString());
+                    return BadRequest();
+                }
+            }
+            public IActionResult Login(Login login)//endpoint de control de acceso
+            {
+                try
+                {
+                    bool validacion = false;
+                    Login usuarioPorLoguear = new Login();
+                    
+                    SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
+
+                    string queryC = "SELECT * FROM Usuario WHERE contrasenia = @PASS AND nombre_de_usuario = @USER";
+                    SQLiteParameter parameterUser = new SQLiteParameter("@USER", login.Nombre);
+                    SQLiteParameter parameterPass = new SQLiteParameter("@PASS", login.Contrasenia);
+
+                    using (connectionC)
+                    {
+                        connectionC.Open();
+                        SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
+                        commandC.Parameters.Add(parameterUser);
+                        commandC.Parameters.Add(parameterPass);
+
+                        SQLiteDataReader readerC = commandC.ExecuteReader();
+                        using (readerC)
+                        {
+                            while (readerC.Read())
+                            {
+                                validacion = true;
+                                usuarioPorLoguear.Contrasenia = Convert.ToString(readerC["contrasenia"]);
+                                usuarioPorLoguear.Nombre = Convert.ToString(readerC["nombre_de_usuario"]);
+                                usuarioPorLoguear.Nivel = (NivelDeAcceso)Enum.Parse(typeof(NivelDeAcceso), Convert.ToString(readerC["nivel_de_acceso"]), true); //convierte de string a enum
+                            }
+                        }
+                        connectionC.Close();
+                    }
+
+                    // si el usuario no existe devuelvo al index, sino Registro el usuario
+                    if (validacion == false){
+                        _logger.LogWarning($"Intento de acceso inválido - Usuario: {login.Nombre} Clave ingresada: {login.Contrasenia}");
+                        return RedirectToAction("Index");
+                    }else{
+                        _logger.LogInformation($"El usuario {usuarioPorLoguear.Nombre} ingresó correctamente");
+                        //Registro el usuario
+                        logearUsuario(usuarioPorLoguear);
+                        //Devuelvo el usuario al Home
+                        var rutaARedireccionar = new { controller = "Usuario", action = "Index" };//el tipo de var es un tipo anonimo
+                        return RedirectToRoute(rutaARedireccionar);
+                    } 
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.ToString());
+                    return BadRequest();
+                }
+            }
+            private void logearUsuario(Login usuarioPorLoguear)
+            {
+                HttpContext.Session.SetString("Nombre", usuarioPorLoguear.Nombre);
+                HttpContext.Session.SetString("Contrasenia", usuarioPorLoguear.Contrasenia);
+                HttpContext.Session.SetString("NivelDeAcceso", Convert.ToString(usuarioPorLoguear.Nivel));
+            }
+        }
+
+

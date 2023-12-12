@@ -87,5 +87,4 @@ public class LoginController : Controller{
         HttpContext.Session.SetString("Contrasenia", usuarioPorLoguear.Contrasenia);
         HttpContext.Session.SetString("NivelDeAcceso", Convert.ToString(usuarioPorLoguear.Nivel));
     }
-    
 }

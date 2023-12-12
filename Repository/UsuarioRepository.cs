@@ -122,7 +122,7 @@ public class UsuarioRepository : IUsuarioRepository{
     }
     public void Remove(int? idUsuario){
         TableroRepository repoT = new TableroRepository(cadenaDeConexion);
-        repoT.Inhabilitar(idUsuario);
+        repoT.InhabilitarDeUsuario(idUsuario);
 
         SQLiteConnection connectionC = new SQLiteConnection(cadenaDeConexion);
 

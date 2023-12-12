@@ -9,13 +9,14 @@ using Tp11.ViewModels;
 using EspacioUsuarioRepository;
 
 public class UsuarioController : Controller{
-    private readonly string direccionBD = "Data Source = DataBase/kamban.db;Cache=Shared";
+    private readonly string CadenaDeConexion;
     private readonly IUsuarioRepository repo;
     private readonly ILogger<HomeController> _logger;
-    public UsuarioController(ILogger<HomeController> logger, IUsuarioRepository UsuRepo) //constructor de Usuario que recibe un parametro tipo ILogger<HomeController> 
+    public UsuarioController(ILogger<HomeController> logger, IUsuarioRepository UsuRepo, string cadenaDeConexion) //constructor de Usuario que recibe un parametro tipo ILogger<HomeController> 
     {
         _logger = logger;
         repo = UsuRepo;
+        CadenaDeConexion = cadenaDeConexion;
     }
 
     public IActionResult Index(){
@@ -82,7 +83,7 @@ public class UsuarioController : Controller{
             if (isAdmin()){
                 editarUsuarioVM = EditarUsuarioViewModel.FromUsuario(usuarioAEditar);
             }else if(idUsuario.HasValue){
-                int? ID = ObtenerIDDelUsuarioLogueado(direccionBD);
+                int? ID = ObtenerIDDelUsuarioLogueado(CadenaDeConexion);
                 if (ID == idUsuario){
                     editarUsuarioVM = EditarUsuarioViewModel.FromUsuario(usuarioAEditar);
                 }else{
@@ -129,7 +130,7 @@ public class UsuarioController : Controller{
             if (isAdmin()){
                 return View(usuarioAEliminar);
             }else if(idUsuario.HasValue){
-                int? ID = ObtenerIDDelUsuarioLogueado(direccionBD);
+                int? ID = ObtenerIDDelUsuarioLogueado(CadenaDeConexion);
                 
                 if (ID == idUsuario){
                     return View(usuarioAEliminar);
@@ -181,10 +182,10 @@ public class UsuarioController : Controller{
         }
     }
 
-    private int? ObtenerIDDelUsuarioLogueado(string? direccionBD){// se agrego para poder hacer el control cuando se seleccione editar/agregar/eliminar tableros que no son del usuario logueado y este no es Admin
+    private int? ObtenerIDDelUsuarioLogueado(string? CadenaDeConexion){// se agrego para poder hacer el control cuando se seleccione editar/agregar/eliminar tableros que no son del usuario logueado y este no es Admin
         int? ID = 0;
         Usuario usuarioSelec = new Usuario();
-        SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
+        SQLiteConnection connectionC = new SQLiteConnection(CadenaDeConexion);
 
         string queryC = "SELECT * FROM Usuario WHERE nombre_de_usuario = @NAME AND contrasenia = @PASS";
         SQLiteParameter parameterName = new SQLiteParameter("@NAME", HttpContext.Session.GetString("Nombre"));
