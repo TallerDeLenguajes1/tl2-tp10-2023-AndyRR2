@@ -1,6 +1,7 @@
 namespace Tp11.Models;
 
 using Tp11.ViewModels;
+
 public enum EstadoTablero{
   Active=1,
   Unnactive=2
@@ -28,7 +29,18 @@ public class Tablero{
         descripcion=Descripcion;
         estado = Estado;
     }
-    public static Tablero FromTableroViewModel(TableroViewModel tableroVM)
+    public static Tablero FromCrearTableroViewModel(CrearTableroViewModel tableroVM)
+    {
+        return new Tablero
+        {
+            id = tableroVM.Id,
+            idUsuarioPropietario = tableroVM.IdUsuarioPropietario,
+            nombre = tableroVM.Nombre,
+            descripcion=tableroVM.Descripcion,
+            estado = (Tp11.Models.EstadoTablero)tableroVM.Estado
+        };
+    }
+    public static Tablero FromEditarTableroViewModel(EditarTableroViewModel tableroVM)
     {
         return new Tablero
         {

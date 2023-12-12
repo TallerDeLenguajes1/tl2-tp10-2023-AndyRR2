@@ -43,7 +43,7 @@ public class UsuarioController : Controller{
         {
             if(!isLogin()) return RedirectToAction("Index","Login");
 
-            UsuarioViewModel newUsuarioVM = new UsuarioViewModel();
+            CrearUsuarioViewModel newUsuarioVM = new CrearUsuarioViewModel();
             return View(newUsuarioVM);
         }
         catch (Exception ex)
@@ -53,13 +53,13 @@ public class UsuarioController : Controller{
         }
     }
     [HttpPost]
-    public IActionResult AgregarUsuarioFromForm([FromForm] UsuarioViewModel newUsuarioVM){
+    public IActionResult AgregarUsuarioFromForm([FromForm] CrearUsuarioViewModel newUsuarioVM){
         try
         {
             if(!ModelState.IsValid) return RedirectToAction("Index","Login");
             if(!isLogin()) return RedirectToAction("Index","Login");
 
-            Usuario newUsuario = Usuario.FromUsuarioViewModel(newUsuarioVM);//convertir de CrearUsuarioViewModel a Usuario
+            Usuario newUsuario = Usuario.FromCrearUsuarioViewModel(newUsuarioVM);//convertir de CrearUsuarioViewModel a Usuario
             repo.Create(newUsuario);
             return RedirectToAction("Index");
         }
@@ -77,14 +77,14 @@ public class UsuarioController : Controller{
             if(!isLogin()) return RedirectToAction("Index","Login"); 
 
             Usuario usuarioAEditar = repo.GetById(idUsuario);
-            UsuarioViewModel editarUsuarioVM = null;
+            EditarUsuarioViewModel editarUsuarioVM = null;
 
             if (isAdmin()){
-                editarUsuarioVM = UsuarioViewModel.FromUsuario(usuarioAEditar);
+                editarUsuarioVM = EditarUsuarioViewModel.FromUsuario(usuarioAEditar);
             }else if(idUsuario.HasValue){
                 int? ID = ObtenerIDDelUsuarioLogueado(direccionBD);
                 if (ID == idUsuario){
-                    editarUsuarioVM = UsuarioViewModel.FromUsuario(usuarioAEditar);
+                    editarUsuarioVM = EditarUsuarioViewModel.FromUsuario(usuarioAEditar);
                 }else{
                     return NotFound();
                 }
@@ -101,14 +101,14 @@ public class UsuarioController : Controller{
         }
     }
     [HttpPost]
-    public IActionResult EditarUsuarioFromForm([FromForm] UsuarioViewModel usuarioAEditarVM){
+    public IActionResult EditarUsuarioFromForm([FromForm] EditarUsuarioViewModel usuarioAEditarVM){
         try
         {
             if(!ModelState.IsValid) return RedirectToAction("Index","Login");
             //RedirectToRoute (new {}).....
             if(!isLogin()) return RedirectToAction("Index","Login"); 
             
-            Usuario usuarioAEditar = Usuario.FromUsuarioViewModel(usuarioAEditarVM);//convertir de EditarUsuarioViewModel a Usuario
+            Usuario usuarioAEditar = Usuario.FromEditarUsuarioViewModel(usuarioAEditarVM);//convertir de EditarUsuarioViewModel a Usuario
             repo.Update(usuarioAEditar);
             return RedirectToAction("Index");
         }

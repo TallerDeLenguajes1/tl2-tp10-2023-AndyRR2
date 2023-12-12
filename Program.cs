@@ -5,9 +5,9 @@ using EspacioTareaRepository;
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-var CadenaDeConexion =
+var cadenaDeConexion =
 builder.Configuration.GetConnectionString("SqliteConexion")!.ToString();
-builder.Services.AddSingleton<string>(CadenaDeConexion);
+builder.Services.AddSingleton<string>(cadenaDeConexion);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

@@ -3,11 +3,8 @@ namespace Tp11.ViewModels;
 using System.ComponentModel.DataAnnotations;
 
 using Tp11.Models;
-public enum EstadoTablero{
-  Active=1,
-  Unnactive=2
-}
-public class CrearTableroViewModel{
+
+public class EditarTableroViewModel{
     private int? id;
     [Required(ErrorMessage = "Este campo es requerido.")]
     [Display(Name = "Id")]
@@ -29,9 +26,9 @@ public class CrearTableroViewModel{
     [Display(Name = "Estado")]
     public EstadoTablero Estado { get => estado; set => estado = value; }
 
-    public static CrearTableroViewModel FromTablero(Tablero tablero)
+    public static EditarTableroViewModel FromTablero(Tablero tablero)
     {
-        return new CrearTableroViewModel
+        return new EditarTableroViewModel
         {
             id = tablero.Id,
             idUsuarioPropietario = tablero.IdUsuarioPropietario,

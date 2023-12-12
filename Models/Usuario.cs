@@ -22,7 +22,17 @@ public class Usuario{
         contrasenia = Contrasenia;
         nivel = Nivel;
     }
-    public static Usuario FromUsuarioViewModel(UsuarioViewModel usuarioVM)
+    public static Usuario FromCrearUsuarioViewModel(CrearUsuarioViewModel usuarioVM)
+    {
+        return new Usuario
+        {
+            nombre = usuarioVM.Nombre,
+            id = usuarioVM.Id,
+            contrasenia = usuarioVM.Contrasenia,
+            nivel = usuarioVM.Nivel
+        };
+    }
+    public static Usuario FromEditarUsuarioViewModel(EditarUsuarioViewModel usuarioVM)
     {
         return new Usuario
         {

@@ -39,7 +39,7 @@ public class TableroController : Controller{
             }else{
                 return NotFound();
             }
-            List<TableroViewModel> listaTablerosVM = TableroViewModel.FromTablero(tableros);
+            List<ListarTableroViewModel> listaTablerosVM = ListarTableroViewModel.FromTablero(tableros);
             return View(listaTablerosVM);
         }
         catch (Exception ex)
@@ -56,7 +56,7 @@ public class TableroController : Controller{
             if(!isLogin()) return RedirectToAction("Index","Login");
             if(!isAdmin()) return NotFound();
 
-            TableroViewModel newTableroVM = new TableroViewModel();
+            CrearTableroViewModel newTableroVM = new CrearTableroViewModel();
             return View(newTableroVM);
         }
         catch (Exception ex)
@@ -66,14 +66,14 @@ public class TableroController : Controller{
         }
     }
     [HttpPost]
-    public IActionResult AgregarTableroFromForm([FromForm] TableroViewModel newTableroVM){
+    public IActionResult AgregarTableroFromForm([FromForm] CrearTableroViewModel newTableroVM){
         try
         {
             if(!ModelState.IsValid) return RedirectToAction("Index","Login");
             if(!isLogin()) return RedirectToAction("Index","Login");
             if(!isAdmin()) return NotFound();
 
-            Tablero newTablero = Tablero.FromTableroViewModel(newTableroVM);
+            Tablero newTablero = Tablero.FromCrearTableroViewModel(newTableroVM);
             int? ID = newTablero.IdUsuarioPropietario;
             repo.Create(newTablero);
             return RedirectToAction("Index", new { idUsuario = ID });//redirecciona al index con el idDelUsuario en caso de que sea un usuario Simple
@@ -92,15 +92,15 @@ public class TableroController : Controller{
             if(!isLogin()) return RedirectToAction("Index","Login");
 
             Tablero tableroAEditar = repo.GetById(idTablero);
-            TableroViewModel tableroAEditarVM = null;
+            EditarTableroViewModel tableroAEditarVM = null;
             
             if (isAdmin()){
-                 tableroAEditarVM = TableroViewModel.FromTablero(tableroAEditar);
+                 tableroAEditarVM = EditarTableroViewModel.FromTablero(tableroAEditar);
             }else if(idTablero.HasValue){
                 int? ID = ObtenerIDDelUsuarioLogueado(direccionBD);
                 
                 if (ID == tableroAEditar.IdUsuarioPropietario){
-                    tableroAEditarVM = TableroViewModel.FromTablero(tableroAEditar);
+                    tableroAEditarVM = EditarTableroViewModel.FromTablero(tableroAEditar);
                 }else{
                     return NotFound();
                 }
@@ -117,13 +117,13 @@ public class TableroController : Controller{
         
     }
     [HttpPost]
-    public IActionResult EditarTableroFromForm([FromForm] TableroViewModel tableroAEditarVM){
+    public IActionResult EditarTableroFromForm([FromForm] EditarTableroViewModel tableroAEditarVM){
         try
         {
             if(!ModelState.IsValid) return RedirectToAction("Index","Login");
             if(!isLogin()) return RedirectToAction("Index","Login");
 
-            Tablero tableroAEditar = Tablero.FromTableroViewModel(tableroAEditarVM);
+            Tablero tableroAEditar = Tablero.FromEditarTableroViewModel(tableroAEditarVM);
             int? ID = tableroAEditar.IdUsuarioPropietario;
             repo.Update(tableroAEditar);
             return RedirectToAction("Index", new { idUsuario = ID });

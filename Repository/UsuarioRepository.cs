@@ -6,10 +6,15 @@ using Tp11.Models;
 using EspacioTableroRepository;
 
 public class UsuarioRepository : IUsuarioRepository{
-    private readonly string direccionBD = "Data Source = DataBase/kamban.db;Cache=Shared";
+    private readonly string cadenaDeConexion;
+    public UsuarioRepository(string cadenaDeConexion)
+    {
+        this.cadenaDeConexion = cadenaDeConexion;
+    }
+    //private readonly string direccionBD = "Data Source = DataBase/kamban.db;Cache=Shared";
 
     public void Create(Usuario newUsuario){
-        SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
+        SQLiteConnection connectionC = new SQLiteConnection(cadenaDeConexion);
         
         string queryC = $"INSERT INTO Usuario (id, nombre_de_usuario, contrasenia, nivel_de_acceso) VALUES (@ID,@NAME,@PASS,@NIVEL)";
         SQLiteParameter parameterId = new SQLiteParameter("@ID",newUsuario.Id);
@@ -34,7 +39,7 @@ public class UsuarioRepository : IUsuarioRepository{
         }
     }
     public void Update(Usuario newUsuario){
-        SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
+        SQLiteConnection connectionC = new SQLiteConnection(cadenaDeConexion);
         
         string queryC = "UPDATE Usuario SET nombre_de_usuario = @NAME, contrasenia = @PASS, nivel_de_acceso = @NIVEL WHERE id = @ID";
         SQLiteParameter parameterId = new SQLiteParameter("@ID",newUsuario.Id);
@@ -60,7 +65,7 @@ public class UsuarioRepository : IUsuarioRepository{
     }
     public Usuario GetById(int? Id){
         Usuario usuarioSelec = new Usuario();
-        SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
+        SQLiteConnection connectionC = new SQLiteConnection(cadenaDeConexion);
 
         string queryC = "SELECT * FROM Usuario WHERE id = @ID";
         SQLiteParameter parameterId = new SQLiteParameter("@ID", Id);
@@ -89,7 +94,7 @@ public class UsuarioRepository : IUsuarioRepository{
     }
     public List<Usuario> GetAll(){
         List<Usuario> usuarios = new List<Usuario>();
-        SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
+        SQLiteConnection connectionC = new SQLiteConnection(cadenaDeConexion);
 
         string queryC = "SELECT * FROM Usuario;";
         
@@ -111,15 +116,15 @@ public class UsuarioRepository : IUsuarioRepository{
             connectionC.Close();
         }
         if (usuarios==null){
-            throw new Exception("Lista de usuarios no encontrada.");
+            throw new Exception("No hay usuarios creados.");
         }
         return(usuarios);
     }
     public void Remove(int? idUsuario){
-        TableroRepository repoT = new TableroRepository();
+        TableroRepository repoT = new TableroRepository(cadenaDeConexion);
         repoT.Inhabilitar(idUsuario);
 
-        SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
+        SQLiteConnection connectionC = new SQLiteConnection(cadenaDeConexion);
 
         string queryC = "DELETE FROM Usuario WHERE id = @ID";
         SQLiteParameter parameterId = new SQLiteParameter("@ID",idUsuario);

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 using Tp11.Models;
 
-public class UsuarioViewModel{
+public class CrearUsuarioViewModel{
     private int? id;
     [Required(ErrorMessage = "Este campo es requerido.")]
     [Display(Name = "Id")]
@@ -25,9 +25,9 @@ public class UsuarioViewModel{
     [Display(Name = "Cambiar Nivel De Acceso")]
     public int Nivel { get => nivel; set => nivel = value; }
 
-    public static UsuarioViewModel FromUsuario(Usuario usuario)
+    public static CrearUsuarioViewModel FromUsuario(Usuario usuario)
     {
-        return new UsuarioViewModel
+        return new CrearUsuarioViewModel
         {
             nombre = usuario.Nombre,
             id = usuario.Id,

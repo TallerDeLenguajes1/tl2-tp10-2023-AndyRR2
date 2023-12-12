@@ -3,15 +3,8 @@ namespace Tp11.ViewModels;
 using System.ComponentModel.DataAnnotations;
 
 using Tp11.Models;
-public enum EstadoTarea{
-  Ideas=1, 
-  ToDo=2, 
-  Doing=3, 
-  Review=4, 
-  Done=5,
-  Unnactive=6
-}
-public class TareaViewModel{
+
+public class EditarTareaViewModel{
     private int? id;
     [Required(ErrorMessage = "Este campo es requerido.")]
     [Display(Name = "Id")]
@@ -45,9 +38,9 @@ public class TareaViewModel{
     [Display(Name = "Id Usuario Propietario")]
     public int? IdUsuarioPropietario { get => idUsuarioPropietario; set => idUsuarioPropietario = value; }
 
-    public static TareaViewModel FromTarea(Tarea newTarea)
+    public static EditarTareaViewModel FromTarea(Tarea newTarea)
     {
-        TareaViewModel newTVM = new TareaViewModel();
+        EditarTareaViewModel newTVM = new EditarTareaViewModel();
         newTVM.id = newTarea.Id;
         newTVM.idTablero = newTarea.IdTablero;
         newTVM.nombre = newTarea.Nombre;
@@ -57,24 +50,5 @@ public class TareaViewModel{
         newTVM.idUsuarioAsignado = newTarea.IdUsuarioAsignado;
         newTVM.idUsuarioPropietario = newTarea.IdUsuarioPropietario;
         return(newTVM);
-    }
-    public static List<TareaViewModel> FromTarea(List<Tarea> tareas)
-    {
-        List<TareaViewModel> listaTareasVM = new List<TareaViewModel>();
-        
-            foreach (var tarea in tareas)
-            {
-                TareaViewModel newTVM = new TareaViewModel();
-                newTVM.id = tarea.Id;
-                newTVM.idTablero = tarea.IdTablero;
-                newTVM.nombre = tarea.Nombre;
-                newTVM.estado = (Tp11.ViewModels.EstadoTarea)tarea.Estado;
-                newTVM.descripcion = tarea.Descripcion;
-                newTVM.color = tarea.Color;
-                newTVM.idUsuarioAsignado = tarea.IdUsuarioAsignado;
-                newTVM.idUsuarioPropietario = tarea.IdUsuarioPropietario;
-                listaTareasVM.Add(newTVM);
-            }
-            return(listaTareasVM);
     }
 }

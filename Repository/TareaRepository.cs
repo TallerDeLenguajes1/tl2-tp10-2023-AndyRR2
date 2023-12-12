@@ -5,10 +5,15 @@ using System.Data.SQLite;
 using Tp11.Models;
 
 public class TareaRepository : ITareaRepository{
-    private readonly string direccionBD = "Data Source = DataBase/kamban.db;Cache=Shared";
+    private readonly string cadenaDeConexion;
+    public TareaRepository(string cadenaDeConexion)
+    {
+        this.cadenaDeConexion = cadenaDeConexion;
+    }
+    //private readonly string direccionBD = "Data Source = DataBase/kamban.db;Cache=Shared";
 
     public void Create(Tarea newTarea){
-        SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
+        SQLiteConnection connectionC = new SQLiteConnection(cadenaDeConexion);
 
         string queryC = $"INSERT INTO Tarea (id,id_tablero,nombre,estado,descripcion,color,id_usuario_asignado,id_usuario_propietario) VALUES (@ID,@IDTAB,@NAME,@ESTADO,@DESCRIPCION,@COLOR,@IDUSUA,@IDUSUP)";
         SQLiteParameter parameterId = new SQLiteParameter("@ID",newTarea.Id);
@@ -41,7 +46,7 @@ public class TareaRepository : ITareaRepository{
         }
     }
     public void Update(Tarea tareaAEditar){
-        SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
+        SQLiteConnection connectionC = new SQLiteConnection(cadenaDeConexion);
 
         string queryC = "UPDATE Tarea SET nombre = @NAME, id_usuario_asignado = @IDUSUA, descripcion = @DESCRIPCION, id_tablero = @IDTAB, estado = @ESTADO, color = @COLOR WHERE id = @ID;";
         SQLiteParameter parameterId = new SQLiteParameter("@ID",tareaAEditar.Id);
@@ -73,7 +78,7 @@ public class TareaRepository : ITareaRepository{
         }
     }
     public Tarea GetById(int? idUsuario){
-        SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
+        SQLiteConnection connectionC = new SQLiteConnection(cadenaDeConexion);
         Tarea tareaSelec = new Tarea();
         string queryC = "SELECT * FROM Tarea WHERE id = @ID";
         SQLiteParameter parameterId = new SQLiteParameter("@ID", idUsuario);
@@ -108,7 +113,7 @@ public class TareaRepository : ITareaRepository{
     }
     public List<Tarea> GetTareasDeUsuario(int? Id){
         List<Tarea> tareas = new List<Tarea>();
-        SQLiteConnection connection = new SQLiteConnection(direccionBD);
+        SQLiteConnection connection = new SQLiteConnection(cadenaDeConexion);
         using(connection)
         {
             connection.Open();
@@ -143,9 +148,47 @@ public class TareaRepository : ITareaRepository{
         }
         return(tareas);
     }
+    public List<Tarea> GetTareasDeUsuarioEnTablero(int? IdUsuario,int? IdTablero){
+        List<Tarea> tareas = new List<Tarea>();
+        SQLiteConnection connection = new SQLiteConnection(cadenaDeConexion);
+        using(connection)
+        {
+            connection.Open();
+            SQLiteCommand command = connection.CreateCommand();
+            using(command)
+            {
+                command.CommandText = "SELECT * FROM Tarea WHERE (id_usuario_asignado = @IDUSU OR id_usuario_propietario = @IDUSU) AND id_tablero = @IDTAB";
+                command.Parameters.Add(new SQLiteParameter("@IDUSU", IdUsuario));
+                command.Parameters.Add(new SQLiteParameter("@IDTAB", IdTablero));
+                command.ExecuteNonQuery(); 
+                var reader = command.ExecuteReader();
+                using (reader)
+                {
+                    while (reader.Read())
+                    {
+                        var tarea = new Tarea();
+                        tarea.Id = Convert.ToInt32(reader["id"]);
+                        tarea.IdTablero = Convert.ToInt32(reader["id_tablero"]);
+                        tarea.Estado = (EstadoTarea)Convert.ToInt32(reader["estado"]);
+                        tarea.Nombre = reader["nombre"].ToString();
+                        tarea.Descripcion = reader["descripcion"].ToString();
+                        tarea.Color = reader["color"].ToString();
+                        tarea.IdUsuarioAsignado = Convert.ToInt32(reader["id_usuario_asignado"]);
+                        tarea.IdUsuarioPropietario = Convert.ToInt32(reader["id_usuario_propietario"]);
+                        tareas.Add(tarea);
+                    }
+                }
+            }
+            connection.Close();
+        }
+        if (tareas == null){
+            throw new Exception("El usuario proporcionado no tiene tareas.");
+        }
+        return(tareas);
+    }
     public List<Tarea> GetTareasDeTablero(int? Id){
         List<Tarea> tareas = new List<Tarea>();
-        SQLiteConnection connection = new SQLiteConnection(direccionBD);
+        SQLiteConnection connection = new SQLiteConnection(cadenaDeConexion);
         using(connection)
         {
             connection.Open();
@@ -181,7 +224,7 @@ public class TareaRepository : ITareaRepository{
         return(tareas);
     }
     public void Remove(int? idUsuario){
-        SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
+        SQLiteConnection connectionC = new SQLiteConnection(cadenaDeConexion);
 
         string queryC = "DELETE FROM Tarea WHERE id = @ID";
         SQLiteParameter parameterId = new SQLiteParameter("@ID", idUsuario);
@@ -200,7 +243,7 @@ public class TareaRepository : ITareaRepository{
         }
     }
     public void AsignarUsuario(Tarea tareaModificada){//***********************************arreglar
-        SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
+        SQLiteConnection connectionC = new SQLiteConnection(cadenaDeConexion);
 
         string queryC = "UPDATE Tarea SET id_usuario_asignado = @IDUSUA WHERE id = @ID;";
         SQLiteParameter parameterId = new SQLiteParameter("@ID",tareaModificada.Id);
@@ -222,7 +265,7 @@ public class TareaRepository : ITareaRepository{
     }
     public List<Tarea> GetAll(){
         List<Tarea> tareas = new List<Tarea>();
-        SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
+        SQLiteConnection connectionC = new SQLiteConnection(cadenaDeConexion);
 
         string queryC = @"SELECT * FROM Tarea;";
 
@@ -257,45 +300,57 @@ public class TareaRepository : ITareaRepository{
     }
 
     public void InhabilitarDeUsuario(int? IdUsuario){
-        SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
-        
-        string queryC = "UPDATE Tarea SET estado = @ESTADO WHERE id_usuario_propietario = @ID";
-        SQLiteParameter parameterId = new SQLiteParameter("@ID",IdUsuario);
-        SQLiteParameter parameterEstado = new SQLiteParameter("@ESTADO",6);
+        try{
+            SQLiteConnection connectionC = new SQLiteConnection(cadenaDeConexion);
+            
+            string queryC = "UPDATE Tarea SET estado = @ESTADO WHERE id_usuario_propietario = @ID";
+            SQLiteParameter parameterId = new SQLiteParameter("@ID",IdUsuario);
+            SQLiteParameter parameterEstado = new SQLiteParameter("@ESTADO",6);
 
-        using (connectionC)
-        {
-            connectionC.Open();
-            SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
-            commandC.Parameters.Add(parameterId);
-            commandC.Parameters.Add(parameterEstado);
+            using (connectionC)
+            {
+                connectionC.Open();
+                SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
+                commandC.Parameters.Add(parameterId);
+                commandC.Parameters.Add(parameterEstado);
 
-            int rowAffected =  commandC.ExecuteNonQuery();
-            connectionC.Close();
-            if (rowAffected == 0){
-                throw new Exception("No se encontró ningúna tarea de ese usuario.");
+                int rowAffected =  commandC.ExecuteNonQuery();
+                connectionC.Close();
+                if (rowAffected == 0){
+                    throw new Exception("No hay tareas para inhabilitar.");
+                }
             }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Excepción: {ex.Message}");
         }
     }
     public void InhabilitarDeTablero(int? IdTablero){
-        SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
-        
-        string queryC = "UPDATE Tarea SET estado = @ESTADO WHERE id_tablero = @ID";
-        SQLiteParameter parameterId = new SQLiteParameter("@ID",IdTablero);
-        SQLiteParameter parameterEstado = new SQLiteParameter("@ESTADO",6);
+        try{
+            SQLiteConnection connectionC = new SQLiteConnection(cadenaDeConexion);
+            
+            string queryC = "UPDATE Tarea SET estado = @ESTADO WHERE id_tablero = @ID";
+            SQLiteParameter parameterId = new SQLiteParameter("@ID",IdTablero);
+            SQLiteParameter parameterEstado = new SQLiteParameter("@ESTADO",6);
 
-        using (connectionC)
-        {
-            connectionC.Open();
-            SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
-            commandC.Parameters.Add(parameterId);
-            commandC.Parameters.Add(parameterEstado);
+            using (connectionC)
+            {
+                connectionC.Open();
+                SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
+                commandC.Parameters.Add(parameterId);
+                commandC.Parameters.Add(parameterEstado);
 
-            int rowAffected =  commandC.ExecuteNonQuery();
-            connectionC.Close();
-            if (rowAffected == 0){
-                throw new Exception("No se encontró ningúna tarea de ese usuario.");
+                int rowAffected =  commandC.ExecuteNonQuery();
+                connectionC.Close();
+                if (rowAffected == 0){
+                    throw new Exception("No hay tareas para inhabilitar.");
+                }
             }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Excepción: {ex.Message}");
         }
     }
     /*public int ContarTareasEstado(int estado){
