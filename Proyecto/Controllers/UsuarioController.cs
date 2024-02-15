@@ -182,6 +182,7 @@ public class UsuarioController : Controller{
         }
     }
 
+    //*********Revisar despues
     private int? ObtenerIDDelUsuarioLogueado(string? CadenaDeConexion){// se agrego para poder hacer el control cuando se seleccione editar/agregar/eliminar tableros que no son del usuario logueado y este no es Admin
         int? ID = 0;
         Usuario usuarioSelec = new Usuario();

@@ -98,7 +98,8 @@ public class UsuarioRepository : IUsuarioRepository{
 
         string queryC = "SELECT * FROM Usuario;";
         
-        using(connectionC){
+        using(connectionC)
+        {
             connectionC.Open();
             SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
             
@@ -121,11 +122,12 @@ public class UsuarioRepository : IUsuarioRepository{
         return(usuarios);
     }
     public void Remove(int? idUsuario){
+        //------------------------------------------------------------------------
         TableroRepository repoT = new TableroRepository(cadenaDeConexion);
         repoT.InhabilitarDeUsuario(idUsuario);
 
         SQLiteConnection connectionC = new SQLiteConnection(cadenaDeConexion);
-
+        //-------------------------------------------------------------------------
         string queryC = "DELETE FROM Usuario WHERE id = @ID";
         SQLiteParameter parameterId = new SQLiteParameter("@ID",idUsuario);
 

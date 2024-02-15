@@ -163,7 +163,6 @@ public class TableroController : Controller{
             _logger.LogError(ex.ToString());
             return BadRequest();
         }
-        
     }
     [HttpPost]
     public IActionResult EliminarFromForm([FromForm] Tablero tableroAEliminar){
