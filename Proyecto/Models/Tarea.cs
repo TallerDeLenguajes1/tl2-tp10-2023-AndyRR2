@@ -1,87 +1,78 @@
-namespace Tp11.Models;
+using Proyecto.ViewModels;
 
-using Tp11.ViewModels;
-
-public enum EstadoTarea{
-  Ideas=1, 
-  ToDo=2, 
-  Doing=3, 
-  Review=4, 
-  Done=5,
-  Unnactive=6
-}
-public class Tarea{
-    private int? id;
-    private int? idTablero;
-    private string? nombre;
-    private EstadoTarea estado;
-    private string? descripcion;
-    private string? color;
-    private int? idUsuarioAsignado;
-    private int? idUsuarioPropietario;
-   
-    public int? Id { get => id; set => id = value; }
-    public int? IdTablero { get => idTablero; set => idTablero = value; }
-    public string? Nombre { get => nombre; set => nombre = value; }
-    public string? Descripcion { get => descripcion; set => descripcion = value; }
-    public string? Color { get => color; set => color = value; }
-    public EstadoTarea Estado { get => estado; set => estado = value; }
-    public int? IdUsuarioAsignado { get => idUsuarioAsignado; set => idUsuarioAsignado = value; }
-    public int? IdUsuarioPropietario { get => idUsuarioPropietario; set => idUsuarioPropietario = value; }
-
-    public Tarea(){
-
+namespace Proyecto.Models{
+    public enum EstadoTarea{
+        ideas=1, 
+        toDo=2, 
+        doing=3, 
+        review=4, 
+        done=5,
+        unnactive=6
     }
-    public Tarea(int? Id, int? IdTablero, string? Nombre, string? Descripcion, string? Color, EstadoTarea Estado, int? IdUsuarioA, int? IdUsuarioP){
-      id=Id;
-      idTablero=IdTablero;
-      nombre=Nombre;
-      descripcion=Descripcion;
-      color=Color;
-      estado=Estado;
-      idUsuarioAsignado=IdUsuarioA;
-      idUsuarioPropietario = IdUsuarioP;
+    public enum Color{
+        azul=1,
+        rojo=2,
+        amarillo=3,
+        verde=4,
+        rosa=5,
+        morado=6
     }
-    public static Tarea FromCrearTareaViewModel(CrearTareaViewModel tareaVM)
-    {
-        return new Tarea
+    public class Tarea{
+        public int? Id{get;set;}
+        public int? IdTablero{get;set;}
+        public string? Nombre{get;set;}
+        public EstadoTarea EstadoTarea{get;set;}
+        public string? Descripcion{get;set;}
+        public Color Color{get;set;}
+        public int? IdUsuarioAsignado{get;set;}
+        public int? IdUsuarioPropietario{get;set;}
+
+        public Tarea(){}
+        public Tarea(int? id, int? idTablero, string? nombre, EstadoTarea estado, string? descripcion, Color color, int? idUsuarioAsig, int? idUsuarioProp){
+            Id=id;
+            IdTablero=idTablero;
+            Nombre=nombre;
+            EstadoTarea=estado;
+            Descripcion=descripcion;
+            Color=color;
+            IdUsuarioAsignado=idUsuarioAsig;
+            IdUsuarioPropietario=idUsuarioProp;
+        }
+
+        public static Tarea FromCrearTareaViewModel(CrearTareaViewModel tareaVM)
         {
-            id = tareaVM.Id,
-            idTablero = tareaVM.IdTablero,
-            nombre = tareaVM.Nombre,
-            descripcion = tareaVM.Descripcion,
-            color = tareaVM.Color,
-            estado = (Tp11.Models.EstadoTarea)tareaVM.Estado,
-            idUsuarioAsignado = tareaVM.IdUsuarioAsignado,
-            idUsuarioPropietario = tareaVM.IdUsuarioPropietario
-        };
-    }
-    public static Tarea FromEditarTareaViewModel(EditarTareaViewModel tareaVM)
-    {
-        return new Tarea
+            return new Tarea
+            {
+                IdTablero = tareaVM.IdTablero,
+                Nombre = tareaVM.Nombre,
+                Descripcion = tareaVM.Descripcion,
+                Color = (Proyecto.Models.Color)tareaVM.Color,
+                EstadoTarea = (Proyecto.Models.EstadoTarea)tareaVM.EstadoTarea,
+                IdUsuarioAsignado = tareaVM.IdUsuarioAsignado,
+                IdUsuarioPropietario = tareaVM.IdUsuarioPropietario
+            };
+        }
+
+        public static Tarea FromEditarTareaViewModel(EditarTareaViewModel tareaVM)
         {
-            id = tareaVM.Id,
-            idTablero = tareaVM.IdTablero,
-            nombre = tareaVM.Nombre,
-            descripcion = tareaVM.Descripcion,
-            color = tareaVM.Color,
-            estado = (Tp11.Models.EstadoTarea)tareaVM.Estado,
-            idUsuarioAsignado = tareaVM.IdUsuarioAsignado,
-            idUsuarioPropietario = tareaVM.IdUsuarioPropietario
-        };
-    }
-    public static Tarea FromAsignarTareaViewModel(AsignarTareaViewModel tareaVM)
-    {
-        return new Tarea
+            return new Tarea
+            {
+                Id = tareaVM.Id,
+                IdTablero = tareaVM.IdTablero,
+                Nombre = tareaVM.Nombre,
+                Descripcion = tareaVM.Descripcion,
+                Color = (Proyecto.Models.Color)tareaVM.Color,
+                EstadoTarea = (Proyecto.Models.EstadoTarea)tareaVM.EstadoTarea
+            };
+        }
+        public static Tarea FromAsignarTareaViewModel(AsignarTareaViewModel tareaVM)
         {
-            id = tareaVM.Id,
-            idTablero = tareaVM.IdTablero,
-            nombre = tareaVM.Nombre,
-            descripcion = tareaVM.Descripcion,
-            color = tareaVM.Color,
-            estado = (Tp11.Models.EstadoTarea)tareaVM.Estado,
-            idUsuarioAsignado = tareaVM.IdUsuarioAsignado,
-            idUsuarioPropietario = tareaVM.IdUsuarioPropietario
-        };
+            return new Tarea
+            {
+                Id = tareaVM.Id,
+                IdUsuarioAsignado = tareaVM.IdUsuarioAsignado
+            };
+        }
+        
     }
 }

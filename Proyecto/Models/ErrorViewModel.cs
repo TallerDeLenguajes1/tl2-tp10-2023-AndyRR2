@@ -1,4 +1,4 @@
-namespace Tp11.Models;
+namespace Proyecto.Models;
 
 public class ErrorViewModel
 {

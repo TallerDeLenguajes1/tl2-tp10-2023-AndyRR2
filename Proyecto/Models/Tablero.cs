@@ -1,54 +1,46 @@
-namespace Tp11.Models;
+using Proyecto.ViewModels;
 
-using Tp11.ViewModels;
-
-public enum EstadoTablero{
-  Active=1,
-  Unnactive=2
-}
-public class Tablero{
-    private int? id;
-    private int? idUsuarioPropietario;
-    private string? nombre;
-    private string? descripcion;  
-    private EstadoTablero estado;
-
-    public int? Id { get => id; set => id = value; }
-    public int? IdUsuarioPropietario { get => idUsuarioPropietario; set => idUsuarioPropietario = value; }
-    public string? Nombre { get => nombre; set => nombre = value; }
-    public string? Descripcion { get => descripcion; set => descripcion = value; }
-    public EstadoTablero Estado { get => estado; set => estado = value; }
-
-    public Tablero(){
-        
+namespace Proyecto.Models{
+    public enum EstadoTablero{
+        active=1,
+        unnactive=2
     }
-    public Tablero(int? Id, int? IdUsuarioPropietario, string? Nombre, string? Descripcion, EstadoTablero Estado){
-        id=Id;
-        idUsuarioPropietario = IdUsuarioPropietario;
-        nombre=Nombre;
-        descripcion=Descripcion;
-        estado = Estado;
-    }
-    public static Tablero FromCrearTableroViewModel(CrearTableroViewModel tableroVM)
-    {
-        return new Tablero
+    public class Tablero{
+        public int? Id{get;set;}
+        public int? IdUsuarioPropietario{get;set;}
+        public string? Nombre{get;set;}
+        public string? Descripcion{get;set;}
+        public EstadoTablero EstadoTablero{get;set;}
+
+        public Tablero(){}
+        public Tablero(int? id, int? idUsu, string? nombre, string? descripcion, EstadoTablero estado){
+            Id=id;
+            IdUsuarioPropietario=idUsu;
+            Nombre=nombre;
+            Descripcion=descripcion;
+            EstadoTablero=estado;
+        }
+        public static Tablero FromCrearTableroViewModel(CrearTableroViewModel tableroVM)
         {
-            id = tableroVM.Id,
-            idUsuarioPropietario = tableroVM.IdUsuarioPropietario,
-            nombre = tableroVM.Nombre,
-            descripcion=tableroVM.Descripcion,
-            estado = (Tp11.Models.EstadoTablero)tableroVM.Estado
-        };
-    }
-    public static Tablero FromEditarTableroViewModel(EditarTableroViewModel tableroVM)
-    {
-        return new Tablero
+            return new Tablero
+            {
+                IdUsuarioPropietario = tableroVM.IdUsuarioPropietario,
+                Nombre = tableroVM.Nombre,
+                Descripcion=tableroVM.Descripcion,
+                EstadoTablero = (Proyecto.Models.EstadoTablero)tableroVM.EstadoTablero
+            };
+        }
+        public static Tablero FromEditarTableroViewModel(EditarTableroViewModel tableroVM)
         {
-            id = tableroVM.Id,
-            idUsuarioPropietario = tableroVM.IdUsuarioPropietario,
-            nombre = tableroVM.Nombre,
-            descripcion=tableroVM.Descripcion,
-            estado = (Tp11.Models.EstadoTablero)tableroVM.Estado
-        };
+            return new Tablero
+            {
+                Id = tableroVM.Id,
+                IdUsuarioPropietario = tableroVM.IdUsuarioPropietario,
+                Nombre = tableroVM.Nombre,
+                Descripcion=tableroVM.Descripcion,
+                EstadoTablero = (Proyecto.Models.EstadoTablero)tableroVM.EstadoTablero
+            };
+        }
+
     }
 }

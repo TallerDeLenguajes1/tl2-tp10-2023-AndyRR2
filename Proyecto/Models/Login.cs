@@ -1,26 +1,27 @@
-namespace Tp11.Models;
+using Proyecto.ViewModels;
 
-using Tp11.ViewModels;
-
-public enum NivelDeAcceso{
-    simple = 1,
-    admin = 2
-}
-public class Login{
-    private NivelDeAcceso nivel;
-    private string? nombre;
-    private string contrasenia;
-    
-    public string? Nombre { get => nombre; set => nombre = value; }
-    public NivelDeAcceso Nivel { get => nivel; set => nivel = value; }
-    public string Contrasenia { get => contrasenia; set => contrasenia = value; }
-
-    public Login(){
-        
+namespace Proyecto.Models{
+    public enum NivelDeAcceso{
+        admin=1,
+        simple=2
     }
-    public Login(LoginViewModel loginViewModel)
-    {          
-        Nombre = loginViewModel.Nombre;
-        Contrasenia = loginViewModel.Contrasenia;
+    public class Login{
+        public string? Nombre{get;set;}
+        public string? Contrasenia{get;set;}
+        public NivelDeAcceso NivelDeAcceso{get;set;}
+        public Login(){}
+        public Login(string? nombre, string? contrasenia, NivelDeAcceso nivel){
+            Nombre=nombre;
+            Contrasenia=contrasenia;
+            NivelDeAcceso=nivel;
+        }
+
+        public static Login FromLoginViewModel(LoginViewModel loginVM){
+            return new Login
+            {
+                Nombre=loginVM.Nombre,
+                Contrasenia=loginVM.Contrasenia
+            };
+        }
     }
 }

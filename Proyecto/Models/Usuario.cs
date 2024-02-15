@@ -1,45 +1,36 @@
-namespace Tp11.Models;
+using Proyecto.ViewModels;
 
-using Tp11.ViewModels;
+namespace Proyecto.Models{
+    public class Usuario{
+        public int? Id{get;set;}
+        public string? Nombre{get;set;}
+        public string? Contrasenia{get;set;}
+        public NivelDeAcceso NivelDeAcceso{get;set;}
+        public Usuario(){}
+        public Usuario(int? id, string? nombre, string? contrasenia, NivelDeAcceso nivel){
+            Id=id;
+            Nombre=nombre;
+            Contrasenia=contrasenia;
+            NivelDeAcceso=nivel;
+        }
+        public static Usuario FromCrearUsuario(CrearUsuarioViewModel usuarioVM){
+            return new Usuario
+            {
+                Nombre=usuarioVM.Nombre,
+                Contrasenia=usuarioVM.Contrasenia,
+                NivelDeAcceso=usuarioVM.NivelDeAcceso
+            };
+        }
 
-public class Usuario{
-    private int? id;
-    private string? nombre;
-    private string contrasenia;
-    private int nivel;
-    
-    public int? Id { get => id; set => id = value; }
-    public string? Nombre { get => nombre; set => nombre = value; }
-    public string Contrasenia { get => contrasenia; set => contrasenia = value; }
-    public int Nivel { get => nivel; set => nivel = value; }
-
-    public Usuario(){
-
-    }
-    public Usuario(int? Id, string? Nombre, string Contrasenia, int Nivel){
-        id=Id;
-        nombre=Nombre;
-        contrasenia = Contrasenia;
-        nivel = Nivel;
-    }
-    public static Usuario FromCrearUsuarioViewModel(CrearUsuarioViewModel usuarioVM)
-    {
-        return new Usuario
-        {
-            nombre = usuarioVM.Nombre,
-            id = usuarioVM.Id,
-            contrasenia = usuarioVM.Contrasenia,
-            nivel = usuarioVM.Nivel
-        };
-    }
-    public static Usuario FromEditarUsuarioViewModel(EditarUsuarioViewModel usuarioVM)
-    {
-        return new Usuario
-        {
-            nombre = usuarioVM.Nombre,
-            id = usuarioVM.Id,
-            contrasenia = usuarioVM.Contrasenia,
-            nivel = usuarioVM.Nivel
-        };
+        public static Usuario FromEditarUsuario(EditarUsuarioViewModel usuarioVM){
+            return new Usuario
+            {
+                Id=usuarioVM.Id,
+                Nombre=usuarioVM.Nombre,
+                Contrasenia=usuarioVM.Contrasenia,
+                NivelDeAcceso=usuarioVM.NivelDeAcceso
+            };
+        }
+        
     }
 }
