@@ -1,38 +1,30 @@
-namespace Tp11.ViewModels;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;//Necesario para el uso de los Atributos de metadatos en las Propiedades del Modelo
 
-using System.ComponentModel.DataAnnotations;
+using Proyecto.Models;
 
-using Tp11.Models;
+namespace Proyecto.ViewModels{
+    public class CrearUsuarioViewModel{
 
-public class CrearUsuarioViewModel{
-    private int? id;
-    [Required(ErrorMessage = "Este campo es requerido.")]
-    [Display(Name = "Id")]
-    public int? Id { get => id; set => id = value; }
-    
-    private string? nombre;
-    [Required(ErrorMessage = "Este campo es requerido.")]
-    [Display(Name = "Nuevo nombre de Usuario")]
-    public string? Nombre { get => nombre; set => nombre = value; }
+        [Required(ErrorMessage = "Este campo es requerido.")]
+        [Display(Name = "Nombre")]
+        public string? Nombre{get;set;}
 
-    private string contrasenia;
-    [Required(ErrorMessage = "Este campo es requerido.")]
-    [Display(Name = "Nueva Contrasenia")]
-    public string Contrasenia { get => contrasenia; set => contrasenia = value; }
+        [Required(ErrorMessage = "Este campo es requerido.")]
+        [PasswordPropertyText]
+        [Display(Name = "Contraseña")]
+        public string? Contrasenia{get;set;}
 
-    private int nivel;
-    [Required(ErrorMessage = "Este campo es requerido.")]
-    [Display(Name = "Cambiar Nivel De Acceso")]
-    public int Nivel { get => nivel; set => nivel = value; }
+        [Required(ErrorMessage = "Este campo es requerido.")]
+        [Display(Name = "Nivel de Acceso")]
+        public NivelDeAcceso NivelDeAcceso{get;set;}
 
-    public static CrearUsuarioViewModel FromUsuario(Usuario usuario)
-    {
-        return new CrearUsuarioViewModel
-        {
-            nombre = usuario.Nombre,
-            id = usuario.Id,
-            contrasenia = usuario.Contrasenia,
-            nivel = usuario.Nivel
-        };
+        public CrearUsuarioViewModel(){}
+        public CrearUsuarioViewModel(string? nombre, string? contrasenia, NivelDeAcceso nivel){
+            Nombre=nombre;
+            Contrasenia=contrasenia;
+            NivelDeAcceso=nivel;
+        }
+        
     }
 }

@@ -1,33 +1,37 @@
-namespace Tp11.ViewModels;
+using System.ComponentModel.DataAnnotations;//Necesario para el uso de los Atributos de metadatos en las Propiedades del Modelo
 
-using System.ComponentModel.DataAnnotations;
+using Proyecto.Models;
 
-using Tp11.Models;
+namespace Proyecto.ViewModels{
+    public class ListarUsuarioViewModel{
+        [Display(Name = "Id")]
+        public int? Id{get;set;}
 
-public class ListarUsuarioViewModel{
-    private int? id;
+        [Display(Name = "Nombre")]
+        public string? Nombre{get;set;}
 
-    [Required(ErrorMessage = "Este campo es requerido.")]
-    [Display(Name = "Id")]
-    public int? Id { get => id; set => id = value; }
-    
-    private string? nombre;
-    
-    [Required(ErrorMessage = "Este campo es requerido.")]
-    [Display(Name = "Nombre")]
-    public string? Nombre { get => nombre; set => nombre = value; }
-
-    public static List<ListarUsuarioViewModel> FromUsuario(List<Usuario> usuarios)
-    {
-        List<ListarUsuarioViewModel> listaUsuariosVM = new List<ListarUsuarioViewModel>();
+        [Display(Name = "Nivel de Acceso")]
+        public NivelDeAcceso NivelDeAcceso{get;set;}
         
+        public ListarUsuarioViewModel(){}
+        public ListarUsuarioViewModel(int? id, string? nombre, NivelDeAcceso nivel){
+            Id=id;
+            Nombre=nombre;
+            NivelDeAcceso=nivel;
+        }
+        public static List<ListarUsuarioViewModel> FromUsuario(List<Usuario> usuarios)
+        {
+            List<ListarUsuarioViewModel> listaUsuariosVM = new List<ListarUsuarioViewModel>();
+            
             foreach (var usuario in usuarios)
             {
-                ListarUsuarioViewModel newUVM = new ListarUsuarioViewModel();
-                newUVM.id = usuario.Id;
-                newUVM.nombre = usuario.Nombre;
-                listaUsuariosVM.Add(newUVM);
+                ListarUsuarioViewModel usuarioVM = new ListarUsuarioViewModel();
+                usuarioVM.Id = usuario.Id;
+                usuarioVM.Nombre = usuario.Nombre;
+                usuarioVM.NivelDeAcceso=usuario.NivelDeAcceso;
+                listaUsuariosVM.Add(usuarioVM);
             }
             return(listaUsuariosVM);
+        }
     }
 }

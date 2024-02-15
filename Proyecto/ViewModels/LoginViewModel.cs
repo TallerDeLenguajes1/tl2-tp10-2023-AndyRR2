@@ -1,19 +1,23 @@
-namespace Tp11.ViewModels;
-
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;//Necesario para el uso de los Atributos de metadatos en las Propiedades del Modelo
 
-public class LoginViewModel{
-    private string nombre;
-    
-    [Required(ErrorMessage = "Este campo es requerido.")]
-    [Display(Name = "Nombre de Usuario de Logueo")]
-    public string Nombre { get => nombre; set => nombre = value; }
+namespace Proyecto.ViewModels{
+    public class LoginViewModel{
 
-    private string contrasenia;
+        [Required(ErrorMessage = "Este campo es requerido.")]
+        [Display(Name = "Nombre")]
+        public string? Nombre{get;set;}
 
-    [Required(ErrorMessage = "Este campo es requerido.")]
-    [PasswordPropertyText]
-    [Display(Name = "Contraseña")]
-    public string Contrasenia { get => contrasenia; set => contrasenia = value; }
+        [Required(ErrorMessage = "Este campo es requerido.")]
+        [PasswordPropertyText]
+        [Display(Name = "Contraseña")]
+        public string? Contrasenia{get;set;}
+
+        public LoginViewModel(){}
+        public LoginViewModel(string? nombre, string? contrasenia){
+            Nombre=nombre;
+            Contrasenia=contrasenia;
+        }
+        
+    }
 }

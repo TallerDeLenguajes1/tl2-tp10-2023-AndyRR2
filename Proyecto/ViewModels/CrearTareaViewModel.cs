@@ -1,61 +1,54 @@
-namespace Tp11.ViewModels;
-
 using System.ComponentModel.DataAnnotations;
 
-using Tp11.Models;
-public enum EstadoTarea{
-  Ideas=1, 
-  ToDo=2, 
-  Doing=3, 
-  Review=4, 
-  Done=5,
-  Unnactive=6
-}
-public class CrearTareaViewModel{
-    private int? id;
-    [Required(ErrorMessage = "Este campo es requerido.")]
-    [Display(Name = "Id")]
-    public int? Id { get => id; set => id = value; }
-    private int? idTablero;
-    [Required(ErrorMessage = "Este campo es requerido.")]
-    [Display(Name = "Id Tablero")]
-    public int? IdTablero { get => idTablero; set => idTablero = value; }
-    private string? nombre;
-    [Required(ErrorMessage = "Este campo es requerido.")]
-    [Display(Name = "Nombre Tarea")]
-    public string? Nombre { get => nombre; set => nombre = value; }
-    private EstadoTarea estado;
-    [Required(ErrorMessage = "Este campo es requerido.")]
-    [Display(Name = "Estado")]
-    public EstadoTarea Estado { get => estado; set => estado = value; }
-    private string? descripcion;
-    [Required(ErrorMessage = "Este campo es requerido.")]
-    [Display(Name = "Descripcion")]
-    public string? Descripcion { get => descripcion; set => descripcion = value; }
-    private string? color;
-    [Required(ErrorMessage = "Este campo es requerido.")]
-    [Display(Name = "Color")]
-    public string? Color { get => color; set => color = value; }
-    private int? idUsuarioAsignado;
-    [Required(ErrorMessage = "Este campo es requerido.")]
-    [Display(Name = "Id Usuario Asignado")]
-    public int? IdUsuarioAsignado { get => idUsuarioAsignado; set => idUsuarioAsignado = value; }
-    private int? idUsuarioPropietario;
-    [Required(ErrorMessage = "Este campo es requerido.")]
-    [Display(Name = "Id Usuario Propietario")]
-    public int? IdUsuarioPropietario { get => idUsuarioPropietario; set => idUsuarioPropietario = value; }
+using Proyecto.Models;
 
-    public static CrearTareaViewModel FromTarea(Tarea newTarea)
-    {
-        CrearTareaViewModel newTVM = new CrearTareaViewModel();
-        newTVM.id = newTarea.Id;
-        newTVM.idTablero = newTarea.IdTablero;
-        newTVM.nombre = newTarea.Nombre;
-        newTVM.estado = (Tp11.ViewModels.EstadoTarea)newTarea.Estado;
-        newTVM.descripcion = newTarea.Descripcion;
-        newTVM.color = newTarea.Color;
-        newTVM.idUsuarioAsignado = newTarea.IdUsuarioAsignado;
-        newTVM.idUsuarioPropietario = newTarea.IdUsuarioPropietario;
-        return(newTVM);
+namespace Proyecto.ViewModels{
+    public class CrearTareaViewModel{
+        [Required(ErrorMessage = "Este campo es requerido.")]
+        [Display(Name = "Id Tablero")]
+        public int? IdTablero{get;set;}
+
+        [Required(ErrorMessage = "Este campo es requerido.")]
+        [Display(Name = "Nombre")]
+        public string? Nombre{get;set;}
+
+        [Required(ErrorMessage = "Este campo es requerido.")]
+        [Display(Name = "Estado")]
+        public EstadoTarea EstadoTarea{get;set;}
+
+        [Required(ErrorMessage = "Este campo es requerido.")]
+        [Display(Name = "Descripcion")]
+        public string? Descripcion{get;set;}
+
+        [Required(ErrorMessage = "Este campo es requerido.")]
+        [Display(Name = "Color")]
+        public Color Color{get;set;}
+
+        [Display(Name = "Id Usuario Asignado")]
+        public int? IdUsuarioAsignado{get;set;}
+
+        [Required(ErrorMessage = "Este campo es requerido.")]
+        [Display(Name = "Id Usuario Propietario")]
+        public int? IdUsuarioPropietario{get;set;}
+        public List<int?> IdTableros{get;set;}
+        public List<int?> IdUsuarios{get;set;}
+
+
+        public CrearTareaViewModel(){
+            IdTableros = new List<int?>();
+            IdUsuarios = new List<int?>();
+        }
+        public CrearTareaViewModel(int? idTablero, string? nombre, EstadoTarea estado, string? descripcion, Color color, int? idUsuarioAsig, int? idUsuarioProp, List<int?> idTableros, List<int?> idUsuarios){
+            IdTablero=idTablero;
+            Nombre=nombre;
+            EstadoTarea=estado;
+            Descripcion=descripcion;
+            Color=color;
+            IdUsuarioAsignado=idUsuarioAsig;
+            IdUsuarioPropietario=idUsuarioProp;
+            IdTableros=idTableros;
+            IdUsuarios=idUsuarios;
+        }
+        
     }
 }

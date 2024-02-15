@@ -1,45 +1,49 @@
-namespace Tp11.ViewModels;
-
 using System.ComponentModel.DataAnnotations;
 
-using Tp11.Models;
+using Proyecto.Models;
 
-public class ListarTableroViewModel{
-    private int? id;
-    [Required(ErrorMessage = "Este campo es requerido.")]
-    [Display(Name = "Id")]
-    public int? Id { get => id; set => id = value; }
-    private int? idUsuarioPropietario;
-    [Required(ErrorMessage = "Este campo es requerido.")]
-    [Display(Name = "Id Usuario Propietario")]
-    public int? IdUsuarioPropietario { get => idUsuarioPropietario; set => idUsuarioPropietario = value; }
-    private string? nombre;
-    [Required(ErrorMessage = "Este campo es requerido.")]
-    [Display(Name = "Nombre Tablero")]
-    public string? Nombre { get => nombre; set => nombre = value; }
-    private string? descripcion;  
-    [Required(ErrorMessage = "Este campo es requerido.")]
-    [Display(Name = "Descripcion")] 
-    public string? Descripcion { get => descripcion; set => descripcion = value; }
-    private EstadoTablero estado;
-    [Required(ErrorMessage = "Este campo es requerido.")]
-    [Display(Name = "Estado")]
-    public EstadoTablero Estado { get => estado; set => estado = value; }
+namespace Proyecto.ViewModels{
+    public class ListarTableroViewModel{
 
-    public static List<ListarTableroViewModel> FromTablero(List<Tablero> tableros)
-    {
-        List<ListarTableroViewModel> ListarTableroVM = new List<ListarTableroViewModel>();
-        
-            foreach (var tablero in tableros)
-            {
-                ListarTableroViewModel newTVM = new ListarTableroViewModel();
-                newTVM.id = tablero.Id;
-                newTVM.idUsuarioPropietario = tablero.IdUsuarioPropietario;
-                newTVM.nombre = tablero.Nombre;
-                newTVM.Descripcion = tablero.Descripcion;
-                newTVM.estado = (Tp11.ViewModels.EstadoTablero)tablero.Estado;
-                ListarTableroVM.Add(newTVM);
-            }
-            return(ListarTableroVM);
+        [Display(Name = "Id")]
+        public int? Id{get;set;}
+
+        [Display(Name = "Id de Usuario Propietario")]
+        public int? IdUsuarioPropietario{get;set;}
+
+        [Display(Name = "Nombre Tablero")]
+        public string? Nombre{get;set;}
+
+        [Display(Name = "Descripción")]
+        public string? Descripcion{get;set;}
+
+        [Display(Name = "Estado")]
+        public EstadoTablero EstadoTablero{get;set;}
+
+        public ListarTableroViewModel(){}
+        public ListarTableroViewModel(int? id, int? idUsu, string? nombre, string? descripcion, EstadoTablero estado){
+            Id=id;
+            IdUsuarioPropietario=idUsu;
+            Nombre=nombre;
+            Descripcion=descripcion;
+            EstadoTablero=estado;
+        }
+        public static List<ListarTableroViewModel> FromTablero(List<Tablero> tableros)
+        {
+            List<ListarTableroViewModel> ListarTableroVM = new List<ListarTableroViewModel>();
+            
+                foreach (var tablero in tableros)
+                {
+                    ListarTableroViewModel newTableroVM = new ListarTableroViewModel();
+                    newTableroVM.Id = tablero.Id;
+                    newTableroVM.IdUsuarioPropietario = tablero.IdUsuarioPropietario;
+                    newTableroVM.Nombre = tablero.Nombre;
+                    newTableroVM.Descripcion = tablero.Descripcion;
+                    newTableroVM.EstadoTablero = (Proyecto.Models.EstadoTablero)tablero.EstadoTablero;
+                    ListarTableroVM.Add(newTableroVM);
+                }
+                return(ListarTableroVM);
+        }
+
     }
 }

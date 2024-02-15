@@ -4,10 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Proyecto.Models;
 
 namespace Proyecto.ViewModels{
-    public class EditarTableroViewModel{
-        [Display(Name = "Id")]
-        public int? Id{get;set;}
-
+    public class CrearTableroViewModel{
         [Required(ErrorMessage = "Este campo es requerido.")]
         [Display(Name = "Id de Usuario Propietario")]
         public int? IdUsuarioPropietario{get;set;}
@@ -26,27 +23,15 @@ namespace Proyecto.ViewModels{
 
         public List<int?> IdUsuarios{get;set;}
 
-        public EditarTableroViewModel(){
+        public CrearTableroViewModel(){
             IdUsuarios = new List<int?>();
         }
-        public EditarTableroViewModel(int? id, int? idUsu, string? nombre, string? descripcion, EstadoTablero estado, List<int?> idUsuarios){
-            Id=id;
+        public CrearTableroViewModel(int? idUsu, string? nombre, string? descripcion, EstadoTablero estado, List<int?> idUsuarios){
             IdUsuarioPropietario=idUsu;
             Nombre=nombre;
             Descripcion=descripcion;
             EstadoTablero=estado;
             IdUsuarios=idUsuarios;
-        }
-        public static EditarTableroViewModel FromTablero(Tablero tablero)
-        {
-            return new EditarTableroViewModel
-            {
-                Id = tablero.Id,
-                IdUsuarioPropietario = tablero.IdUsuarioPropietario,
-                Nombre = tablero.Nombre,
-                Descripcion=tablero.Descripcion,
-                EstadoTablero = (Proyecto.Models.EstadoTablero)tablero.EstadoTablero
-            };
         }
         
     }

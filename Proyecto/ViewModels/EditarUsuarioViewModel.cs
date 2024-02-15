@@ -1,38 +1,44 @@
-namespace Tp11.ViewModels;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;//Necesario para el uso de los Atributos de metadatos en las Propiedades del Modelo
 
-using System.ComponentModel.DataAnnotations;
+using Proyecto.Models;
 
-using Tp11.Models;
+namespace Proyecto.ViewModels{
+    public class EditarUsuarioViewModel{
 
-public class EditarUsuarioViewModel{
-    private int? id;
-    [Required(ErrorMessage = "Este campo es requerido.")]
-    [Display(Name = "Id")]
-    public int? Id { get => id; set => id = value; }
-    
-    private string? nombre;
-    [Required(ErrorMessage = "Este campo es requerido.")]
-    [Display(Name = "Nuevo nombre de Usuario")]
-    public string? Nombre { get => nombre; set => nombre = value; }
+        [Required(ErrorMessage = "Este campo es requerido.")]
+        [Display(Name = "Id")]
+        public int? Id{get;set;}
 
-    private string contrasenia;
-    [Required(ErrorMessage = "Este campo es requerido.")]
-    [Display(Name = "Nueva Contrasenia")]
-    public string Contrasenia { get => contrasenia; set => contrasenia = value; }
+        [Required(ErrorMessage = "Este campo es requerido.")]
+        [Display(Name = "Nombre")]
+        public string? Nombre{get;set;}
 
-    private int nivel;
-    [Required(ErrorMessage = "Este campo es requerido.")]
-    [Display(Name = "Cambiar Nivel De Acceso")]
-    public int Nivel { get => nivel; set => nivel = value; }
+        [Required(ErrorMessage = "Este campo es requerido.")]
+        [PasswordPropertyText]
+        [Display(Name = "Contraseña")]
+        public string? Contrasenia{get;set;}
 
-    public static EditarUsuarioViewModel FromUsuario(Usuario usuario)
-    {
-        return new EditarUsuarioViewModel
-        {
-            nombre = usuario.Nombre,
-            id = usuario.Id,
-            contrasenia = usuario.Contrasenia,
-            nivel = usuario.Nivel
-        };
+        [Required(ErrorMessage = "Este campo es requerido.")]
+        [Display(Name = "Nivel de Acceso")]
+        public NivelDeAcceso NivelDeAcceso{get;set;}
+
+        public EditarUsuarioViewModel(){}
+        public EditarUsuarioViewModel(int? id, string? nombre, string? contrasenia, NivelDeAcceso nivel){
+            Id=id;
+            Nombre=nombre;
+            Contrasenia=contrasenia;
+            NivelDeAcceso=nivel;
+        }
+        public static EditarUsuarioViewModel FromUsuario(Usuario usuario){
+            return new EditarUsuarioViewModel
+            {
+                Id=usuario.Id,
+                Nombre=usuario.Nombre,
+                Contrasenia=usuario.Contrasenia,
+                NivelDeAcceso=usuario.NivelDeAcceso
+            };
+        }
+        
     }
 }
