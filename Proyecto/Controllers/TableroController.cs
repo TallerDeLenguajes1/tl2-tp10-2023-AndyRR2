@@ -1,236 +1,215 @@
-namespace Tp11.Controllers;
+using Microsoft.AspNetCore.Mvc;//Necesario para eredar el Controller proporcionado
 
-using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using System.Data.SQLite;
+using Proyecto.Repositories;
+using Proyecto.Models;
+using Proyecto.ViewModels;
 
-using Tp11.Models;
-using Tp11.ViewModels;
-using EspacioTableroRepository;
-
-public class TableroController : Controller{
-    private readonly string direccionBD = "Data Source = DataBase/kamban.db;Cache=Shared";
-    private readonly ITableroRepository repo;
-    private readonly ILogger<HomeController> _logger;
-    public TableroController(ILogger<HomeController> logger, ITableroRepository TabRepo) //constructor de Tablero que recibe un parametro tipo ILogger<HomeController> 
-    {
-        _logger = logger;
-        repo = TabRepo;
-    }
-
-    public IActionResult Index(int? idUsuario){
-        try
+namespace Proyecto.Controllers{
+    public class TableroController: Controller{
+        private readonly string direccionBD;
+        private readonly ITableroRepository repoTablero;
+        private readonly IUsuarioRepository repoUsuario;
+        private readonly ITareaRepository repoTarea;
+        private readonly ILoginRepository repoLogin;
+        private readonly ILogger<HomeController> _logger;
+        public TableroController(ILogger<HomeController> logger, ITableroRepository tabRepo, string cadenaDeConexion, IUsuarioRepository usuRepo, ITareaRepository tarRepo, ILoginRepository logRepo) 
         {
-            if(!isLogin()) return RedirectToAction("Index","Login");
-            
-            List<Tablero> tableros = null;
-            
-            if (isAdmin()){
-                tableros = repo.GetAll();
-            }else if(idUsuario.HasValue){
+            _logger = logger;
+            repoTablero = tabRepo;
+            repoUsuario = usuRepo;
+            repoTarea = tarRepo;
+            repoLogin = logRepo;
+            direccionBD = cadenaDeConexion;
+        }
 
-                int? ID = ObtenerIDDelUsuarioLogueado(direccionBD);
-                if (ID == idUsuario){
-                    tableros = repo.GetTablerosDeUsuario(ID);
-                }else{
-                    return NotFound();
-                }
-
-            }else{
-                return NotFound();
-            }
-            List<ListarTableroViewModel> listaTablerosVM = ListarTableroViewModel.FromTablero(tableros);
-            return View(listaTablerosVM);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex.ToString());
-            return BadRequest();
-        }
-    }
-
-    [HttpGet]
-    public IActionResult AgregarTablero(){
-        try
-        {
-            if(!isLogin()) return RedirectToAction("Index","Login");
-            if(!isAdmin()) return NotFound();
-
-            CrearTableroViewModel newTableroVM = new CrearTableroViewModel();
-            return View(newTableroVM);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex.ToString());
-            return BadRequest();
-        }
-    }
-    [HttpPost]
-    public IActionResult AgregarTableroFromForm([FromForm] CrearTableroViewModel newTableroVM){
-        try
-        {
-            if(!ModelState.IsValid) return RedirectToAction("Index","Login");
-            if(!isLogin()) return RedirectToAction("Index","Login");
-            if(!isAdmin()) return NotFound();
-
-            Tablero newTablero = Tablero.FromCrearTableroViewModel(newTableroVM);
-            int? ID = newTablero.IdUsuarioPropietario;
-            repo.Create(newTablero);
-            return RedirectToAction("Index", new { idUsuario = ID });//redirecciona al index con el idDelUsuario en caso de que sea un usuario Simple
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex.ToString());
-            return BadRequest();
-        }
-    }
-
-    [HttpGet]
-    public IActionResult EditarTablero(int? idTablero){
-        try
-        {   
-            if(!isLogin()) return RedirectToAction("Index","Login");
-
-            Tablero tableroAEditar = repo.GetById(idTablero);
-            EditarTableroViewModel tableroAEditarVM = null;
-            
-            if (isAdmin()){
-                 tableroAEditarVM = EditarTableroViewModel.FromTablero(tableroAEditar);
-            }else if(idTablero.HasValue){
-                int? ID = ObtenerIDDelUsuarioLogueado(direccionBD);
-                
-                if (ID == tableroAEditar.IdUsuarioPropietario){
-                    tableroAEditarVM = EditarTableroViewModel.FromTablero(tableroAEditar);
-                }else{
-                    return NotFound();
-                }
-            }else{
-                return NotFound();
-            }
-            return View(tableroAEditarVM);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex.ToString());
-            return BadRequest();
-        }
-        
-    }
-    [HttpPost]
-    public IActionResult EditarTableroFromForm([FromForm] EditarTableroViewModel tableroAEditarVM){
-        try
-        {
-            if(!ModelState.IsValid) return RedirectToAction("Index","Login");
-            if(!isLogin()) return RedirectToAction("Index","Login");
-
-            Tablero tableroAEditar = Tablero.FromEditarTableroViewModel(tableroAEditarVM);
-            int? ID = tableroAEditar.IdUsuarioPropietario;
-            repo.Update(tableroAEditar);
-            return RedirectToAction("Index", new { idUsuario = ID });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex.ToString());
-            return BadRequest();
-        }
-    }
-    
-    [HttpGet]
-    public IActionResult EliminarTablero(int? idTablero){
-        try
-        {   
-            if(!isLogin()) return RedirectToAction("Index","Login");
-            
-            Tablero tableroAEliminar = repo.GetById(idTablero);
-            int? idUsuarioTablero = tableroAEliminar.IdUsuarioPropietario;
-            
-            if (isAdmin()){
-                return View(tableroAEliminar);
-            }else if(idTablero.HasValue){
-                int? ID = ObtenerIDDelUsuarioLogueado(direccionBD);
-                
-                if (ID == idUsuarioTablero){
-                    return View(tableroAEliminar);
-                }else{
-                    return NotFound();
-                }
-            }else{
-                return NotFound();
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex.ToString());
-            return BadRequest();
-        }
-    }
-    [HttpPost]
-    public IActionResult EliminarFromForm([FromForm] Tablero tableroAEliminar){
-        try
-        {
-            if(!ModelState.IsValid) return RedirectToAction("Index","Login");
-            if(!isLogin()) return RedirectToAction("Index","Login");
-            
-            repo.Remove(tableroAEliminar.Id);
-            return RedirectToAction("Index", "Usuario");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex.ToString());
-            return BadRequest();
-        }
-    }
-
-    //preguntar si los try catch van en los de abajo tambien
-    private bool isAdmin()
-    {
-        if (HttpContext.Session != null && HttpContext.Session.GetString("NivelDeAcceso") == "admin"){
-            return true;
-        }else{
-            return false;
-        }
-    }
-    private bool isLogin()
-    {
-        if (HttpContext.Session != null && HttpContext.Session.GetString("NivelDeAcceso") == "admin" || HttpContext.Session.GetString("NivelDeAcceso") == "simple"){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    private int? ObtenerIDDelUsuarioLogueado(string? direccionBD){// se agrego para poder hacer el control cuando se seleccione editar/agregar/eliminar tableros que no son del usuario logueado y este no es Admin
-        int? ID = 0;
-        Usuario usuarioSelec = new Usuario();
-        SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
-
-        string queryC = "SELECT * FROM Usuario WHERE nombre_de_usuario = @NAME AND contrasenia = @PASS";
-        SQLiteParameter parameterName = new SQLiteParameter("@NAME", HttpContext.Session.GetString("Nombre"));
-        SQLiteParameter parameterPass = new SQLiteParameter("@PASS", HttpContext.Session.GetString("Contrasenia"));
-
-        using (connectionC)
-        {
-            connectionC.Open();
-            SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
-            commandC.Parameters.Add(parameterName);
-            commandC.Parameters.Add(parameterPass);
-            
-            SQLiteDataReader readerC = commandC.ExecuteReader();
-            using (readerC)
+        public IActionResult Index(int? idUsuario){
+            try
             {
-                while (readerC.Read())
+                if(!isLogin()) return RedirectToAction("Index","Login"); 
+                
+                List<Tablero> tableros = new List<Tablero>();
+
+                if (isAdmin()){
+                    if (idUsuario.HasValue){
+                        tableros = repoTablero.GetByOwnerUser(idUsuario).Concat(repoTablero.GetByUserAsignedTask(idUsuario)).GroupBy(t => t.Id).Select(group => group.First()).ToList();
+                    }else{
+                        tableros = repoTablero.GetAll();
+                    }
+                }else if(idUsuario.HasValue){
+                    Usuario usuarioLogeado = repoLogin.ObtenerUsuario(HttpContext.Session.GetString("Nombre"),HttpContext.Session.GetString("Contrasenia"));
+                    if ((idUsuario == usuarioLogeado.Id)){
+                        tableros = repoTablero.GetByOwnerUser(usuarioLogeado.Id).Concat(repoTablero.GetByUserAsignedTask(usuarioLogeado.Id)).GroupBy(t => t.Id).Select(group => group.First()).ToList();   
+                    }else{
+                        return NotFound();
+                    }
+                }else{
+                    return NotFound();
+                }
+                
+                List<ListarTableroViewModel> listaTablerosVM = ListarTableroViewModel.FromTablero(tableros);
+                return View(listaTablerosVM);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        public IActionResult AgregarTablero(){
+            try
+            {
+                if(!isLogin()) return RedirectToAction("Index","Login");
+                if(!isAdmin()) return NotFound();
+
+                CrearTableroViewModel newTableroVM = new CrearTableroViewModel();
+                List<Usuario> usuariosEnBD = repoUsuario.GetAll();
+                foreach (var usuario in usuariosEnBD)
                 {
-                    ID = Convert.ToInt32(readerC["id"]);
+                    (newTableroVM.IdUsuarios).Add(usuario.Id);
+                }
+
+                return View(newTableroVM);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return BadRequest();
+            }
+        }
+        [HttpPost]
+        public IActionResult AgregarTableroFromForm(CrearTableroViewModel newTableroVM){
+            try
+            {
+                if(!ModelState.IsValid) return RedirectToAction("Index","Login");
+                if(!isLogin()) return RedirectToAction("Index","Login");
+                if(!isAdmin()) return NotFound();
+
+                Tablero newTablero = Tablero.FromCrearTableroViewModel(newTableroVM);
+                repoTablero.Create(newTablero);
+                return RedirectToAction("Index", new { idUsuario = newTablero.IdUsuarioPropietario });//redirecciona al index con el idDelUsuario
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        public IActionResult EditarTablero(int? idTablero){
+            try
+            {   
+                if(!isLogin()) return RedirectToAction("Index","Login");
+
+                Tablero tableroAEditar = repoTablero.GetById(idTablero);
+                EditarTableroViewModel tableroAEditarVM = new EditarTableroViewModel();
+                
+                if (isAdmin()){
+                    tableroAEditarVM = EditarTableroViewModel.FromTablero(tableroAEditar);
+                }else if (idTablero.HasValue){
+                    Usuario usuarioLogeado = repoLogin.ObtenerUsuario(HttpContext.Session.GetString("Nombre"),HttpContext.Session.GetString("Contrasenia"));
+                    if (usuarioLogeado.Id == repoTablero.GetById(idTablero).IdUsuarioPropietario){
+                        tableroAEditarVM = EditarTableroViewModel.FromTablero(tableroAEditar);
+                    }else{
+                        return NotFound();
+                    }
+                }else{
+                    return NotFound();
+                }
+
+                List<Usuario> usuariosEnBD = repoUsuario.GetAll();
+                foreach (var usuario in usuariosEnBD)
+                {
+                    (tableroAEditarVM.IdUsuarios).Add(usuario.Id);
+                }
+                return View(tableroAEditarVM);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return BadRequest();
+            }
+        }
+        [HttpPost]
+        public IActionResult EditarTableroFromForm([FromForm] EditarTableroViewModel tableroAEditarVM){
+            try
+            {
+                if(!ModelState.IsValid) return RedirectToAction("Index","Login");
+                if(!isLogin()) return RedirectToAction("Index","Login");
+
+                Tablero tableroAEditar = Tablero.FromEditarTableroViewModel(tableroAEditarVM);
+                repoTablero.Update(tableroAEditar);
+                return RedirectToAction("Index", new { idUsuario = tableroAEditar.IdUsuarioPropietario });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        public IActionResult EliminarTablero(int? idTablero){
+            try
+            {   
+                if(!isLogin()) return RedirectToAction("Index","Login");
+                
+                Tablero tableroAEliminar = repoTablero.GetById(idTablero);
+
+                if (isAdmin()){
+                    return View(tableroAEliminar);
+                }else if (idTablero.HasValue){
+                    Usuario usuarioLogeado = repoLogin.ObtenerUsuario(HttpContext.Session.GetString("Nombre"),HttpContext.Session.GetString("Contrasenia"));
+                    if (usuarioLogeado.Id == repoTablero.GetById(idTablero).IdUsuarioPropietario){
+                        return View(tableroAEliminar);
+                    }else{
+                        return NotFound();
+                    }
+                }else{
+                    return NotFound();
                 }
             }
-            connectionC.Close();
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return BadRequest();
+            }
         }
-        return(ID);
-    }
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        [HttpPost]
+        public IActionResult EliminarFromForm([FromForm] Tablero tableroAEliminar){
+            try
+            {
+                if(!ModelState.IsValid) return RedirectToAction("Index","Login");
+                if(!isLogin()) return RedirectToAction("Index","Login");
+                
+                repoTablero.Remove(tableroAEliminar.Id);
+                return RedirectToAction("Index", "Usuario");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return BadRequest();
+            }
+        }
+
+        private bool isAdmin()
+        {
+            if (HttpContext.Session != null && HttpContext.Session.GetString("NivelDeAcceso") == "admin"){
+                return true;
+            }else{
+                return false;
+            }
+        }
+        private bool isLogin()
+        {
+            if (HttpContext.Session != null && HttpContext.Session.GetString("NivelDeAcceso") == "admin" || HttpContext.Session.GetString("NivelDeAcceso") == "simple"){
+                return true;
+            }else{
+                return false;
+            }
+        }
     }
 }
