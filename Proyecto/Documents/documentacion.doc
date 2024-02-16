@@ -1,0 +1,43 @@
+Programador: Andy Alejandro Rodriguez Rodriguez
+
+*Controladores y controles de Login y Niveles de Acceso:
+UsuarioController:
+    -Index: Permitido para todos los usuarios Logueados
+    -AgregarUsuario: Solo permitido para usuarios Logueados que sean Administradores.
+    -EditarUsuario: Debe estar logueado
+                    Un Administrador puede editar cualquier usuario.
+                    Cualquier usuario Logueado puede editar su propio usuario.
+    -EliminarUsuario: Debe estar logueado
+                      Un Administrador puede eliminar cualquier usuario.
+                      Cualquier usuario Logueado puede eliminar su propio usuario.
+
+TableroController:
+    -Index: Debe estar Logueado
+            Solo el Administrador tiene permitido ver todos los tableros
+            Un Administrador puede ver los tableros de cualquier usuario por individual
+            Cualquier usuario Logueado puede ver los tableros donde es usuario propietario o tiene una tarea asignada
+    -AgregarTablero: Solo permitido para usuarios Logueados que sean Administradores.
+    -EditarTablero: Debe estar logueado
+                    Un Administrador puede editar cualquier tablero.
+                    Cualquier usuario Logueado puede editar un tablero si es el usuario propietario.
+    -EliminarTablero: Debe estar logueado
+                      Un Administrador puede eliminar cualquier tablero.
+                      Cualquier usuario Logueado puede eliminar un tablero si es el usuario propietario. 
+
+TareaController:
+    -Index:
+    -AgregarTarea: Solo permitido para usuarios Logueados que sean Administradores.
+    -EditarTarea: Debe estar logueado
+                  Un Administrador puede editar cualquier tarea.
+                  Cualquier usuario Logueado puede editar una tarea si es el usuario propietario.
+    -EliminarTarea: Debe estar logueado
+                    Un Administrador puede eliminar cualquier tarea.
+                    Cualquier usuario Logueado puede eliminar una tarea si es el usuario propietario. 
+    -AsignarTarea: Debe estar logueado
+                   Un Administrador puede asignar un usuario a cualquier tarea.
+                   Cualquier usuario Logueado puede asignar un usuario una tarea si es el usuario propietario. 
+
+
+
+
+
