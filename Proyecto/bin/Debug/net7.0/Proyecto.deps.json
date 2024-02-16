@@ -6,13 +6,13 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v7.0": {
-      "Tp11/1.0.0": {
+      "Proyecto/1.0.0": {
         "dependencies": {
           "Microsoft.AspNetCore.Session": "2.2.0",
           "System.Data.SQLite": "1.0.118"
         },
         "runtime": {
-          "Tp11.dll": {}
+          "Proyecto.dll": {}
         }
       },
       "EntityFramework/6.4.4": {
@@ -379,7 +379,7 @@
     }
   },
   "libraries": {
-    "Tp11/1.0.0": {
+    "Proyecto/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
