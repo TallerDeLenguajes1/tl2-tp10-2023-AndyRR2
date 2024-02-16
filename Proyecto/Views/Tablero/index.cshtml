@@ -2,46 +2,54 @@
     ViewData["Title"] = "Tableros";
 }
 
-@model List<Tp11.ViewModels.ListarTableroViewModel>
+@model List<Proyecto.ViewModels.ListarTableroViewModel>
 
-<h2>Tablero List</h2>
+<h1>@ViewData["Title"]</h1>
 
-<table class="table table-dark">
-    <thead>
+<div class="table-container">
+    <table class="table table-striped table-hover">
+        <thead>
             <tr>
-                <a asp-controller="Tarea" asp-action="Index" asp-route-idTablero=null>Ver Tareas de todos los Tableros</a>
+                <div class="action-buttons">
+                    <th>
+                        <a class="btn btn-success" asp-controller="Tablero" asp-action="AgregarTablero">Agregar Tablero</a>
+                        <a class="btn btn-info" asp-controller="Usuario" asp-action="Index" asp-route-idTablero=null>Volver a Usuarios</a>
+                    </th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th>
+                        <a class="btn btn-info" asp-controller="Tarea" asp-action="Index" asp-route-idTablero=null>Ver todas las Tareas (Administrador)</a>
+                    </th>
+                </div>
             </tr>
-        <tr>
-            <th hidden>ID</th>
-            <th>IdUsuarioPropietario</th>
-            <th>Nombre</th>
-            <th>Descripcion</th>
-            <th>Estado</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var tablero in Model)
-        {
             <tr>
-                <td hidden>@tablero.Id</td>
-                <td>@tablero.IdUsuarioPropietario</td>
-                <td>@tablero.Nombre</td>
-                <td>@tablero.Descripcion</td>
-                <td>@tablero.Estado</td>
-                <td>
-                    <a asp-controller="Tarea" asp-action="Index" asp-route-idTablero="@tablero.Id">Ver Tareas del Tablero</a>
-                    <a asp-controller="Tablero" asp-action="EditarTablero" asp-route-idTablero="@tablero.Id">Editar</a>
-                    <a asp-controller="Tablero" asp-action="EliminarTablero" asp-route-idTablero="@tablero.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">Eliminar</a>                      
-                </td>
+                <th>Nombre</th>
+                <th>Descripcion</th>
+                <th>Id del Propietario</th>
+                <th>Estado</th>
+                <th>Acciones</th>
             </tr>
-        }
-    </tbody>
-    <tfoot>
-        <tr>
-            <a asp-controller="Tablero" asp-action="AgregarTablero">Agregar Tablero</a>
-        </tr>
-    </tfoot>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var tablero in Model)
+            {
+                <tr>
+                    <td>@tablero.Nombre</td>
+                    <td>@tablero.Descripcion</td>
+                    <td>@tablero.IdUsuarioPropietario</td>
+                    <td>@tablero.EstadoTablero</td>
+                    <td>
+                        <div class="action-buttons">
+                            <a class="btn btn-info" asp-controller="Tarea" asp-action="Index" asp-route-idTablero="@tablero.Id">Ver Tareas</a>
+                            <a class="btn btn-primary" asp-controller="Tablero" asp-action="EditarTablero" asp-route-idTablero="@tablero.Id">Editar</a>
+                            <a class="btn btn-danger" asp-controller="Tablero" asp-action="EliminarTablero" asp-route-idTablero="@tablero.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">Eliminar</a>      
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
-@section Scripts { <partial name="_ValidationScriptsPartial" /> }
+@section Scripts {<partial name="_ValidationScriptsPartial" />}

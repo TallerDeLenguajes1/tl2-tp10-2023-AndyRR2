@@ -2,29 +2,31 @@
     ViewData["Title"] = "Editar Usuario";
 }
 
-@model Tp11.ViewModels.EditarUsuarioViewModel
+@model Proyecto.ViewModels.EditarUsuarioViewModel
 
 <h1>@ViewData["Title"]</h1>
 <form asp-controller="Usuario" asp-action="EditarUsuarioFromForm" method="post">
     <input hidden asp-for="@Model.Id">
-    <div class="form-group">
+    <div class="form-group" style="max-width: 200px;">
         <label asp-for="@Model.Nombre"></label>
         <input asp-for="@Model.Nombre" class="form-control" id="nombre" />
         <span asp-validation-for="@Model.Nombre" class="text-danger"></span> 
     </div>
-    <div class="form-group">
+    <div class="form-group" style="max-width: 200px;">
         <label asp-for="@Model.Contrasenia"></label>
         <input asp-for="@Model.Contrasenia" class="form-control" id="contrasenia" />
         <span asp-validation-for="@Model.Contrasenia" class="text-danger"></span>   
     </div>
-    <div class="form-group">
-        <label asp-for="@Model.Nivel"></label>
-        <select asp-for="@Model.Nivel" asp-items="Html.GetEnumSelectList<NivelDeAcceso>()" class="form-control">
+    <div class="form-group" style="max-width: 200px;">
+        <label asp-for="@Model.NivelDeAcceso"></label>
+        <select asp-for="@Model.NivelDeAcceso" asp-items="Html.GetEnumSelectList<NivelDeAcceso>()" class="form-control">
             <option value="">Seleccionar Nivel</option>
         </select>
-        <span asp-validation-for="@Model.Nivel" class="text-danger"></span> 
+        <span asp-validation-for="@Model.NivelDeAcceso" class="text-danger"></span> 
     </div>
-    <button type="submit" class="btn btn-primary" >Enviar</button>
+    <div class="form-group" style="margin-top: 10px;">
+        <button type="submit" class="btn btn-primary">Enviar</button>
+    </div>
 </form>
 
 @section Scripts { <partial name="_ValidationScriptsPartial" /> }

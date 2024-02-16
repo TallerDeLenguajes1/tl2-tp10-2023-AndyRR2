@@ -2,41 +2,49 @@
     ViewData["Title"] = "Editar Tarea";
 }
 
-@model Tp11.ViewModels.EditarTareaViewModel
+@model Proyecto.ViewModels.EditarTareaViewModel
 
 <h1>@ViewData["Title"]</h1>
 <form asp-controller="Tarea" asp-action="EditarTareaFromForm" method="post">
     <input hidden asp-for="@Model.Id">
-    <input hidden asp-for="@Model.IdUsuarioPropietario">
-    <input hidden asp-for="@Model.IdUsuarioAsignado">
-    <div class="form-group">
+    <div class="form-group" style="max-width: 200px;">
         <label asp-for="@Model.IdTablero"></label>
-        <input asp-for="@Model.IdTablero" class="form-control" id="idTablero" />
-        <span asp-validation-for="@Model.IdTablero" class="text-danger"></span> 
+        <select asp-for="@Model.IdTablero" class="form-control">
+            <option value="">Seleccionar Id</option>
+            @foreach (var idTablero in Model.IdTableros)
+            {
+                <option value="@idTablero">@idTablero</option>
+            }
+        </select>
+        <span asp-validation-for="@Model.IdTablero" class="text-danger"></span>
     </div>
-    <div class="form-group">
+    <div class="form-group" style="max-width: 200px;">
         <label asp-for="@Model.Nombre"></label>
         <input asp-for="@Model.Nombre" class="form-control" id="nombre" />
         <span asp-validation-for="@Model.Nombre" class="text-danger"></span> 
     </div>
-    <div class="form-group">
-        <label asp-for="@Model.Estado"></label>
-        <select asp-for="@Model.Estado" asp-items="Html.GetEnumSelectList<EstadoTarea>()" class="form-control">
+    <div class="form-group" style="max-width: 200px;">
+        <label asp-for="@Model.EstadoTarea"></label>
+        <select asp-for="@Model.EstadoTarea" asp-items="Html.GetEnumSelectList<EstadoTarea>()" class="form-control">
             <option value="">Seleccionar Estado</option>
         </select>
-        <span asp-validation-for="@Model.Estado" class="text-danger"></span> 
+        <span asp-validation-for="@Model.EstadoTarea" class="text-danger"></span> 
     </div>
-    <div class="form-group">
+    <div class="form-group" style="max-width: 200px;">
         <label asp-for="@Model.Descripcion"></label>
         <input asp-for="@Model.Descripcion" class="form-control" id="descripcion" />
         <span asp-validation-for="@Model.Descripcion" class="text-danger"></span> 
     </div>
-    <div class="form-group">
+    <div class="form-group" style="max-width: 200px;">
         <label asp-for="@Model.Color"></label>
-        <input asp-for="@Model.Color" class="form-control" id="color" />
+        <select asp-for="@Model.Color" asp-items="Html.GetEnumSelectList<Color>()" class="form-control">
+            <option value="">Seleccionar Color</option>
+        </select>
         <span asp-validation-for="@Model.Color" class="text-danger"></span> 
     </div>
-    <button type="submit" class="btn btn-primary" >Enviar</button>
+    <div class="form-group" style="margin-top: 10px;">
+        <button type="submit" class="btn btn-primary">Enviar</button>
+    </div>
 </form>
 
 @section Scripts { <partial name="_ValidationScriptsPartial" /> }

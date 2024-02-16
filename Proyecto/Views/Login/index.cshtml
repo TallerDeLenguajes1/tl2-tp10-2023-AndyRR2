@@ -1,19 +1,20 @@
-@model Tp11.ViewModels.LoginViewModel
+@model Proyecto.ViewModels.LoginViewModel
 
-<form asp-controller="Login" asp-action="Login" method="post">
+<form asp-controller="Login" asp-action="ValidarUsuario" method="post">
 
-    <div class="form-group">
+    <div class="form-group" style="max-width: 200px;">
         <label asp-for="@Model.Nombre"></label>
         <input asp-for="@Model.Nombre" class="form-control" />
-        <span asp-validation-for="@Model.Nombre" class="text-danger"></span>    
+        <span asp-validation-for="@Model.Nombre" class="text-danger "></span>    
     </div>
-
-    <div class="form-group">
+    <div class="form-group" style="max-width: 200px;">
         <label asp-for="@Model.Contrasenia"></label>
         <input asp-for="@Model.Contrasenia" class="form-control" />
         <span asp-validation-for="@Model.Contrasenia" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-primary">Enviar</button>
+    <div class="form-group" style="margin-top: 10px;">
+        <button type="submit" class="btn btn-primary">Enviar</button>
+    </div>
 </form>
 
 @section Scripts { <partial name="_ValidationScriptsPartial" /> }
