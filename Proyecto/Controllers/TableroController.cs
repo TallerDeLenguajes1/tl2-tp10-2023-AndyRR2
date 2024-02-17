@@ -179,13 +179,13 @@ namespace Proyecto.Controllers{
         }
 
         [HttpPost]
-        public IActionResult EliminarFromForm([FromForm] Tablero tableroAEliminar){
+        public IActionResult EliminarTableroFromForm(int? idTableroAEliminar){
             try
             {
                 if(!ModelState.IsValid) return RedirectToAction("Index","Login");
                 if(!isLogin()) return RedirectToAction("Index","Login");
                 
-                repoTablero.Remove(tableroAEliminar.Id);
+                repoTablero.Remove(idTableroAEliminar);
                 return RedirectToAction("Index", "Usuario");
             }
             catch (Exception ex)

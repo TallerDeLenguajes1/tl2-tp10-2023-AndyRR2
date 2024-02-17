@@ -183,12 +183,12 @@ namespace Proyecto.Controllers{
             } 
         }
         [HttpPost]
-        public IActionResult EliminarFromForm(Tarea tareaAEliminar){
+        public IActionResult EliminarTareaFromForm(int? idTareaAEliminar){
             try
             {
                 if(!isLogin()) return RedirectToAction("Index","Login");
 
-                repoTarea.Remove(tareaAEliminar.Id);
+                repoTarea.Remove(idTareaAEliminar);
                 return RedirectToAction("Index", "Usuario");
             }
             catch (Exception ex)

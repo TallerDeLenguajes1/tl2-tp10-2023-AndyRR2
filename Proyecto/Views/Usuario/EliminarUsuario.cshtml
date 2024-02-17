@@ -7,6 +7,6 @@
 <h2>Confirmar eliminación</h2>
 
 <form asp-controller="Usuario" asp-action="EliminarFromForm">
-    <input asp-for="@Model.Id" type="hidden" />
+    <input name="idUsuarioAEliminar" type="hidden" value="@Model.Id" />
     <button type="submit" class="btn btn-danger">Eliminar</button>
 </form>

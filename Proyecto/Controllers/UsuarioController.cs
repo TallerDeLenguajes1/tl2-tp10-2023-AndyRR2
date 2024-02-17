@@ -150,12 +150,12 @@ namespace Proyecto.Controllers{
             }
         }
         [HttpPost]
-        public IActionResult EliminarFromForm(Usuario usuarioAEliminar){
+        public IActionResult EliminarFromForm(int? idUsuarioAEliminar){
             try
             {
                 if(!isLogin()) return RedirectToAction("Index","Login"); 
 
-                repoUsuario.Remove(usuarioAEliminar.Id);
+                repoUsuario.Remove(idUsuarioAEliminar);
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
