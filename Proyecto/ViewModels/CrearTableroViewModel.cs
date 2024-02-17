@@ -1,5 +1,4 @@
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;//Necesario para uso de Atributos
 
 using Proyecto.Models;
 
@@ -24,10 +23,9 @@ namespace Proyecto.ViewModels{
         [Display(Name = "Estado")]
         public EstadoTablero EstadoTablero{get;set;}
 
-        public List<int?> IdUsuarios{get;set;}
-
+        public List<int?> IdUsuarios{get;set;}//Necesario para guardar la lista de Id seleccionables obtenidos de la DB
         public CrearTableroViewModel(){
-            IdUsuarios = new List<int?>();
+            IdUsuarios = new List<int?>();//Asegura que siempre tenga una instancia de la lista válida
         }
         public CrearTableroViewModel(int? idUsu, string? nombre, string? descripcion, EstadoTablero estado, List<int?> idUsuarios){
             IdUsuarioPropietario=idUsu;
@@ -36,6 +34,5 @@ namespace Proyecto.ViewModels{
             EstadoTablero=estado;
             IdUsuarios=idUsuarios;
         }
-        
     }
 }

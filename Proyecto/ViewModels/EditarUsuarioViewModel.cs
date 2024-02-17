@@ -1,11 +1,10 @@
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;//Necesario para el uso de los Atributos de metadatos en las Propiedades del Modelo
+using System.ComponentModel.DataAnnotations;//Necesario para uso de Atributos
 
 using Proyecto.Models;
 
 namespace Proyecto.ViewModels{
     public class EditarUsuarioViewModel{
-        public int? Id{get;set;}
+        public int? Id{get;set;}//No necesita atributos ya que va oculto en el View
 
         [Required(ErrorMessage = "Este campo es requerido.")]
         [Display(Name = "Nombre")]
@@ -47,6 +46,5 @@ namespace Proyecto.ViewModels{
                 NivelDeAcceso=usuario.NivelDeAcceso
             };
         }
-        
     }
 }

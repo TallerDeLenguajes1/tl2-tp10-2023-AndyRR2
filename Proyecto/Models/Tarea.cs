@@ -62,7 +62,7 @@ namespace Proyecto.Models{
                 EstadoTarea = (Proyecto.Models.EstadoTarea)tareaVM.EstadoTarea
             };
         }
-        public static Tarea FromAsignarTareaViewModel(AsignarTareaViewModel tareaVM)//Solo se crea con las propiedades necesarias para Asignar Usuario
+        public static Tarea FromAsignarTareaViewModel(AsignarTareaViewModel tareaVM)//Solo se crea con las propiedades necesarias
         {
             return new Tarea
             {

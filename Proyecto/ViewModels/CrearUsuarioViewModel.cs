@@ -1,5 +1,4 @@
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;//Necesario para el uso de los Atributos de metadatos en las Propiedades del Modelo
+using System.ComponentModel.DataAnnotations;//Necesario para uso de Atributos
 
 using Proyecto.Models;
 
@@ -28,6 +27,5 @@ namespace Proyecto.ViewModels{
             Contrasenia=contrasenia;
             NivelDeAcceso=nivel;
         }
-        
     }
 }

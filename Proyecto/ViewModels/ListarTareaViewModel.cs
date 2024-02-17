@@ -1,30 +1,14 @@
-using System.ComponentModel.DataAnnotations;
-
 using Proyecto.Models;
 
 namespace Proyecto.ViewModels{
     public class ListarTareaViewModel{
         public int? Id{get;set;}
-
-        [Display(Name = "Id Tablero")]
         public int? IdTablero{get;set;}
-
-        [Display(Name = "Estado")]
         public string? Nombre{get;set;}
-
-        [Display(Name = "Descripcion")]
         public EstadoTarea EstadoTarea{get;set;}
-
-        [Display(Name = "Descripcion")]
         public string? Descripcion{get;set;}
-
-        [Display(Name = "Color")]
         public Color Color{get;set;}
-
-        [Display(Name = "Id Usuario Asignado")]
         public int? IdUsuarioAsignado{get;set;}
-
-        [Display(Name = "Id Usuario Propietario")]
         public int? IdUsuarioPropietario{get;set;}
 
         public ListarTareaViewModel(){}
@@ -42,20 +26,20 @@ namespace Proyecto.ViewModels{
         {
             List<ListarTareaViewModel> ListaTareaVM = new List<ListarTareaViewModel>();
             
-                foreach (var tarea in tareas)
-                {
-                    ListarTareaViewModel newTareaVM = new ListarTareaViewModel();
-                    newTareaVM.Id=tarea.Id;
-                    newTareaVM.IdTablero=tarea.IdTablero;
-                    newTareaVM.Nombre=tarea.Nombre;
-                    newTareaVM.EstadoTarea=tarea.EstadoTarea;
-                    newTareaVM.Descripcion=tarea.Descripcion;
-                    newTareaVM.Color=tarea.Color;
-                    newTareaVM.IdUsuarioAsignado=tarea.IdUsuarioAsignado;
-                    newTareaVM.IdUsuarioPropietario=tarea.IdUsuarioPropietario;
-                    ListaTareaVM.Add(newTareaVM);
-                }
-                return(ListaTareaVM);
+            foreach (var tarea in tareas)
+            {
+                ListarTareaViewModel newTareaVM = new ListarTareaViewModel();
+                newTareaVM.Id=tarea.Id;
+                newTareaVM.IdTablero=tarea.IdTablero;
+                newTareaVM.Nombre=tarea.Nombre;
+                newTareaVM.EstadoTarea=tarea.EstadoTarea;
+                newTareaVM.Descripcion=tarea.Descripcion;
+                newTareaVM.Color=tarea.Color;
+                newTareaVM.IdUsuarioAsignado=tarea.IdUsuarioAsignado;
+                newTareaVM.IdUsuarioPropietario=tarea.IdUsuarioPropietario;
+                ListaTareaVM.Add(newTareaVM);
+            }
+            return(ListaTareaVM);
         }
     }
 }

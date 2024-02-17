@@ -1,10 +1,10 @@
-using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;//Necesario para uso de Atributos
 
 using Proyecto.Models;
 
 namespace Proyecto.ViewModels{
     public class EditarTareaViewModel{
-        public int? Id{get;set;}
+        public int? Id{get;set;}//No necesita atributos ya que va oculto en el View
 
         [Required(ErrorMessage = "Este campo es requerido.")]
         [Display(Name = "Id Tablero")]
@@ -27,10 +27,10 @@ namespace Proyecto.ViewModels{
         [Required(ErrorMessage = "Este campo es requerido.")]
         [Display(Name = "Color")]
         public Color Color{get;set;}
-        public List<int?> IdTableros{get;set;}
 
+        public List<int?> IdTableros{get;set;}//Necesario para guardar la lista de Id seleccionables obtenidos de la DB
         public EditarTareaViewModel(){
-            IdTableros = new List<int?>();
+            IdTableros = new List<int?>();//Asegura que siempre tenga una instancia de la lista válida
         }
         public EditarTareaViewModel(int? id, int? idTablero, string? nombre, EstadoTarea estado, string? descripcion, Color color, List<int?> idTableros){
             Id=id;
@@ -41,7 +41,6 @@ namespace Proyecto.ViewModels{
             Color=color;
             IdTableros=idTableros;
         }
-
         public static EditarTareaViewModel FromTarea(Tarea newTarea)
         {
             EditarTareaViewModel newTareaVM = new EditarTareaViewModel();
@@ -52,7 +51,6 @@ namespace Proyecto.ViewModels{
             newTareaVM.Descripcion = newTarea.Descripcion;
             newTareaVM.Color = newTarea.Color;
             return(newTareaVM);
-        }
-        
+        } 
     }
 }
