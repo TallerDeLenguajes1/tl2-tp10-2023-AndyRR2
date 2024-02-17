@@ -1,7 +1,7 @@
 Programador: Andy Alejandro Rodriguez Rodriguez
 Git: https://github.com/TallerDeLenguajes1/tl2-tp10-2023-AndyRR2/tree/main/Proyecto
 
-*Controladores y controles de Login y Niveles de Acceso:
+*Controladores, controles de Login y Niveles de Acceso:
 UsuarioController:
     -Index: Permitido para todos los usuarios Logueados
     -AgregarUsuario: Solo permitido para usuarios Logueados que sean Administradores.
