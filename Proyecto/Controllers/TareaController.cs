@@ -62,7 +62,6 @@ namespace Proyecto.Controllers{
                 if(!isAdmin()) return NotFound();
 
                 CrearTareaViewModel newTareaVM = new CrearTareaViewModel();
-                
 
                 List<Usuario> usuariosEnBD = repoUsuario.GetAll();
                 foreach (var usuario in usuariosEnBD)
@@ -74,6 +73,9 @@ namespace Proyecto.Controllers{
                 foreach (var tablero in tablerosEnBD)
                 {
                     (newTareaVM.IdTableros).Add(tablero.Id);
+                }
+                if((newTareaVM.IdTableros).Count == 0){
+                    return NotFound();
                 }
                 return View(newTareaVM);
             }
