@@ -15,7 +15,6 @@ namespace Proyecto.Models{
             Contrasenia=contrasenia;
             NivelDeAcceso=nivel;
         }
-
         public static Login FromLoginViewModel(LoginViewModel loginVM){
             return new Login
             {

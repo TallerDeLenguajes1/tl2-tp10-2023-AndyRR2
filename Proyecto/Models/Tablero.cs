@@ -2,8 +2,8 @@ using Proyecto.ViewModels;
 
 namespace Proyecto.Models{
     public enum EstadoTablero{
-        active=1,
-        unnactive=2
+        Active=1,
+        Unnactive=2
     }
     public class Tablero{
         public int? Id{get;set;}
@@ -11,7 +11,6 @@ namespace Proyecto.Models{
         public string? Nombre{get;set;}
         public string? Descripcion{get;set;}
         public EstadoTablero EstadoTablero{get;set;}
-
         public Tablero(){}
         public Tablero(int? id, int? idUsu, string? nombre, string? descripcion, EstadoTablero estado){
             Id=id;
@@ -30,7 +29,7 @@ namespace Proyecto.Models{
                 EstadoTablero = (Proyecto.Models.EstadoTablero)tableroVM.EstadoTablero
             };
         }
-        public static Tablero FromEditarTableroViewModel(EditarTableroViewModel tableroVM)
+        public static Tablero FromEditarTableroViewModel(EditarTableroViewModel tableroVM)//Solo se crea con las propiedades editables
         {
             return new Tablero
             {
@@ -41,6 +40,5 @@ namespace Proyecto.Models{
                 EstadoTablero = (Proyecto.Models.EstadoTablero)tableroVM.EstadoTablero
             };
         }
-
     }
 }

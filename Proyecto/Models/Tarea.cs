@@ -2,20 +2,20 @@ using Proyecto.ViewModels;
 
 namespace Proyecto.Models{
     public enum EstadoTarea{
-        ideas=1, 
-        toDo=2, 
-        doing=3, 
-        review=4, 
-        done=5,
-        unnactive=6
+        Ideas=1, 
+        ToDo=2, 
+        Doing=3, 
+        Review=4, 
+        Done=5,
+        Unnactive=6
     }
     public enum Color{
-        azul=1,
-        rojo=2,
-        amarillo=3,
-        verde=4,
-        rosa=5,
-        morado=6
+        Azul=1,
+        Rojo=2,
+        Amarillo=3,
+        Verde=4,
+        Rosa=5,
+        Morado=6
     }
     public class Tarea{
         public int? Id{get;set;}
@@ -26,7 +26,6 @@ namespace Proyecto.Models{
         public Color Color{get;set;}
         public int? IdUsuarioAsignado{get;set;}
         public int? IdUsuarioPropietario{get;set;}
-
         public Tarea(){}
         public Tarea(int? id, int? idTablero, string? nombre, EstadoTarea estado, string? descripcion, Color color, int? idUsuarioAsig, int? idUsuarioProp){
             Id=id;
@@ -38,8 +37,7 @@ namespace Proyecto.Models{
             IdUsuarioAsignado=idUsuarioAsig;
             IdUsuarioPropietario=idUsuarioProp;
         }
-
-        public static Tarea FromCrearTareaViewModel(CrearTareaViewModel tareaVM)
+        public static Tarea FromCrearTareaViewModel(CrearTareaViewModel tareaVM)//Usuario asignado es 0, luego se asigna en AsignarUsuario
         {
             return new Tarea
             {
@@ -52,8 +50,7 @@ namespace Proyecto.Models{
                 IdUsuarioPropietario = tareaVM.IdUsuarioPropietario
             };
         }
-
-        public static Tarea FromEditarTareaViewModel(EditarTareaViewModel tareaVM)
+        public static Tarea FromEditarTareaViewModel(EditarTareaViewModel tareaVM)//Solo se crea con las propiedades editables
         {
             return new Tarea
             {
@@ -65,7 +62,7 @@ namespace Proyecto.Models{
                 EstadoTarea = (Proyecto.Models.EstadoTarea)tareaVM.EstadoTarea
             };
         }
-        public static Tarea FromAsignarTareaViewModel(AsignarTareaViewModel tareaVM)
+        public static Tarea FromAsignarTareaViewModel(AsignarTareaViewModel tareaVM)//Solo se crea con las propiedades necesarias para Asignar Usuario
         {
             return new Tarea
             {
@@ -73,6 +70,5 @@ namespace Proyecto.Models{
                 IdUsuarioAsignado = tareaVM.IdUsuarioAsignado
             };
         }
-        
     }
 }
