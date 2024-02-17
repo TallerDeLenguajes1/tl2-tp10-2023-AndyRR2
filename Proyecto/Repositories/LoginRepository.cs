@@ -37,7 +37,6 @@ namespace Proyecto.Repositories{
             }
             return validacion;
         }
-
         public Usuario ObtenerUsuario(string? nombreUsuario, string? contrasenia)
         {
             Usuario usuarioPorLoguear = new Usuario();

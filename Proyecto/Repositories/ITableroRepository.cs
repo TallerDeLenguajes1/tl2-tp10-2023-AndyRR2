@@ -7,8 +7,8 @@ namespace Proyecto.Repositories{
         public void Create(Tablero newTablero);
         public void Update(Tablero newTablero);
         public void Remove(int? idTablero);
-        public List<Tablero> GetByOwnerUser(int? idUsuario);//Usado para obtener los tableros propiedad de un usuario para luego inhabilitarlos
-        public void Disable(int? idTablero);//Usado para inhabilitar los tableros
+        public void Disable(int? idTablero);
+        public List<Tablero> GetByOwnerUser(int? idUsuario);
         public List<Tablero> GetByUserAsignedTask(int? idUsuario);
     }
 }

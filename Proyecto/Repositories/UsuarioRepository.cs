@@ -1,4 +1,4 @@
-using System.Data.SQLite;//Necesario para uso de SQLite
+using System.Data.SQLite;
 
 using Proyecto.Models;
 
@@ -45,7 +45,6 @@ namespace Proyecto.Repositories{
             }
             return(usuarios);
         }
-
         public Usuario GetById(int? Id){
             Usuario usuarioSelec = new Usuario();
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
@@ -73,11 +72,10 @@ namespace Proyecto.Repositories{
                 connectionC.Close();
             }
             if (usuarioSelec==null){
-                throw new Exception("No se encontro el usuario en la base de datos.");
+                throw new Exception("No se encontro el usuario con el id proporcionado en la base de datos.");
             }
             return(usuarioSelec);
         }
-
         public void Create(Usuario newUsuario){
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             
@@ -101,7 +99,6 @@ namespace Proyecto.Repositories{
                 throw new Exception("El Usuario no se creo correctamente.");
             }
         }
-
         public void Update(Usuario newUsuario){
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             
@@ -159,6 +156,5 @@ namespace Proyecto.Repositories{
                 connectionC.Close();
             }
         }
-        
     }
 }

@@ -1,4 +1,4 @@
-using System.Data.SQLite;//Necesario para uso de SQLite
+using System.Data.SQLite;
 
 using Proyecto.Models;
 
@@ -77,13 +77,14 @@ namespace Proyecto.Repositories{
         }
 
         public void Create(Tablero newTablero){
+            SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
+
             string queryC = $"INSERT INTO Tablero (id_usuario_propietario,nombre_tablero,descripcion,estado) VALUES(@IDUSU,@NAME,@DESCRIPCION,@ESTADO)";
             SQLiteParameter parameterIdUsu = new SQLiteParameter("@IDUSU",newTablero.IdUsuarioPropietario);
             SQLiteParameter parameterNombre = new SQLiteParameter("@NAME",newTablero.Nombre);
             SQLiteParameter parameterDescripcion = new SQLiteParameter("@DESCRIPCION",newTablero.Descripcion);
             SQLiteParameter parameterEstado = new SQLiteParameter("@ESTADO",newTablero.EstadoTablero);
 
-            SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             using (connectionC)
             {
                 connectionC.Open();
@@ -128,7 +129,7 @@ namespace Proyecto.Repositories{
         }
         public void Remove(int? idTablero){
 
-            foreach (var tarea in repoTarea.GetByOwnerBoard(idTablero))//inhabilita todos los tableros del usuario a borrar
+            foreach (var tarea in repoTarea.GetByOwnerBoard(idTablero))//Inhabilita todas las Tareas del Tablero a borrar
             {
                 repoTarea.Disable(tarea.Id);
             }
@@ -151,7 +152,33 @@ namespace Proyecto.Repositories{
                 }
             }
         }
+        public void Disable(int? idTablero){
+            
+            foreach (var tarea in repoTarea.GetByOwnerBoard(idTablero))//Inhabilita todas las Tareas del Tablero a Inhabilitar
+            {
+                repoTarea.Disable(tarea.Id);
+            }
 
+            SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
+            
+            string queryC = "UPDATE Tablero SET estado = @ESTADO WHERE id = @ID";
+            SQLiteParameter parameterId = new SQLiteParameter("@ID",idTablero);
+            SQLiteParameter parameterEstado = new SQLiteParameter("@ESTADO",2);
+
+            using (connectionC)
+            {
+                connectionC.Open();
+                SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
+                commandC.Parameters.Add(parameterId);
+                commandC.Parameters.Add(parameterEstado);
+
+                int rowAffected =  commandC.ExecuteNonQuery();
+                connectionC.Close();
+                if (rowAffected == 0){
+                    throw new Exception("No se encontró ningún tablero con el ID proporcionado.");
+                }
+            }
+        }
         public List<Tablero> GetByOwnerUser(int? idUsuario){
             List<Tablero> tableros = new List<Tablero>();
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
@@ -186,34 +213,6 @@ namespace Proyecto.Repositories{
             }
             return(tableros);
         }
-        public void Disable(int? idTablero){
-            
-            foreach (var tarea in repoTarea.GetByOwnerBoard(idTablero))//inhabilita todos los tableros del usuario a borrar
-            {
-                repoTarea.Disable(tarea.Id);
-            }
-
-            SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
-            
-            string queryC = "UPDATE Tablero SET estado = @ESTADO WHERE id = @ID";
-            SQLiteParameter parameterId = new SQLiteParameter("@ID",idTablero);
-            SQLiteParameter parameterEstado = new SQLiteParameter("@ESTADO",2);
-
-            using (connectionC)
-            {
-                connectionC.Open();
-                SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
-                commandC.Parameters.Add(parameterId);
-                commandC.Parameters.Add(parameterEstado);
-
-                int rowAffected =  commandC.ExecuteNonQuery();
-                connectionC.Close();
-                if (rowAffected == 0){
-                    throw new Exception("No se encontró ningún tablero con el ID proporcionado.");
-                }
-            }
-        }
-
         public List<Tablero> GetByUserAsignedTask(int? idUsuario){
             List<Tablero> tableros = new List<Tablero>();
 

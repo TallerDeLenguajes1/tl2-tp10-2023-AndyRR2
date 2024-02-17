@@ -1,4 +1,4 @@
-using System.Data.SQLite;//Necesario para uso de SQLite
+using System.Data.SQLite;
 
 using Proyecto.Models;
 
@@ -9,7 +9,6 @@ namespace Proyecto.Repositories{
         {
             direccionBD = cadenaDeConexion;
         }
-
         public List<Tarea> GetAll(){
             List<Tarea> tareas = new List<Tarea>();
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
@@ -45,7 +44,6 @@ namespace Proyecto.Repositories{
             }
             return tareas;
         }
-
         public Tarea GetById(int? idTarea){
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             Tarea tareaSelec = new Tarea();
@@ -76,11 +74,10 @@ namespace Proyecto.Repositories{
                 connectionC.Close();
             }
             if (tareaSelec == null){
-                throw new Exception("La Tarea no esta creada.");
+                throw new Exception("No se encontró ninguna tarea con el ID proporcionado.");
             }
             return(tareaSelec);
         }
-
         public void Create(Tarea newTarea){
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
@@ -112,7 +109,6 @@ namespace Proyecto.Repositories{
                 throw new Exception("La Tarea no se creo correctamente.");
             }
         }
-
         public void Update(Tarea tareaAEditar){
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
@@ -160,7 +156,6 @@ namespace Proyecto.Repositories{
                 }
             }
         }
-
         public void Assign(int? idTarea, int? idUsuario){
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
@@ -180,6 +175,27 @@ namespace Proyecto.Repositories{
                 if (rowsAffected == 0){
                     throw new Exception("No se encontró ninguna tarea con el ID proporcionado.");
                 }   
+            }
+        }
+        public void Disable(int? idTarea){
+            SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
+            
+            string queryC = "UPDATE Tarea SET estado = @ESTADO WHERE id = @ID";
+            SQLiteParameter parameterId = new SQLiteParameter("@ID",idTarea);
+            SQLiteParameter parameterEstado = new SQLiteParameter("@ESTADO",6);
+
+            using (connectionC)
+            {
+                connectionC.Open();
+                SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
+                commandC.Parameters.Add(parameterId);
+                commandC.Parameters.Add(parameterEstado);
+
+                int rowAffected =  commandC.ExecuteNonQuery();
+                connectionC.Close();
+                if (rowAffected == 0){
+                    throw new Exception("No se encontró ninguna tarea con el ID proporcionado.");
+                }
             }
         }
         public List<Tarea> GetByOwnerBoard(int? idTablero){
@@ -219,7 +235,6 @@ namespace Proyecto.Repositories{
             }
             return(tareas);
         }
-
         public List<Tarea> GetByOwnerUser(int? idUsuario){
             List<Tarea> tareas = new List<Tarea>();
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
@@ -257,28 +272,6 @@ namespace Proyecto.Repositories{
             }
             return(tareas);
         }
-        public void Disable(int? idTarea){
-            SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
-            
-            string queryC = "UPDATE Tarea SET estado = @ESTADO WHERE id = @ID";
-            SQLiteParameter parameterId = new SQLiteParameter("@ID",idTarea);
-            SQLiteParameter parameterEstado = new SQLiteParameter("@ESTADO",6);
-
-            using (connectionC)
-            {
-                connectionC.Open();
-                SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
-                commandC.Parameters.Add(parameterId);
-                commandC.Parameters.Add(parameterEstado);
-
-                int rowAffected =  commandC.ExecuteNonQuery();
-                connectionC.Close();
-                if (rowAffected == 0){
-                    throw new Exception("No se encontró ninguna tarea con el ID proporcionado.");
-                }
-            }
-        }
-
         public bool ChechAsignedTask(int? idTablero, int? idUsuario){
             bool validacion = false;
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
@@ -306,7 +299,7 @@ namespace Proyecto.Repositories{
             }
             if (validacion == false)
             {
-                throw new Exception("No se encontraron tareas asignadas en la base de datos.");
+                throw new Exception("No se encontraron tareas asignadas al tablero proporcionado en la base de datos.");
             }
             return validacion;
         }
