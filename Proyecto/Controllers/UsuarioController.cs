@@ -105,10 +105,14 @@ namespace Proyecto.Controllers{
             { 
                 if(!ModelState.IsValid) return RedirectToAction("Index","Login");
                 if(!isLogin()) return RedirectToAction("Index","Login"); 
-
-                Usuario usuarioAEditar = Usuario.FromEditarUsuario(usuarioAEditarVM);//convertir de EditarUsuarioViewModel a Usuario
-                repoUsuario.Update(usuarioAEditar);
-                return RedirectToAction("Index");
+                if(usuarioAEditarVM.ContraseniaActual == HttpContext.Session.GetString("Contrasenia")){
+                    Usuario usuarioAEditar = Usuario.FromEditarUsuario(usuarioAEditarVM);//convertir de EditarUsuarioViewModel a Usuario
+                    repoUsuario.Update(usuarioAEditar);
+                    return RedirectToAction("Index");
+                }else{
+                    _logger.LogInformation($"La contraseña ingresada es incorrecta");
+                    return NotFound();
+                }
             }
             catch (Exception ex)
             {

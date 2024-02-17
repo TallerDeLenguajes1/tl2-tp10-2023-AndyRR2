@@ -13,6 +13,7 @@ namespace Proyecto.ViewModels{
 
         [Required(ErrorMessage = "Este campo es requerido.")]
         [Display(Name = "Nombre")]
+        [MaxLength(20)]
         public string? Nombre{get;set;}
 
         [Required(ErrorMessage = "Este campo es requerido.")]
@@ -21,6 +22,7 @@ namespace Proyecto.ViewModels{
 
         [Required(ErrorMessage = "Este campo es requerido.")]
         [Display(Name = "Descripcion")]
+        [MaxLength(30)]
         public string? Descripcion{get;set;}
 
         [Required(ErrorMessage = "Este campo es requerido.")]

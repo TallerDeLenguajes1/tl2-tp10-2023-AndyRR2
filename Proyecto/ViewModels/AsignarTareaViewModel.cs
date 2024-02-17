@@ -4,13 +4,11 @@ using Proyecto.Models;
 
 namespace Proyecto.ViewModels{
     public class AsignarTareaViewModel{
-        [Display(Name = "Id")]
         public int? Id{get;set;}
 
         [Required(ErrorMessage = "Este campo es requerido.")]
         [Display(Name = "Id Usuario Asignado")]
         public int? IdUsuarioAsignado{get;set;}
-
         public List<int?> IdUsuarios{get;set;}
 
         public AsignarTareaViewModel(){

@@ -1,4 +1,5 @@
 Programador: Andy Alejandro Rodriguez Rodriguez
+Git: https://github.com/TallerDeLenguajes1/tl2-tp10-2023-AndyRR2/tree/main/Proyecto
 
 *Controladores y controles de Login y Niveles de Acceso:
 UsuarioController:
@@ -25,7 +26,10 @@ TableroController:
                       Cualquier usuario Logueado puede eliminar un tablero si es el usuario propietario. 
 
 TareaController:
-    -Index:
+    -Index: Debe estar Logueado
+            Solo el Administrador tiene permitido ver todas las tareas
+            Un Administrador puede ver las tareas de cualquier tablero por individual
+            Cualquier usuario Logueado puede ver las tareas de los tableros donde es usuario propietario o tiene una tarea asignada
     -AgregarTarea: Solo permitido para usuarios Logueados que sean Administradores.
     -EditarTarea: Debe estar logueado
                   Un Administrador puede editar cualquier tarea.
@@ -35,7 +39,7 @@ TareaController:
                     Cualquier usuario Logueado puede eliminar una tarea si es el usuario propietario. 
     -AsignarTarea: Debe estar logueado
                    Un Administrador puede asignar un usuario a cualquier tarea.
-                   Cualquier usuario Logueado puede asignar un usuario una tarea si es el usuario propietario. 
+                   Cualquier usuario Logueado puede asignar un usuario a una tarea si es el usuario propietario. 
 
 
 

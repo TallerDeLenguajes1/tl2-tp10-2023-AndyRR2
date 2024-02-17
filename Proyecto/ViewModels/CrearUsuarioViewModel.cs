@@ -8,10 +8,13 @@ namespace Proyecto.ViewModels{
 
         [Required(ErrorMessage = "Este campo es requerido.")]
         [Display(Name = "Nombre")]
+        [MaxLength(20)]
         public string? Nombre{get;set;}
 
         [Required(ErrorMessage = "Este campo es requerido.")]
-        [PasswordPropertyText]
+        [DataType(DataType.Password)]
+        [RegularExpression(@"^(?=.*[A-Z]).+$", ErrorMessage = "La contraseña debe contener al menos una letra mayúscula.")]
+        [MinLength(8)]
         [Display(Name = "Contraseña")]
         public string? Contrasenia{get;set;}
 

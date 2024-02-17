@@ -6,20 +6,18 @@ using Proyecto.ViewModels;
 
 namespace Proyecto.Controllers{
     public class TareaController: Controller{
-        private readonly string direccionBD;
         private readonly ITareaRepository repoTarea;
         private readonly IUsuarioRepository repoUsuario;
         private readonly ITableroRepository repoTablero;
         private readonly ILoginRepository repoLogin;
         private readonly ILogger<HomeController> _logger;
-        public TareaController(ILogger<HomeController> logger, ITareaRepository tareRepo, string cadenaDeConexion, IUsuarioRepository usuRepo, ITableroRepository tabRepo, ILoginRepository logRepo) 
+        public TareaController(ILogger<HomeController> logger, ITareaRepository tareRepo, IUsuarioRepository usuRepo, ITableroRepository tabRepo, ILoginRepository logRepo) 
         {
             _logger = logger;
             repoTarea = tareRepo;
             repoUsuario = usuRepo;
             repoTablero = tabRepo;
             repoLogin = logRepo;
-            direccionBD = cadenaDeConexion;
         }
 
         public IActionResult Index(int? idTablero){
@@ -64,7 +62,7 @@ namespace Proyecto.Controllers{
                 if(!isAdmin()) return NotFound();
 
                 CrearTareaViewModel newTareaVM = new CrearTareaViewModel();
-                newTareaVM.IdUsuarioAsignado = 0;
+                
 
                 List<Usuario> usuariosEnBD = repoUsuario.GetAll();
                 foreach (var usuario in usuariosEnBD)

@@ -13,6 +13,11 @@
         <span asp-validation-for="@Model.Nombre" class="text-danger"></span> 
     </div>
     <div class="form-group" style="max-width: 200px;">
+        <label asp-for="@Model.ContraseniaActual"></label>
+        <input asp-for="@Model.ContraseniaActual" class="form-control" id="contrasenia actual" />
+        <span asp-validation-for="@Model.ContraseniaActual" class="text-danger"></span>   
+    </div>
+    <div class="form-group" style="max-width: 200px;">
         <label asp-for="@Model.Contrasenia"></label>
         <input asp-for="@Model.Contrasenia" class="form-control" id="contrasenia" />
         <span asp-validation-for="@Model.Contrasenia" class="text-danger"></span>   

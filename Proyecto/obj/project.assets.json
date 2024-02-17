@@ -1968,11 +1968,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\andya\\OneDrive\\Escritorio\\Proyecto_Final_TL2\\Proyecto\\Proyecto.csproj",
+      "projectUniqueName": "C:\\Taller_2\\Tp10-11\\tl2-tp10-2023-AndyRR2\\Proyecto\\Proyecto.csproj",
       "projectName": "Proyecto",
-      "projectPath": "C:\\Users\\andya\\OneDrive\\Escritorio\\Proyecto_Final_TL2\\Proyecto\\Proyecto.csproj",
+      "projectPath": "C:\\Taller_2\\Tp10-11\\tl2-tp10-2023-AndyRR2\\Proyecto\\Proyecto.csproj",
       "packagesPath": "C:\\Users\\andya\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\andya\\OneDrive\\Escritorio\\Proyecto_Final_TL2\\Proyecto\\obj\\",
+      "outputPath": "C:\\Taller_2\\Tp10-11\\tl2-tp10-2023-AndyRR2\\Proyecto\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\andya\\AppData\\Roaming\\NuGet\\NuGet.Config"

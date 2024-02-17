@@ -13,7 +13,7 @@
                 <div class="action-buttons">
                     <th>
                         <a class="btn btn-success" asp-controller="Tarea" asp-action="AgregarTarea">Agregar Tarea</a>
-                        <a class="btn btn-info" asp-controller="Usuario" asp-action="Index" asp-route-idTablero=null>Volver Usuarios</a>
+                        <a class="btn btn-info" asp-controller="Usuario" asp-action="Index" asp-route-idTablero=null>Volver a Usuarios</a>
                     </th>
                 </div>
             </tr>
@@ -42,7 +42,7 @@
                     <td>
                         <div class="action-buttons">
                             <a class="btn btn-primary" asp-controller="Tarea" asp-action="CambiarEstadoTarea" asp-route-idTarea="@tarea.Id">Cambiar Estado</a>
-                            <a class="btn btn-primary" asp-controller="Tarea" asp-action="AsignarTarea" asp-route-idTarea="@tarea.Id">Asignar a Usuario</a>
+                            <a class="btn btn-primary" asp-controller="Tarea" asp-action="AsignarTarea" asp-route-idTarea="@tarea.Id">Asignar Usuario</a>
                         </div>
                         <div class="action-buttons" style="margin-top: 10px;">
                             <a class="btn btn-primary" asp-controller="Tarea" asp-action="EditarTarea" asp-route-idTarea="@tarea.Id">Editar</a>

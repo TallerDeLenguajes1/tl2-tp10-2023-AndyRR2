@@ -10,6 +10,7 @@ namespace Proyecto.ViewModels{
 
         [Required(ErrorMessage = "Este campo es requerido.")]
         [Display(Name = "Nombre")]
+        [MaxLength(20)]
         public string? Nombre{get;set;}
 
         [Required(ErrorMessage = "Este campo es requerido.")]
@@ -18,14 +19,12 @@ namespace Proyecto.ViewModels{
 
         [Required(ErrorMessage = "Este campo es requerido.")]
         [Display(Name = "Descripcion")]
+        [MaxLength(30)]
         public string? Descripcion{get;set;}
 
         [Required(ErrorMessage = "Este campo es requerido.")]
         [Display(Name = "Color")]
         public Color Color{get;set;}
-
-        [Display(Name = "Id Usuario Asignado")]
-        public int? IdUsuarioAsignado{get;set;}
 
         [Required(ErrorMessage = "Este campo es requerido.")]
         [Display(Name = "Id Usuario Propietario")]
@@ -38,13 +37,12 @@ namespace Proyecto.ViewModels{
             IdTableros = new List<int?>();
             IdUsuarios = new List<int?>();
         }
-        public CrearTareaViewModel(int? idTablero, string? nombre, EstadoTarea estado, string? descripcion, Color color, int? idUsuarioAsig, int? idUsuarioProp, List<int?> idTableros, List<int?> idUsuarios){
+        public CrearTareaViewModel(int? idTablero, string? nombre, EstadoTarea estado, string? descripcion, Color color, int? idUsuarioProp, List<int?> idTableros, List<int?> idUsuarios){
             IdTablero=idTablero;
             Nombre=nombre;
             EstadoTarea=estado;
             Descripcion=descripcion;
             Color=color;
-            IdUsuarioAsignado=idUsuarioAsig;
             IdUsuarioPropietario=idUsuarioProp;
             IdTableros=idTableros;
             IdUsuarios=idUsuarios;

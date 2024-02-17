@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Dm0HSM7vnWoNYl1DkZAuS3vosOkGRhI2gHp9Fe0Js/Tej9jAVwarzj28SSj5T7i9R9Eikcz0dSdX3bGou8pu0Q==",
+  "dgSpecHash": "HUiJEZa/WCxgflQNY0LUtMEwN1jtUqFWZizf8rnPejd+qOzGZolQeyto52BxHp5mYqi7545WMEccBVLpDGPAVA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\andya\\OneDrive\\Escritorio\\Proyecto_Final_TL2\\Proyecto\\Proyecto.csproj",
+  "projectFilePath": "C:\\Taller_2\\Tp10-11\\tl2-tp10-2023-AndyRR2\\Proyecto\\Proyecto.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\andya\\.nuget\\packages\\entityframework\\6.4.4\\entityframework.6.4.4.nupkg.sha512",
     "C:\\Users\\andya\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\2.2.0\\microsoft.aspnetcore.cryptography.internal.2.2.0.nupkg.sha512",

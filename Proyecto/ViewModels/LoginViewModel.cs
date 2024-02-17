@@ -6,10 +6,11 @@ namespace Proyecto.ViewModels{
 
         [Required(ErrorMessage = "Este campo es requerido.")]
         [Display(Name = "Nombre")]
+        [MaxLength(20)]
         public string? Nombre{get;set;}
 
         [Required(ErrorMessage = "Este campo es requerido.")]
-        [PasswordPropertyText]
+        [DataType(DataType.Password)]
         [Display(Name = "Contraseña")]
         public string? Contrasenia{get;set;}
 
