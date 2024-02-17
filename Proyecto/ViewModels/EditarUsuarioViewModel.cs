@@ -5,9 +5,6 @@ using Proyecto.Models;
 
 namespace Proyecto.ViewModels{
     public class EditarUsuarioViewModel{
-
-        [Required(ErrorMessage = "Este campo es requerido.")]
-        [Display(Name = "Id")]
         public int? Id{get;set;}
 
         [Required(ErrorMessage = "Este campo es requerido.")]

@@ -4,7 +4,6 @@ using Proyecto.Models;
 
 namespace Proyecto.ViewModels{
     public class EditarTareaViewModel{
-        [Display(Name = "Id")]
         public int? Id{get;set;}
 
         [Required(ErrorMessage = "Este campo es requerido.")]

@@ -4,7 +4,6 @@ using Proyecto.Models;
 
 namespace Proyecto.ViewModels{
     public class ListarUsuarioViewModel{
-        [Display(Name = "Id")]
         public int? Id{get;set;}
 
         [Display(Name = "Nombre")]
