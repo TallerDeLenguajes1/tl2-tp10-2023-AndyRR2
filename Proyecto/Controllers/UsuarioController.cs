@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;//Necesario para eredar el Controller proporcionado
+using Microsoft.AspNetCore.Mvc;//Necesario para heredar el Controller proporcionado
 
 using Proyecto.Repositories;
 using Proyecto.Models;
@@ -6,25 +6,24 @@ using Proyecto.ViewModels;
 
 namespace Proyecto.Controllers{
     public class UsuarioController: Controller{
-        private readonly string direccionBD;
         private readonly IUsuarioRepository repoUsuario;
         private readonly ILoginRepository repoLogin;
         private readonly ILogger<HomeController> _logger;
-        public UsuarioController(ILogger<HomeController> logger, IUsuarioRepository usuRepo, string cadenaDeConexion, ILoginRepository logRepo) 
+        public UsuarioController(ILogger<HomeController> logger, IUsuarioRepository usuRepo, ILoginRepository logRepo) 
         {
             _logger = logger;
             repoUsuario = usuRepo;
             repoLogin = logRepo;
-            direccionBD = cadenaDeConexion;
         }
 
         public IActionResult Index(){
             try
             {
-                if(!isLogin()) return RedirectToAction("Index","Login"); 
+                if(!isLogin()) return RedirectToAction("Index","Login");
 
-                List<Usuario> usuarios = repoUsuario.GetAll();
-                List<ListarUsuarioViewModel> listaUsuariosVM = ListarUsuarioViewModel.FromUsuario(usuarios);
+                List<Usuario> listaUsuarios = repoUsuario.GetAll();
+                List<ListarUsuarioViewModel> listaUsuariosVM = ListarUsuarioViewModel.FromUsuario(listaUsuarios);
+
                 return View(listaUsuariosVM);
             }
             catch (Exception ex)
@@ -42,6 +41,7 @@ namespace Proyecto.Controllers{
                 if(!isAdmin()) return NotFound();
 
                 CrearUsuarioViewModel newUsuarioVM = new CrearUsuarioViewModel();
+
                 return View(newUsuarioVM);
             }
             catch (Exception ex)
@@ -60,6 +60,7 @@ namespace Proyecto.Controllers{
 
                 Usuario newUsuario = Usuario.FromCrearUsuario(newUsuarioVM);
                 repoUsuario.Create(newUsuario);
+
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -75,22 +76,23 @@ namespace Proyecto.Controllers{
             {
                 if(!isLogin()) return RedirectToAction("Index","Login"); 
 
-                Usuario usuarioAEditar = repoUsuario.GetById(idUsuario);
-                EditarUsuarioViewModel usuarioAEditarVM = new EditarUsuarioViewModel();
-
-                if (isAdmin()){
-                    usuarioAEditarVM = EditarUsuarioViewModel.FromUsuario(usuarioAEditar);
-                }else if(idUsuario.HasValue){
-                    //comparamos el id del usuario logueado con el del usuario que se quiere editar
+                if(!idUsuario.HasValue) return NotFound();//Verifica que tenga un Valor asignado
+                Usuario usuarioAEditar = repoUsuario.GetById(idUsuario);//Obtengo el usuario de la DB con el Modelo base
+                EditarUsuarioViewModel usuarioAEditarVM = new EditarUsuarioViewModel();//Instancia inicial del ViewModel
+                
+                if (isAdmin()){//Si es Admin puede editarlo
+                    usuarioAEditarVM = EditarUsuarioViewModel.FromUsuario(usuarioAEditar);//Convierto de Model a ViewModel
+                }
+                else{
+                    //Verifica si el id del usuario logueado es el mismo que el del usuario que se quiere editar
                     Usuario usuarioLogeado = repoLogin.ObtenerUsuario(HttpContext.Session.GetString("Nombre"),HttpContext.Session.GetString("Contrasenia"));
-                    if (usuarioLogeado.Id == idUsuario){
-                        usuarioAEditarVM = EditarUsuarioViewModel.FromUsuario(usuarioAEditar);
+                    if (usuarioLogeado.Id == idUsuario){//Si coinciden los Id puede editarlo
+                        usuarioAEditarVM = EditarUsuarioViewModel.FromUsuario(usuarioAEditar);//Convierto de Model a ViewModel
                     }else{
                         return NotFound();
                     }
-                }else{
-                    return NotFound();
                 }
+
                 return View(usuarioAEditarVM);
             }
             catch (Exception ex)
@@ -105,13 +107,15 @@ namespace Proyecto.Controllers{
             { 
                 if(!ModelState.IsValid) return RedirectToAction("Index","Login");
                 if(!isLogin()) return RedirectToAction("Index","Login"); 
-                if(usuarioAEditarVM.ContraseniaActual == HttpContext.Session.GetString("Contrasenia")){
-                    Usuario usuarioAEditar = Usuario.FromEditarUsuario(usuarioAEditarVM);//convertir de EditarUsuarioViewModel a Usuario
+
+                //Verifica si la contraseña Actual ingresada coincide con la del mismo usuario en la DB
+                if(usuarioAEditarVM.ContraseniaActual == repoUsuario.GetById(usuarioAEditarVM.Id).Contrasenia){
+                    Usuario usuarioAEditar = Usuario.FromEditarUsuario(usuarioAEditarVM);//Convierto de ViewModel a Model
                     repoUsuario.Update(usuarioAEditar);
                     return RedirectToAction("Index");
                 }else{
                     _logger.LogInformation($"La contraseña ingresada es incorrecta");
-                    return NotFound();
+                    return RedirectToAction("EditarUsuario", new { idUsuario = usuarioAEditarVM.Id });//Regresa a EditarUsuario con el mismo Id del usuario que se queria editar
                 }
             }
             catch (Exception ex)
@@ -127,20 +131,19 @@ namespace Proyecto.Controllers{
             {
                 if(!isLogin()) return RedirectToAction("Index","Login"); 
 
-                Usuario usuarioAEliminar = repoUsuario.GetById(idUsuario);
+                if(!idUsuario.HasValue) return NotFound();
+                Usuario usuarioAEliminar = repoUsuario.GetById(idUsuario);//Obtengo el usuario por su Id
 
-                if (isAdmin()){
+                if (isAdmin()){//Si es Admin puede Borrarlo
                     return View(usuarioAEliminar);
-                }else if(idUsuario.HasValue){
-                    //comparamos el id del usuario logueado con el del usuario que se quiere eliminar
+                }else{
+                    //Verifica si el id del usuario logueado es el mismo que el del usuario que se quiere Borrar
                     Usuario usuarioLogeado = repoLogin.ObtenerUsuario(HttpContext.Session.GetString("Nombre"),HttpContext.Session.GetString("Contrasenia"));
-                    if (usuarioLogeado.Id == idUsuario){
+                    if (usuarioLogeado.Id == idUsuario){//Si coinciden los Id puede Borrarlo
                         return View(usuarioAEliminar);
                     }else{
                         return NotFound();
                     }
-                }else{
-                    return NotFound();
                 }
             }
             catch (Exception ex)
@@ -181,6 +184,5 @@ namespace Proyecto.Controllers{
                 return false;
             }
         }
-
     }
 }

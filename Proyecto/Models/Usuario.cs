@@ -24,6 +24,7 @@ namespace Proyecto.Models{
         public static Usuario FromEditarUsuario(EditarUsuarioViewModel usuarioVM){
             return new Usuario
             {
+                Id=usuarioVM.Id,
                 Nombre=usuarioVM.Nombre,
                 Contrasenia=usuarioVM.Contrasenia,
                 NivelDeAcceso=usuarioVM.NivelDeAcceso

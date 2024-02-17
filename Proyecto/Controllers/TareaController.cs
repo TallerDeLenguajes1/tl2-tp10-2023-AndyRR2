@@ -27,21 +27,26 @@ namespace Proyecto.Controllers{
 
                 List<Tarea> tareas = new List<Tarea>();
 
-                if(isAdmin()){
+                if(isAdmin()){//Si es Admin puede ver todas las tareas
+                    /*Si el idTablero tiene un Valor o es Nulo obtiene las tareas de ese tablero
+                    ***Se hace énfasis en idUsuario.HasValue ya que segun los enlaces del Index de Tablero se puede acceder a...
+                    las tareas de un tablero seleccionado o a TODAS las tareas de todos los Tableros, y segun lo que se elija,
+                    el parámetro en la ruta tendra un Valor cuando se selecciona un tablero en especifico por lo tanto solo se mostraran
+                    las tareas de ese tablero, o sera un texto "null" si se selecciona ver todas las Tareas*/
                     if (idTablero.HasValue){
                         tareas = repoTarea.GetByOwnerBoard(idTablero);
                     }else{
                         tareas = repoTarea.GetAll();
                     }
-                }else if(idTablero.HasValue){
+                }else{
+                    /*Si no es Admin solo puede acceder a ver las tareas que pertenezcan a los Tableros donde
+                    estos tableros sean propiedad del usuario logueado o tengan alguna tarea asignada al usuario*/
                     Usuario usuarioLogeado = repoLogin.ObtenerUsuario(HttpContext.Session.GetString("Nombre"),HttpContext.Session.GetString("Contrasenia"));
                     if ((repoTablero.GetById(idTablero).IdUsuarioPropietario == usuarioLogeado.Id) || repoTarea.ChechAsignedTask(idTablero,usuarioLogeado.Id)){
                         tareas = repoTarea.GetByOwnerBoard(idTablero);   
                     }else{
                         return NotFound();
                     }
-                }else{
-                    return NotFound();
                 }
 
                 List<ListarTareaViewModel> listaTareasVM = ListarTareaViewModel.FromTarea(tareas);
@@ -64,17 +69,17 @@ namespace Proyecto.Controllers{
                 CrearTareaViewModel newTareaVM = new CrearTareaViewModel();
 
                 List<Usuario> usuariosEnBD = repoUsuario.GetAll();
-                foreach (var usuario in usuariosEnBD)
+                foreach (var usuario in usuariosEnBD)//Obtiene las lista de Id de Usuarios disponibles para seleccionar
                 {
                     (newTareaVM.IdUsuarios).Add(usuario.Id);
                 }
 
                 List<Tablero> tablerosEnBD = repoTablero.GetAll();
-                foreach (var tablero in tablerosEnBD)
+                foreach (var tablero in tablerosEnBD)//Obtiene las lista de Id de Tableros disponibles para seleccionar
                 {
                     (newTareaVM.IdTableros).Add(tablero.Id);
                 }
-                if((newTareaVM.IdTableros).Count == 0){
+                if((newTareaVM.IdTableros).Count == 0){//Si no hay tableros no puede crear Tareas
                     return NotFound();
                 }
                 return View(newTareaVM);
@@ -95,7 +100,7 @@ namespace Proyecto.Controllers{
 
                 Tarea newTarea = Tarea.FromCrearTareaViewModel(newTareaVM);
                 repoTarea.Create(newTarea);
-                return RedirectToAction("Index", new { iTablero = newTarea.IdTablero });
+                return RedirectToAction("Index", new { iTablero = newTarea.IdTablero });//Redirecciona al index con el idDelTablero
             }
             catch (Exception ex)
             {
@@ -110,24 +115,24 @@ namespace Proyecto.Controllers{
             {
                 if(!isLogin()) return RedirectToAction("Index","Login");
 
+                if(!idTarea.HasValue) return NotFound();
                 Tarea tareaAEditar = repoTarea.GetById(idTarea);
                 EditarTareaViewModel tareaAEditarVM = new EditarTareaViewModel();
                 
-                if (isAdmin()){
+                if (isAdmin()){//Si es Admin puede editarla
                     tareaAEditarVM = EditarTareaViewModel.FromTarea(tareaAEditar);
-                }else if (idTarea.HasValue){
+                }else{
+                    //Verifica si el id del usuario logueado es el mismo que el del usuario propietario de la Tarea que se quiere editar
                     Usuario usuarioLogeado = repoLogin.ObtenerUsuario(HttpContext.Session.GetString("Nombre"),HttpContext.Session.GetString("Contrasenia"));
                     if (usuarioLogeado.Id == repoTarea.GetById(idTarea).IdUsuarioPropietario){
-                        tareaAEditarVM = EditarTareaViewModel.FromTarea(tareaAEditar);
+                        tareaAEditarVM = EditarTareaViewModel.FromTarea(tareaAEditar);//Convierto de Model a ViewModel
                     }else{
                         return NotFound();
                     }
-                }else{
-                    return NotFound();
                 }
 
                 List<Tablero> tablerosEnBD = repoTablero.GetAll();
-                foreach (var tablero in tablerosEnBD)
+                foreach (var tablero in tablerosEnBD)//Obtiene las lista de Id de Tableros disponibles para seleccionar
                 {
                     (tareaAEditarVM.IdTableros).Add(tablero.Id);
                 }
@@ -163,19 +168,19 @@ namespace Proyecto.Controllers{
             {
                 if(!isLogin()) return RedirectToAction("Index","Login");
 
+                if(!idTarea.HasValue) return NotFound();
                 Tarea tareaAEliminar = repoTarea.GetById(idTarea);
 
-                if (isAdmin()){
+                if (isAdmin()){//Si es Admin puede Borrarla
                     return View(tareaAEliminar);
-                }else if(idTarea.HasValue){
+                }else{
+                    //Verifica si el id del usuario logueado es el mismo que el del usuario propietario de la Tarea que se quiere Borrar
                     Usuario usuarioLogeado = repoLogin.ObtenerUsuario(HttpContext.Session.GetString("Nombre"),HttpContext.Session.GetString("Contrasenia"));
                     if (usuarioLogeado.Id == repoTarea.GetById(idTarea).IdUsuarioPropietario){
                         return View(tareaAEliminar);
                     }else{
                         return NotFound();
                     }
-                }else{
-                    return NotFound();
                 }
             }
             catch (Exception ex)
@@ -205,11 +210,15 @@ namespace Proyecto.Controllers{
             try
             {
                 if(!isLogin()) return RedirectToAction("Index","Login");
+
+                if(!idTarea.HasValue) return NotFound();
                 Tarea tareaSelec = repoTarea.GetById(idTarea);
                 AsignarTareaViewModel tareaSelecVM = new AsignarTareaViewModel();
-                if (isAdmin()){
+
+                if (isAdmin()){//Si es Admin puede Asignarla
                     tareaSelecVM = AsignarTareaViewModel.FromTarea(tareaSelec);
-                }else if (idTarea.HasValue){
+                }else{
+                    //Verifica que el id del usuario logueado sea el mismo que el del usuario propietario de la Tarea a Asignar
                     Usuario usuarioLogeado = repoLogin.ObtenerUsuario(HttpContext.Session.GetString("Nombre"),HttpContext.Session.GetString("Contrasenia"));
                     if (usuarioLogeado.Id == repoTarea.GetById(idTarea).IdUsuarioPropietario){
                         tareaSelecVM = AsignarTareaViewModel.FromTarea(tareaSelec);
@@ -217,11 +226,9 @@ namespace Proyecto.Controllers{
                         return NotFound();
                     }
                 }
-                else{
-                    return NotFound();
-                }
+                
                 List<Usuario> usuariosEnBD = repoUsuario.GetAll();
-                foreach (var usuario in usuariosEnBD)
+                foreach (var usuario in usuariosEnBD)//Obtiene las lista de Id de Usuarios disponibles para seleccionar
                 {
                     (tareaSelecVM.IdUsuarios).Add(usuario.Id);
                 }
@@ -255,21 +262,22 @@ namespace Proyecto.Controllers{
             {
                 if(!isLogin()) return RedirectToAction("Index","Login");
 
+                if(!idTarea.HasValue) return NotFound();
                 Tarea tareaAEditar = repoTarea.GetById(idTarea);
                 EditarTareaViewModel tareaAEditarVM = new EditarTareaViewModel();
                 
-                if (isAdmin()){
+                if (isAdmin()){//Si es Admin puede Cambiar el Estado
                     tareaAEditarVM = EditarTareaViewModel.FromTarea(tareaAEditar);
-                }else if (idTarea.HasValue){
+                }else{
+                    //Verifica que el id del usuario logueado sea el mismo que el usuario Propietario o el del usuario Asignado a la Tarea
                     Usuario usuarioLogeado = repoLogin.ObtenerUsuario(HttpContext.Session.GetString("Nombre"),HttpContext.Session.GetString("Contrasenia"));
                     if ((usuarioLogeado.Id == repoTarea.GetById(idTarea).IdUsuarioPropietario) || (usuarioLogeado.Id == repoTarea.GetById(idTarea).IdUsuarioAsignado)){
                         tareaAEditarVM = EditarTareaViewModel.FromTarea(tareaAEditar);
                     }else{
                         return NotFound();
                     }
-                }else{
-                    return NotFound();
                 }
+
                 return View(tareaAEditarVM);
             }
             catch (Exception ex)
