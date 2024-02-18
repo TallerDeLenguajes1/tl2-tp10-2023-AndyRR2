@@ -10,5 +10,6 @@ namespace Proyecto.Repositories{
         public void Disable(int? idTablero);
         public List<Tablero> GetByOwnerUser(int? idUsuario);
         public List<Tablero> GetByUserAsignedTask(int? idUsuario);
+        public bool BoardExists(string? nombreTablero);
     }
 }

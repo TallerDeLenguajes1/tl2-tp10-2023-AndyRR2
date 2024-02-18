@@ -79,6 +79,10 @@ namespace Proyecto.Repositories{
             return(tareaSelec);
         }
         public void Create(Tarea newTarea){
+            if (TaskExists(newTarea.Nombre))
+            {
+                throw new Exception("La Tarea ya existe.");
+            }
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
             string queryC = $"INSERT INTO Tarea (id_tablero,nombre,estado,descripcion,color,id_usuario_asignado,id_usuario_propietario) VALUES (@IDTAB,@NAME,@ESTADO,@DESCRIPCION,@COLOR,@IDUSUA,@IDUSUP)";
@@ -110,6 +114,10 @@ namespace Proyecto.Repositories{
             }
         }
         public void Update(Tarea tareaAEditar){
+            if (TaskExists(tareaAEditar.Nombre))
+            {
+                throw new Exception("La Tarea ya existe.");
+            }
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
             string queryC = "UPDATE Tarea SET nombre = @NAME, descripcion = @DESCRIPCION, id_tablero = @IDTAB, estado = @ESTADO, color = @COLOR WHERE id = @ID;";
@@ -300,6 +308,28 @@ namespace Proyecto.Repositories{
             if (validacion == false)
             {
                 throw new Exception("No se encontraron tareas asignadas al tablero proporcionado en la base de datos.");
+            }
+            return validacion;
+        }
+        public bool TaskExists(string? nombreTarea){
+            bool validacion=true;
+            SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
+
+            string queryC = "SELECT * FROM Tarea WHERE nombre = @NAME";
+            SQLiteParameter parameterName = new SQLiteParameter("@NAME",nombreTarea);
+
+            using(connectionC)
+            {
+                connectionC.Open();
+                SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
+                commandC.Parameters.Add(parameterName);
+                
+                int rowsAffected = commandC.ExecuteNonQuery();
+                
+                if (rowsAffected == 0){
+                    validacion=false;
+                }
+                connectionC.Close();
             }
             return validacion;
         }

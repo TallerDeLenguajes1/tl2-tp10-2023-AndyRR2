@@ -77,6 +77,10 @@ namespace Proyecto.Repositories{
             return(usuarioSelec);
         }
         public void Create(Usuario newUsuario){
+            if ((UserExists(newUsuario.Nombre)))
+            {
+                throw new Exception("El Usuario ya existe.");
+            }
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             
             string queryC = $"INSERT INTO Usuario (nombre_de_usuario, contrasenia, nivel_de_acceso) VALUES (@NAME,@PASS,@NIVEL)";
@@ -100,6 +104,10 @@ namespace Proyecto.Repositories{
             }
         }
         public void Update(Usuario newUsuario){
+            if ((UserExists(newUsuario.Nombre)))
+            {
+                throw new Exception("El Usuario ya existe.");
+            }
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             
             string queryC = "UPDATE Usuario SET nombre_de_usuario = @NAME, contrasenia = @PASS, nivel_de_acceso = @NIVEL WHERE id = @ID";
@@ -155,6 +163,29 @@ namespace Proyecto.Repositories{
                 }
                 connectionC.Close();
             }
+        }
+
+        public bool UserExists(string? nombreUsuario){
+            bool validacion=true;
+            SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
+
+            string queryC = "SELECT * FROM Usuario WHERE nombre_de_usuario = @NAME";
+            SQLiteParameter parameterName = new SQLiteParameter("@NAME",nombreUsuario);
+
+            using(connectionC)
+            {
+                connectionC.Open();
+                SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
+                commandC.Parameters.Add(parameterName);
+                
+                int rowsAffected = commandC.ExecuteNonQuery();
+                
+                if (rowsAffected == 0){
+                    validacion=false;
+                }
+                connectionC.Close();
+            }
+            return validacion;
         }
     }
 }

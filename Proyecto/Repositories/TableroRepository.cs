@@ -77,6 +77,10 @@ namespace Proyecto.Repositories{
         }
 
         public void Create(Tablero newTablero){
+            if ((BoardExists(newTablero.Nombre)))
+            {
+                throw new Exception("El Tablero ya existe.");
+            }
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
             string queryC = $"INSERT INTO Tablero (id_usuario_propietario,nombre_tablero,descripcion,estado) VALUES(@IDUSU,@NAME,@DESCRIPCION,@ESTADO)";
@@ -101,6 +105,10 @@ namespace Proyecto.Repositories{
             }
         }
         public void Update(Tablero newTablero){
+            if ((BoardExists(newTablero.Nombre)))
+            {
+                throw new Exception("El Tablero ya existe.");
+            }
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             
             string queryC = "UPDATE Tablero SET id_usuario_propietario = @IDUSU, nombre_tablero = @NAME, descripcion = @DESCRIPCION, estado = @ESTADO WHERE id = @ID";
@@ -248,6 +256,28 @@ namespace Proyecto.Repositories{
                 throw new Exception("No se encontraron tableros en la base de datos.");
             }
             return (tableros);
+        }
+        public bool BoardExists(string? nombreTablero){
+            bool validacion=true;
+            SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
+
+            string queryC = "SELECT * FROM Tablero WHERE nombre_tablero = @NAME";
+            SQLiteParameter parameterName = new SQLiteParameter("@NAME",nombreTablero);
+
+            using(connectionC)
+            {
+                connectionC.Open();
+                SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
+                commandC.Parameters.Add(parameterName);
+                
+                int rowsAffected = commandC.ExecuteNonQuery();
+                
+                if (rowsAffected == 0){
+                    validacion=false;
+                }
+                connectionC.Close();
+            }
+            return validacion;
         }
     }
 }

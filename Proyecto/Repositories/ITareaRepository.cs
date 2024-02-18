@@ -12,5 +12,6 @@ namespace Proyecto.Repositories{
         public List<Tarea> GetByOwnerBoard(int? idTablero);
         public List<Tarea> GetByOwnerUser(int? idUsuario);
         public bool ChechAsignedTask(int? idUsuario, int? idTablero);
+        public bool TaskExists(string? nombreTarea);
     }
 }

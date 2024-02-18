@@ -7,5 +7,6 @@ namespace Proyecto.Repositories{
         public void Create(Usuario newUsuario);
         public void Update(Usuario newUsuario);
         public void Remove(int? idUsuario);
+        public bool UserExists(string? nombreUsuario);
     }
 }
