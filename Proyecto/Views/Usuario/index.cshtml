@@ -3,7 +3,12 @@
 }
 
 @model List<Proyecto.ViewModels.ListarUsuarioViewModel>
-
+@if(TempData["Mensaje"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["Mensaje"]
+    </div>
+}
 <h1>@ViewData["Title"]</h1>
 
 <div class="table-container">

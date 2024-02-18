@@ -23,7 +23,11 @@ namespace Proyecto.Controllers{
         public IActionResult Index(int? idTablero){
             try
             {
-                if(!isLogin()) return RedirectToAction("Index","Login"); 
+                if(!isLogin())
+                {
+                    TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
+                    return RedirectToAction("Index", "Login");
+                } 
 
                 List<Tarea> tareas = new List<Tarea>();
 
@@ -45,7 +49,8 @@ namespace Proyecto.Controllers{
                     if ((repoTablero.GetById(idTablero).IdUsuarioPropietario == usuarioLogeado.Id) || repoTarea.ChechAsignedTask(idTablero,usuarioLogeado.Id)){
                         tareas = repoTarea.GetByOwnerBoard(idTablero);   
                     }else{
-                        return NotFound();
+                        TempData["Mensaje"] = "Debe ser administrador para realizar esta accion.";
+                        return RedirectToAction("Index", "Usuario");
                     }
                 }
 
@@ -63,8 +68,16 @@ namespace Proyecto.Controllers{
         public IActionResult AgregarTarea(){
             try
             {
-                if(!isLogin()) return RedirectToAction("Index","Login");
-                if(!isAdmin()) return NotFound();
+                if(!isLogin())
+                {
+                    TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
+                    return RedirectToAction("Index", "Login");
+                }
+                if(!isAdmin())
+                {
+                    TempData["Mensaje"] = "Debe ser administrador para realizar esta accion.";
+                    return RedirectToAction("Index", "Usuario");
+                }
 
                 CrearTareaViewModel newTareaVM = new CrearTareaViewModel();
 
@@ -80,7 +93,8 @@ namespace Proyecto.Controllers{
                     (newTareaVM.IdTableros).Add(tablero.Id);
                 }
                 if((newTareaVM.IdTableros).Count == 0){//Si no hay tableros no puede crear Tareas
-                    return NotFound();
+                    TempData["Mensaje"] = "No hay tableros donde puede agregarce la tarea.";
+                    return RedirectToAction("Index", "Usuario");
                 }
                 return View(newTareaVM);
             }
@@ -95,8 +109,16 @@ namespace Proyecto.Controllers{
             try
             {
                 if(!ModelState.IsValid) return RedirectToAction("Index","Login");
-                if(!isLogin()) return RedirectToAction("Index","Login");
-                if(!isAdmin()) return NotFound();
+                if(!isLogin())
+                {
+                    TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
+                    return RedirectToAction("Index", "Login");
+                }
+                if(!isAdmin())
+                {
+                    TempData["Mensaje"] = "Debe ser administrador para realizar esta accion.";
+                    return RedirectToAction("Index", "Usuario");
+                }
 
                 Tarea newTarea = Tarea.FromCrearTareaViewModel(newTareaVM);
                 repoTarea.Create(newTarea);
@@ -113,7 +135,11 @@ namespace Proyecto.Controllers{
         public IActionResult EditarTarea(int? idTarea){  
             try
             {
-                if(!isLogin()) return RedirectToAction("Index","Login");
+                if(!isLogin())
+                {
+                    TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
+                    return RedirectToAction("Index", "Login");
+                }
 
                 if(!idTarea.HasValue) return NotFound();
                 Tarea tareaAEditar = repoTarea.GetById(idTarea);
@@ -127,7 +153,8 @@ namespace Proyecto.Controllers{
                     if (usuarioLogeado.Id == repoTarea.GetById(idTarea).IdUsuarioPropietario){
                         tareaAEditarVM = EditarTareaViewModel.FromTarea(tareaAEditar);//Convierto de Model a ViewModel
                     }else{
-                        return NotFound();
+                        TempData["Mensaje"] = "Debe ser administrador para realizar esta accion.";
+                        return RedirectToAction("Index", "Usuario");
                     }
                 }
 
@@ -149,7 +176,11 @@ namespace Proyecto.Controllers{
             try
             {
                 if(!ModelState.IsValid) return RedirectToAction("Index","Login");
-                if(!isLogin()) return RedirectToAction("Index","Login"); 
+                if(!isLogin())
+                {
+                    TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
+                    return RedirectToAction("Index", "Login");
+                }
 
                 Tarea tareaAEditar = Tarea.FromEditarTareaViewModel(tareaAEditarVM);
                 repoTarea.Update(tareaAEditar);
@@ -166,7 +197,11 @@ namespace Proyecto.Controllers{
         public IActionResult EliminarTarea(int? idTarea){
             try
             {
-                if(!isLogin()) return RedirectToAction("Index","Login");
+                if(!isLogin())
+                {
+                    TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
+                    return RedirectToAction("Index", "Login");
+                }
 
                 if(!idTarea.HasValue) return NotFound();
                 Tarea tareaAEliminar = repoTarea.GetById(idTarea);
@@ -179,7 +214,8 @@ namespace Proyecto.Controllers{
                     if (usuarioLogeado.Id == repoTarea.GetById(idTarea).IdUsuarioPropietario){
                         return View(tareaAEliminar);
                     }else{
-                        return NotFound();
+                        TempData["Mensaje"] = "Debe ser administrador para realizar esta accion.";
+                        return RedirectToAction("Index", "Usuario");
                     }
                 }
             }
@@ -193,7 +229,11 @@ namespace Proyecto.Controllers{
         public IActionResult EliminarTareaFromForm(int? idTareaAEliminar){
             try
             {
-                if(!isLogin()) return RedirectToAction("Index","Login");
+                if(!isLogin())
+                {
+                    TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
+                    return RedirectToAction("Index", "Login");
+                }
 
                 repoTarea.Remove(idTareaAEliminar);
                 return RedirectToAction("Index", "Usuario");
@@ -209,7 +249,11 @@ namespace Proyecto.Controllers{
         public IActionResult AsignarTarea(int? idTarea){
             try
             {
-                if(!isLogin()) return RedirectToAction("Index","Login");
+                if(!isLogin())
+                {
+                    TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
+                    return RedirectToAction("Index", "Login");
+                }
 
                 if(!idTarea.HasValue) return NotFound();
                 Tarea tareaSelec = repoTarea.GetById(idTarea);
@@ -223,7 +267,8 @@ namespace Proyecto.Controllers{
                     if (usuarioLogeado.Id == repoTarea.GetById(idTarea).IdUsuarioPropietario){
                         tareaSelecVM = AsignarTareaViewModel.FromTarea(tareaSelec);
                     }else{
-                        return NotFound();
+                        TempData["Mensaje"] = "Debe ser administrador para realizar esta accion.";
+                        return RedirectToAction("Index", "Usuario");
                     }
                 }
                 
@@ -245,7 +290,11 @@ namespace Proyecto.Controllers{
             try
             {
                 if(!ModelState.IsValid) return RedirectToAction("Index","Login");
-                if(!isLogin()) return RedirectToAction("Index","Login");
+                if(!isLogin())
+                {
+                    TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
+                    return RedirectToAction("Index", "Login");
+                }
 
                 repoTarea.Assign(tareaSelecVM.Id,tareaSelecVM.IdUsuarioAsignado);
                 return RedirectToAction("Index");
@@ -260,7 +309,11 @@ namespace Proyecto.Controllers{
         public IActionResult CambiarEstadoTarea(int? idTarea){  
             try
             {
-                if(!isLogin()) return RedirectToAction("Index","Login");
+                if(!isLogin())
+                {
+                    TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
+                    return RedirectToAction("Index", "Login");
+                }
 
                 if(!idTarea.HasValue) return NotFound();
                 Tarea tareaAEditar = repoTarea.GetById(idTarea);
@@ -274,7 +327,8 @@ namespace Proyecto.Controllers{
                     if ((usuarioLogeado.Id == repoTarea.GetById(idTarea).IdUsuarioPropietario) || (usuarioLogeado.Id == repoTarea.GetById(idTarea).IdUsuarioAsignado)){
                         tareaAEditarVM = EditarTareaViewModel.FromTarea(tareaAEditar);
                     }else{
-                        return NotFound();
+                        TempData["Mensaje"] = "Debe ser administrador para realizar esta accion.";
+                        return RedirectToAction("Index", "Usuario");
                     }
                 }
 
@@ -291,7 +345,11 @@ namespace Proyecto.Controllers{
             try
             {
                 if(!ModelState.IsValid) return RedirectToAction("Index","Login");
-                if(!isLogin()) return RedirectToAction("Index","Login"); 
+                if(!isLogin())
+                {
+                    TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
+                    return RedirectToAction("Index", "Login");
+                }
 
                 Tarea tareaAEditar = Tarea.FromEditarTareaViewModel(tareaAEditarVM);
                 repoTarea.Update(tareaAEditar);

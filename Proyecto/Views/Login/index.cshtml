@@ -1,5 +1,10 @@
 @model Proyecto.ViewModels.LoginViewModel
-
+@if(TempData["Mensaje"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["Mensaje"]
+    </div>
+}
 <form asp-controller="Login" asp-action="ValidarUsuario" method="post">
 
     <div class="form-group" style="max-width: 200px;">

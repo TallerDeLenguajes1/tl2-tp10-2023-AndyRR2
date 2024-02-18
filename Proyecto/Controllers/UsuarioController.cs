@@ -19,7 +19,11 @@ namespace Proyecto.Controllers{
         public IActionResult Index(){
             try
             {
-                if(!isLogin()) return RedirectToAction("Index","Login");
+                if(!isLogin())
+                {
+                    TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
+                    return RedirectToAction("Index", "Login");
+                }
 
                 List<Usuario> listaUsuarios = repoUsuario.GetAll();
                 List<ListarUsuarioViewModel> listaUsuariosVM = ListarUsuarioViewModel.FromUsuario(listaUsuarios);
@@ -37,7 +41,11 @@ namespace Proyecto.Controllers{
         public IActionResult AgregarUsuario(){
             try
             {
-                if(!isLogin()) return RedirectToAction("Index","Login");
+                if(!isLogin())
+                {
+                    TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
+                    return RedirectToAction("Index", "Login");
+                }
                 if(!isAdmin()) return NotFound();
 
                 CrearUsuarioViewModel newUsuarioVM = new CrearUsuarioViewModel();
@@ -55,7 +63,11 @@ namespace Proyecto.Controllers{
             try
             {
                 if(!ModelState.IsValid) return RedirectToAction("Index","Login");
-                if(!isLogin()) return RedirectToAction("Index","Login"); 
+                if(!isLogin())
+                {
+                    TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
+                    return RedirectToAction("Index", "Login");
+                }
                 if(!isAdmin()) return NotFound();
 
                 Usuario newUsuario = Usuario.FromCrearUsuario(newUsuarioVM);
@@ -74,7 +86,11 @@ namespace Proyecto.Controllers{
         public IActionResult EditarUsuario(int? idUsuario){
             try
             {
-                if(!isLogin()) return RedirectToAction("Index","Login"); 
+                if(!isLogin())
+                {
+                    TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
+                    return RedirectToAction("Index", "Login");
+                } 
 
                 if(!idUsuario.HasValue) return NotFound();//Verifica que tenga un Valor asignado
                 Usuario usuarioAEditar = repoUsuario.GetById(idUsuario);//Obtengo el usuario de la DB con el Modelo base
@@ -106,7 +122,11 @@ namespace Proyecto.Controllers{
             try
             { 
                 if(!ModelState.IsValid) return RedirectToAction("Index","Login");
-                if(!isLogin()) return RedirectToAction("Index","Login"); 
+                if(!isLogin())
+                {
+                    TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
+                    return RedirectToAction("Index", "Login");
+                }
 
                 //Verifica si la contraseña Actual ingresada coincide con la del mismo usuario en la DB
                 if(usuarioAEditarVM.ContraseniaActual == repoUsuario.GetById(usuarioAEditarVM.Id).Contrasenia){
@@ -129,7 +149,11 @@ namespace Proyecto.Controllers{
         public IActionResult EliminarUsuario(int? idUsuario){
             try
             {
-                if(!isLogin()) return RedirectToAction("Index","Login"); 
+                if(!isLogin())
+                {
+                    TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
+                    return RedirectToAction("Index", "Login");
+                }
 
                 if(!idUsuario.HasValue) return NotFound();
                 Usuario usuarioAEliminar = repoUsuario.GetById(idUsuario);//Obtengo el usuario por su Id
@@ -156,7 +180,11 @@ namespace Proyecto.Controllers{
         public IActionResult EliminarFromForm(int? idUsuarioAEliminar){
             try
             {
-                if(!isLogin()) return RedirectToAction("Index","Login"); 
+                if(!isLogin())
+                {
+                    TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
+                    return RedirectToAction("Index", "Login");
+                }
 
                 repoUsuario.Remove(idUsuarioAEliminar);
                 return RedirectToAction("Index");

@@ -23,7 +23,11 @@ namespace Proyecto.Controllers{
         public IActionResult Index(int? idUsuario){
             try
             {
-                if(!isLogin()) return RedirectToAction("Index","Login"); 
+                if(!isLogin())
+                {
+                    TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
+                    return RedirectToAction("Index", "Login");
+                }
 
                 List<Tablero> tableros = new List<Tablero>();
 
@@ -46,7 +50,8 @@ namespace Proyecto.Controllers{
                     if ((idUsuario == usuarioLogeado.Id)){
                         tableros = repoTablero.GetByOwnerUser(usuarioLogeado.Id).Concat(repoTablero.GetByUserAsignedTask(usuarioLogeado.Id)).GroupBy(t => t.Id).Select(group => group.First()).ToList();   
                     }else{
-                        return NotFound();
+                        TempData["Mensaje"] = "Debe ser administrador para realizar esta accion.";
+                        return RedirectToAction("Index", "Usuario");
                     }
                 }
     
@@ -64,8 +69,16 @@ namespace Proyecto.Controllers{
         public IActionResult AgregarTablero(){
             try
             {
-                if(!isLogin()) return RedirectToAction("Index","Login");
-                if(!isAdmin()) return NotFound();
+                if(!isLogin())
+                {
+                    TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
+                    return RedirectToAction("Index", "Login");
+                }
+                if(!isAdmin())
+                {
+                    TempData["Mensaje"] = "Debe ser administrador para realizar esta accion.";
+                    return RedirectToAction("Index", "Usuario");
+                }
 
                 CrearTableroViewModel newTableroVM = new CrearTableroViewModel();
                 List<Usuario> usuariosEnBD = repoUsuario.GetAll();
@@ -87,8 +100,16 @@ namespace Proyecto.Controllers{
             try
             {
                 if(!ModelState.IsValid) return RedirectToAction("Index","Login");
-                if(!isLogin()) return RedirectToAction("Index","Login");
-                if(!isAdmin()) return NotFound();
+                if(!isLogin())
+                {
+                    TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
+                    return RedirectToAction("Index", "Login");
+                }
+                if(!isAdmin())
+                {
+                    TempData["Mensaje"] = "Debe ser administrador para realizar esta accion.";
+                        return RedirectToAction("Index", "Usuario");
+                }
 
                 Tablero newTablero = Tablero.FromCrearTableroViewModel(newTableroVM);
                 repoTablero.Create(newTablero);
@@ -105,7 +126,11 @@ namespace Proyecto.Controllers{
         public IActionResult EditarTablero(int? idTablero){
             try
             {   
-                if(!isLogin()) return RedirectToAction("Index","Login");
+                if(!isLogin())
+                {
+                    TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
+                    return RedirectToAction("Index", "Login");
+                }
 
                 if(!idTablero.HasValue) return NotFound();//Verifica que tenga un Valor asignado
                 Tablero tableroAEditar = repoTablero.GetById(idTablero);//Obtengo el tablero de la DB con el Modelo base
@@ -119,7 +144,8 @@ namespace Proyecto.Controllers{
                     if (usuarioLogeado.Id == repoTablero.GetById(idTablero).IdUsuarioPropietario){
                         tableroAEditarVM = EditarTableroViewModel.FromTablero(tableroAEditar);//Convierto de Model a ViewModel
                     }else{
-                        return NotFound();
+                        TempData["Mensaje"] = "Debe ser administrador para realizar esta accion.";
+                        return RedirectToAction("Index", "Usuario");
                     }
                 }
 
@@ -141,7 +167,11 @@ namespace Proyecto.Controllers{
             try
             {
                 if(!ModelState.IsValid) return RedirectToAction("Index","Login");
-                if(!isLogin()) return RedirectToAction("Index","Login");
+                if(!isLogin())
+                {
+                    TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
+                    return RedirectToAction("Index", "Login");
+                }
 
                 Tablero tableroAEditar = Tablero.FromEditarTableroViewModel(tableroAEditarVM);
                 repoTablero.Update(tableroAEditar);
@@ -158,7 +188,11 @@ namespace Proyecto.Controllers{
         public IActionResult EliminarTablero(int? idTablero){
             try
             {   
-                if(!isLogin()) return RedirectToAction("Index","Login");
+                if(!isLogin())
+                {
+                    TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
+                    return RedirectToAction("Index", "Login");
+                }
                 
                 if(!idTablero.HasValue) return NotFound();
                 Tablero tableroAEliminar = repoTablero.GetById(idTablero);
@@ -171,7 +205,8 @@ namespace Proyecto.Controllers{
                     if (usuarioLogeado.Id == repoTablero.GetById(idTablero).IdUsuarioPropietario){
                         return View(tableroAEliminar);
                     }else{
-                        return NotFound();
+                        TempData["Mensaje"] = "Debe ser administrador para realizar esta accion.";
+                        return RedirectToAction("Index", "Usuario");
                     }
                 }
             }
@@ -186,7 +221,11 @@ namespace Proyecto.Controllers{
         public IActionResult EliminarTableroFromForm(int? idTableroAEliminar){
             try
             {
-                if(!isLogin()) return RedirectToAction("Index","Login");
+                if(!isLogin())
+                {
+                    TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
+                    return RedirectToAction("Index", "Login");
+                }
                 
                 repoTablero.Remove(idTableroAEliminar);
                 return RedirectToAction("Index", "Usuario");
