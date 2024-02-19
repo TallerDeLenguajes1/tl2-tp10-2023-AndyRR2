@@ -50,8 +50,7 @@ namespace Proyecto.Controllers{
                     if ((idUsuario == usuarioLogeado.Id)){
                         tableros = repoTablero.GetByOwnerUser(usuarioLogeado.Id).Concat(repoTablero.GetByUserAsignedTask(usuarioLogeado.Id)).GroupBy(t => t.Id).Select(group => group.First()).ToList();   
                     }else{
-                        TempData["Mensaje"] = "Debe ser administrador para realizar esta accion.";
-                        return RedirectToAction("Index", "Usuario");
+                        return NotFound();
                     }
                 }
     
@@ -60,7 +59,7 @@ namespace Proyecto.Controllers{
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                _logger.LogError($"Error al procesar la solicitud en el método Index del controlador de Tablero: {ex.ToString()}");
                 return BadRequest();
             }
         }
@@ -74,11 +73,7 @@ namespace Proyecto.Controllers{
                     TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
                     return RedirectToAction("Index", "Login");
                 }
-                if(!isAdmin())
-                {
-                    TempData["Mensaje"] = "Debe ser administrador para realizar esta accion.";
-                    return RedirectToAction("Index", "Usuario");
-                }
+                if(!isAdmin()) return NotFound();
 
                 CrearTableroViewModel newTableroVM = new CrearTableroViewModel();
                 List<Usuario> usuariosEnBD = repoUsuario.GetAll();
@@ -91,7 +86,7 @@ namespace Proyecto.Controllers{
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                _logger.LogError($"Error al procesar la solicitud en el método AgregarTablero del controlador de Tablero: {ex.ToString()}");
                 return BadRequest();
             }
         }
@@ -105,11 +100,7 @@ namespace Proyecto.Controllers{
                     TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
                     return RedirectToAction("Index", "Login");
                 }
-                if(!isAdmin())
-                {
-                    TempData["Mensaje"] = "Debe ser administrador para realizar esta accion.";
-                        return RedirectToAction("Index", "Usuario");
-                }
+                if(!isAdmin()) return NotFound();
 
                 Tablero newTablero = Tablero.FromCrearTableroViewModel(newTableroVM);
                 repoTablero.Create(newTablero);
@@ -117,7 +108,7 @@ namespace Proyecto.Controllers{
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                _logger.LogError($"Error al procesar la solicitud en el método AgregarTableroFromFrom del controlador de Tablero: {ex.ToString()}");
                 return BadRequest();
             }
         }
@@ -144,8 +135,7 @@ namespace Proyecto.Controllers{
                     if (usuarioLogeado.Id == repoTablero.GetById(idTablero).IdUsuarioPropietario){
                         tableroAEditarVM = EditarTableroViewModel.FromTablero(tableroAEditar);//Convierto de Model a ViewModel
                     }else{
-                        TempData["Mensaje"] = "Debe ser administrador para realizar esta accion.";
-                        return RedirectToAction("Index", "Usuario");
+                        return NotFound();
                     }
                 }
 
@@ -158,7 +148,7 @@ namespace Proyecto.Controllers{
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                _logger.LogError($"Error al procesar la solicitud en el método EditarTablero del controlador de Tablero: {ex.ToString()}");
                 return BadRequest();
             }
         }
@@ -179,7 +169,7 @@ namespace Proyecto.Controllers{
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                _logger.LogError($"Error al procesar la solicitud en el método EditarTableroFromForm del controlador de Tablero: {ex.ToString()}");
                 return BadRequest();
             }
         }
@@ -205,14 +195,13 @@ namespace Proyecto.Controllers{
                     if (usuarioLogeado.Id == repoTablero.GetById(idTablero).IdUsuarioPropietario){
                         return View(tableroAEliminar);
                     }else{
-                        TempData["Mensaje"] = "Debe ser administrador para realizar esta accion.";
-                        return RedirectToAction("Index", "Usuario");
+                        return NotFound();
                     }
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                _logger.LogError($"Error al procesar la solicitud en el método EliminarTablero del controlador de Tablero: {ex.ToString()}");
                 return BadRequest();
             }
         }
@@ -232,7 +221,7 @@ namespace Proyecto.Controllers{
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                _logger.LogError($"Error al procesar la solicitud en el método EliminarTableroFromForm del controlador de Tablero: {ex.ToString()}");
                 return BadRequest();
             }
         }
@@ -242,6 +231,7 @@ namespace Proyecto.Controllers{
             if (HttpContext.Session != null && HttpContext.Session.GetString("NivelDeAcceso") == "admin"){
                 return true;
             }else{
+                _logger.LogWarning("Debe estar logueado para ingresar a la página");
                 return false;
             }
         }
@@ -250,6 +240,7 @@ namespace Proyecto.Controllers{
             if (HttpContext.Session != null && HttpContext.Session.GetString("NivelDeAcceso") == "admin" || HttpContext.Session.GetString("NivelDeAcceso") == "simple"){
                 return true;
             }else{
+                _logger.LogWarning("Debe ser administrador para realizar la accion");
                 return false;
             }
         }

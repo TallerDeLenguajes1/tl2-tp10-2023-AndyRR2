@@ -23,7 +23,7 @@ namespace Proyecto.Controllers{
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                _logger.LogError($"Error al intentar ingregsar a Login: {ex.ToString()}");
                 return BadRequest();
             }
         }
@@ -56,7 +56,7 @@ namespace Proyecto.Controllers{
         public IActionResult Desloguear()
         {
             HttpContext.Session.Clear();
-            return RedirectToAction("Index"); // Redirige al usuario a la página de inicio, o a donde sea apropiado en tu aplicación
+            return RedirectToAction("Index");
         }
     }
 }

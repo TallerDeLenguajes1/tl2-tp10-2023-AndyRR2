@@ -32,7 +32,7 @@ namespace Proyecto.Controllers{
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                _logger.LogError($"Error al procesar la solicitud en el método Index del controlador de Usuario: {ex.ToString()}");
                 return BadRequest();
             }
         }
@@ -45,7 +45,7 @@ namespace Proyecto.Controllers{
                 {
                     TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
                     return RedirectToAction("Index", "Login");
-                }
+                } 
                 if(!isAdmin()) return NotFound();
 
                 CrearUsuarioViewModel newUsuarioVM = new CrearUsuarioViewModel();
@@ -54,7 +54,7 @@ namespace Proyecto.Controllers{
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                _logger.LogError($"Error al procesar la solicitud en el método AgregarUsuario del controlador de Usuario: {ex.ToString()}");
                 return BadRequest();
             }
         }
@@ -67,7 +67,7 @@ namespace Proyecto.Controllers{
                 {
                     TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
                     return RedirectToAction("Index", "Login");
-                }
+                } 
                 if(!isAdmin()) return NotFound();
 
                 Usuario newUsuario = Usuario.FromCrearUsuario(newUsuarioVM);
@@ -77,7 +77,7 @@ namespace Proyecto.Controllers{
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                _logger.LogError($"Error al procesar la solicitud en el método AgregarUsuarioFromForm del controlador de Usuario: {ex.ToString()}");
                 return BadRequest();
             }
         }
@@ -113,7 +113,7 @@ namespace Proyecto.Controllers{
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                _logger.LogError($"Error al procesar la solicitud en el método EditarUsuario del controlador de Usuario: {ex.ToString()}");
                 return BadRequest();
             }
         }
@@ -140,7 +140,7 @@ namespace Proyecto.Controllers{
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                _logger.LogError($"Error al procesar la solicitud en el método EditarUsuarioFromForm del controlador de Usuario: {ex.ToString()}");
                 return BadRequest();
             }
         }
@@ -172,7 +172,7 @@ namespace Proyecto.Controllers{
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                _logger.LogError($"Error al procesar la solicitud en el método EliminarUsuario del controlador de Usuario: {ex.ToString()}");
                 return BadRequest();
             }
         }
@@ -191,7 +191,7 @@ namespace Proyecto.Controllers{
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                _logger.LogError($"Error al procesar la solicitud en el método EliminarUsuarioFromForm del controlador de Usuario: {ex.ToString()}");
                 return BadRequest();
             }
         }
@@ -201,6 +201,7 @@ namespace Proyecto.Controllers{
             if (HttpContext.Session != null && HttpContext.Session.GetString("NivelDeAcceso") == "admin"){
                 return true;
             }else{
+                _logger.LogWarning("Debe estar logueado para ingresar a la página");
                 return false;
             }
         }
@@ -209,6 +210,7 @@ namespace Proyecto.Controllers{
             if (HttpContext.Session != null && HttpContext.Session.GetString("NivelDeAcceso") == "admin" || HttpContext.Session.GetString("NivelDeAcceso") == "simple"){
                 return true;
             }else{
+                _logger.LogWarning("Debe ser administrador para realizar la accion");
                 return false;
             }
         }
