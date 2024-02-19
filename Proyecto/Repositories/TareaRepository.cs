@@ -276,7 +276,7 @@ namespace Proyecto.Repositories{
                 connectionC.Close();           
             }
             if (tareas == null){
-                throw new Exception("El Tablero proporcionado no tiene tareas.");
+                throw new Exception("El Usuario proporcionado no tiene tareas.");
             }
             return(tareas);
         }

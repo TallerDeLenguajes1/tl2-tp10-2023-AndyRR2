@@ -77,7 +77,7 @@ namespace Proyecto.Repositories{
             return(usuarioSelec);
         }
         public void Create(Usuario newUsuario){
-            if ((UserExists(newUsuario.Nombre)))
+            if (UserExists(newUsuario.Nombre))
             {
                 throw new Exception("El Usuario ya existe.");
             }
@@ -104,7 +104,7 @@ namespace Proyecto.Repositories{
             }
         }
         public void Update(Usuario newUsuario){
-            if ((UserExists(newUsuario.Nombre)))
+            if (UserExists(newUsuario.Nombre))
             {
                 throw new Exception("El Usuario ya existe.");
             }

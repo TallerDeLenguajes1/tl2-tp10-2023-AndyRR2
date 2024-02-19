@@ -49,8 +49,7 @@ namespace Proyecto.Controllers{
                     if ((repoTablero.GetById(idTablero).IdUsuarioPropietario == usuarioLogeado.Id) || repoTarea.ChechAsignedTask(idTablero,usuarioLogeado.Id)){
                         tareas = repoTarea.GetByOwnerBoard(idTablero);   
                     }else{
-                        TempData["Mensaje"] = "Debe ser administrador para realizar esta accion.";
-                        return RedirectToAction("Index", "Usuario");
+                        return NotFound();
                     }
                 }
 
@@ -59,7 +58,7 @@ namespace Proyecto.Controllers{
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                _logger.LogError($"Error al procesar la solicitud en el método Index del controlador de Tarea: {ex.ToString()}");
                 return BadRequest();
             }
         }
@@ -73,11 +72,7 @@ namespace Proyecto.Controllers{
                     TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
                     return RedirectToAction("Index", "Login");
                 }
-                if(!isAdmin())
-                {
-                    TempData["Mensaje"] = "Debe ser administrador para realizar esta accion.";
-                    return RedirectToAction("Index", "Usuario");
-                }
+                if(!isAdmin()) return NotFound();
 
                 CrearTareaViewModel newTareaVM = new CrearTareaViewModel();
 
@@ -100,7 +95,7 @@ namespace Proyecto.Controllers{
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                _logger.LogError($"Error al procesar la solicitud en el método AgregarTarea del controlador de Tarea: {ex.ToString()}");
                 return BadRequest();
             }
         }
@@ -114,11 +109,7 @@ namespace Proyecto.Controllers{
                     TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
                     return RedirectToAction("Index", "Login");
                 }
-                if(!isAdmin())
-                {
-                    TempData["Mensaje"] = "Debe ser administrador para realizar esta accion.";
-                    return RedirectToAction("Index", "Usuario");
-                }
+                if(!isAdmin()) return NotFound();
 
                 Tarea newTarea = Tarea.FromCrearTareaViewModel(newTareaVM);
                 repoTarea.Create(newTarea);
@@ -126,7 +117,7 @@ namespace Proyecto.Controllers{
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                _logger.LogError($"Error al procesar la solicitud en el método AgregarTareaFromForm del controlador de Tarea: {ex.ToString()}");
                 return BadRequest();
             }
         }
@@ -153,8 +144,7 @@ namespace Proyecto.Controllers{
                     if (usuarioLogeado.Id == repoTarea.GetById(idTarea).IdUsuarioPropietario){
                         tareaAEditarVM = EditarTareaViewModel.FromTarea(tareaAEditar);//Convierto de Model a ViewModel
                     }else{
-                        TempData["Mensaje"] = "Debe ser administrador para realizar esta accion.";
-                        return RedirectToAction("Index", "Usuario");
+                        return NotFound();
                     }
                 }
 
@@ -167,7 +157,7 @@ namespace Proyecto.Controllers{
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                _logger.LogError($"Error al procesar la solicitud en el método EditarTarea del controlador de Tarea: {ex.ToString()}");
                 return BadRequest();
             }
         }
@@ -188,7 +178,7 @@ namespace Proyecto.Controllers{
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                _logger.LogError($"Error al procesar la solicitud en el método EditarTareaFromForm del controlador de Tarea: {ex.ToString()}");
                 return BadRequest();
             } 
         }
@@ -214,14 +204,13 @@ namespace Proyecto.Controllers{
                     if (usuarioLogeado.Id == repoTarea.GetById(idTarea).IdUsuarioPropietario){
                         return View(tareaAEliminar);
                     }else{
-                        TempData["Mensaje"] = "Debe ser administrador para realizar esta accion.";
-                        return RedirectToAction("Index", "Usuario");
+                        return NotFound();
                     }
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                _logger.LogError($"Error al procesar la solicitud en el método EliminarTarea del controlador de Tarea: {ex.ToString()}");
                 return BadRequest();
             } 
         }
@@ -240,7 +229,7 @@ namespace Proyecto.Controllers{
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                _logger.LogError($"Error al procesar la solicitud en el método EliminarTarea del controlador de Tarea: {ex.ToString()}");
                 return BadRequest();
             }
         }
@@ -267,8 +256,7 @@ namespace Proyecto.Controllers{
                     if (usuarioLogeado.Id == repoTarea.GetById(idTarea).IdUsuarioPropietario){
                         tareaSelecVM = AsignarTareaViewModel.FromTarea(tareaSelec);
                     }else{
-                        TempData["Mensaje"] = "Debe ser administrador para realizar esta accion.";
-                        return RedirectToAction("Index", "Usuario");
+                        return NotFound();
                     }
                 }
                 
@@ -281,7 +269,7 @@ namespace Proyecto.Controllers{
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                _logger.LogError($"Error al procesar la solicitud en el método AsignarTarea del controlador de Tarea: {ex.ToString()}");
                 return BadRequest();
             }
         }
@@ -301,7 +289,7 @@ namespace Proyecto.Controllers{
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                _logger.LogError($"Error al procesar la solicitud en el método AsignarTareaFromForm del controlador de Tarea: {ex.ToString()}");
                 return BadRequest();
             }
         }
@@ -327,8 +315,7 @@ namespace Proyecto.Controllers{
                     if ((usuarioLogeado.Id == repoTarea.GetById(idTarea).IdUsuarioPropietario) || (usuarioLogeado.Id == repoTarea.GetById(idTarea).IdUsuarioAsignado)){
                         tareaAEditarVM = EditarTareaViewModel.FromTarea(tareaAEditar);
                     }else{
-                        TempData["Mensaje"] = "Debe ser administrador para realizar esta accion.";
-                        return RedirectToAction("Index", "Usuario");
+                        return NotFound();
                     }
                 }
 
@@ -336,7 +323,7 @@ namespace Proyecto.Controllers{
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                _logger.LogError($"Error al procesar la solicitud en el método CambiarEstadoTarea del controlador de Tarea: {ex.ToString()}");
                 return BadRequest();
             }
         }
@@ -357,7 +344,7 @@ namespace Proyecto.Controllers{
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                _logger.LogError($"Error al procesar la solicitud en el método CambiarEstadoFromForm del controlador de Tarea: {ex.ToString()}");
                 return BadRequest();
             } 
         }
@@ -366,6 +353,7 @@ namespace Proyecto.Controllers{
             if (HttpContext.Session != null && HttpContext.Session.GetString("NivelDeAcceso") == "admin"){
                 return true;
             }else{
+                _logger.LogWarning("Debe estar logueado para ingresar a la página");
                 return false;
             }
         }
@@ -374,6 +362,7 @@ namespace Proyecto.Controllers{
             if (HttpContext.Session != null && HttpContext.Session.GetString("NivelDeAcceso") == "admin" || HttpContext.Session.GetString("NivelDeAcceso") == "simple"){
                 return true;
             }else{
+                _logger.LogWarning("Debe ser administrador para realizar la accion");
                 return false;
             }
         }

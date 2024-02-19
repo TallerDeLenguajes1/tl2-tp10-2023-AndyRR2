@@ -71,13 +71,13 @@ namespace Proyecto.Repositories{
                 connectionC.Close();
             }
             if (tableroSelec==null){
-                throw new Exception("El Tablero no esta creado.");
+                throw new Exception("No se encontro el tablero con el id proporcionado en la base de datos.");
             }
             return(tableroSelec);
         }
 
         public void Create(Tablero newTablero){
-            if ((BoardExists(newTablero.Nombre)))
+            if (BoardExists(newTablero.Nombre))
             {
                 throw new Exception("El Tablero ya existe.");
             }
@@ -253,7 +253,7 @@ namespace Proyecto.Repositories{
             }
             if (tableros == null)
             {
-                throw new Exception("No se encontraron tableros en la base de datos.");
+                throw new Exception("EL usuario proporcionado no tiene Tareas asignadas en ningun Tablero.");
             }
             return (tableros);
         }
