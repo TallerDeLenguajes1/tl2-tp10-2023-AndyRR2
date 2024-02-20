@@ -59,7 +59,8 @@ namespace Proyecto.Models{
                 Nombre = tareaVM.Nombre,
                 Descripcion = tareaVM.Descripcion,
                 Color = (Proyecto.Models.Color)tareaVM.Color,
-                EstadoTarea = (Proyecto.Models.EstadoTarea)tareaVM.EstadoTarea
+                EstadoTarea = (Proyecto.Models.EstadoTarea)tareaVM.EstadoTarea,
+                IdUsuarioPropietario = tareaVM.IdUsuarioPropietario
             };
         }
         public static Tarea FromAsignarTareaViewModel(AsignarTareaViewModel tareaVM)//Solo se crea con las propiedades necesarias
@@ -68,6 +69,15 @@ namespace Proyecto.Models{
             {
                 Id = tareaVM.Id,
                 IdUsuarioAsignado = tareaVM.IdUsuarioAsignado
+            };
+        }
+
+        public static Tarea FromCambiarEstadoTareaViewModel(CambiarEstadoTareaViewModel tareaVM)//Solo se crea con las propiedades necesarias
+        {
+            return new Tarea
+            {
+                Id = tareaVM.Id,
+                EstadoTarea = tareaVM.EstadoTarea
             };
         }
     }

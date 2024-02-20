@@ -147,6 +147,11 @@ namespace Proyecto.Controllers{
                         return NotFound();
                     }
                 }
+                List<Usuario> usuariosEnBD = repoUsuario.GetAll();
+                foreach (var usuario in usuariosEnBD)//Obtiene las lista de Id de Usuarios disponibles para seleccionar
+                {
+                    (tareaAEditarVM.IdUsuarios).Add(usuario.Id);
+                }
 
                 List<Tablero> tablerosEnBD = repoTablero.GetAll();
                 foreach (var tablero in tablerosEnBD)//Obtiene las lista de Id de Tableros disponibles para seleccionar
@@ -328,7 +333,7 @@ namespace Proyecto.Controllers{
             }
         }
         [HttpPost]
-        public IActionResult CambiarEstadoFromForm(EditarTareaViewModel tareaAEditarVM){
+        public IActionResult CambiarEstadoFromForm(CambiarEstadoTareaViewModel tareaAEditarVM){
             try
             {
                 if(!ModelState.IsValid) return RedirectToAction("Index","Login");
@@ -338,8 +343,8 @@ namespace Proyecto.Controllers{
                     return RedirectToAction("Index", "Login");
                 }
 
-                Tarea tareaAEditar = Tarea.FromEditarTareaViewModel(tareaAEditarVM);
-                repoTarea.Update(tareaAEditar);
+                Tarea tareaAEditar = Tarea.FromCambiarEstadoTareaViewModel(tareaAEditarVM);
+                repoTarea.ChangeStatus(tareaAEditar);
                 return RedirectToAction("Index", new { idTablero = tareaAEditar.IdTablero });
             }
             catch (Exception ex)

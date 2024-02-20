@@ -42,6 +42,18 @@
         </select>
         <span asp-validation-for="@Model.Color" class="text-danger"></span> 
     </div>
+    <div class="form-group" style="max-width: 200px;">
+        <label asp-for="@Model.IdUsuarioPropietario"></label>
+        <select asp-for="@Model.IdUsuarioPropietario" class="form-control">
+            <option value="">Seleccionar Id</option>
+            @foreach (var idUsuario in Model.IdUsuarios)
+            {
+                <option value="@idUsuario">@idUsuario</option>
+            }
+        </select>
+        <span asp-validation-for="@Model.IdUsuarioPropietario" class="text-danger"></span>
+    </div>
+    
     <div class="form-group" style="margin-top: 10px;">
         <button type="submit" class="btn btn-primary">Enviar</button>
     </div>

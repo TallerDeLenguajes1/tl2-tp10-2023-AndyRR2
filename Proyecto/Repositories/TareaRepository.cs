@@ -140,13 +140,14 @@ namespace Proyecto.Repositories{
         public void Update(Tarea tareaAEditar){
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
-            string queryC = "UPDATE Tarea SET nombre = @NAME, descripcion = @DESCRIPCION, id_tablero = @IDTAB, estado = @ESTADO, color = @COLOR WHERE id = @ID;";
+            string queryC = "UPDATE Tarea SET nombre = @NAME, descripcion = @DESCRIPCION, id_tablero = @IDTAB, estado = @ESTADO, color = @COLOR, id_usuario_propietario = @IDUSUP WHERE id = @ID;";
             SQLiteParameter parameterId = new SQLiteParameter("@ID",tareaAEditar.Id);
             SQLiteParameter parameterIdTab = new SQLiteParameter("@IDTAB",tareaAEditar.IdTablero);
             SQLiteParameter parameterNombre = new SQLiteParameter("@NAME",tareaAEditar.Nombre);
             SQLiteParameter parameterEstado = new SQLiteParameter("@ESTADO",tareaAEditar.EstadoTarea);
             SQLiteParameter parameterDescripcion = new SQLiteParameter("@DESCRIPCION",tareaAEditar.Descripcion);
             SQLiteParameter parameterColor = new SQLiteParameter("@COLOR",tareaAEditar.Color);
+            SQLiteParameter parameterIdUsuP = new SQLiteParameter("@IDUSUP",tareaAEditar.IdUsuarioPropietario);
             using (connectionC)
             {
                 connectionC.Open();
@@ -157,6 +158,7 @@ namespace Proyecto.Repositories{
                 commandC.Parameters.Add(parameterEstado);
                 commandC.Parameters.Add(parameterDescripcion);
                 commandC.Parameters.Add(parameterColor);
+                commandC.Parameters.Add(parameterIdUsuP);
 
                 int rowsAffected = commandC.ExecuteNonQuery();
                 connectionC.Close();
@@ -197,6 +199,27 @@ namespace Proyecto.Repositories{
                 SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
                 commandC.Parameters.Add(parameterId);
                 commandC.Parameters.Add(parameterIdUsu);
+
+                int rowsAffected = commandC.ExecuteNonQuery();
+                connectionC.Close();
+                if (rowsAffected == 0){
+                    throw new Exception("No se encontró ninguna tarea con el ID proporcionado.");
+                }   
+            }
+        }
+        public void ChangeStatus(Tarea tarea){
+            SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
+
+            string queryC = "UPDATE Tarea SET estado = @ESTADO WHERE id = @ID;";
+            SQLiteParameter parameterId = new SQLiteParameter("@ID",tarea.Id);
+            SQLiteParameter parameterEstado = new SQLiteParameter("@ESTADO",tarea.EstadoTarea);
+            
+            using (connectionC)
+            {
+                connectionC.Open();
+                SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
+                commandC.Parameters.Add(parameterId);
+                commandC.Parameters.Add(parameterEstado);
 
                 int rowsAffected = commandC.ExecuteNonQuery();
                 connectionC.Close();
