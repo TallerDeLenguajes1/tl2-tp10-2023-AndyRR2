@@ -35,7 +35,9 @@
                     <td>@tarea.Nombre</td>
                     <td>@tarea.EstadoTarea</td>
                     <td>@tarea.Descripcion</td>
-                    <td>@tarea.Color</td>
+                    <td class"td-color">
+                        <div class="circulo-color @tarea.Color.ToString()"></div>
+                    </td>
                     <td>@(tarea.IdTablero != null ? tarea.IdTablero : "No Asignado")</td>
                     <td>@(tarea.IdUsuarioAsignado != null ? tarea.IdUsuarioAsignado : "No Asignado")</td>
                     <td>@(tarea.IdUsuarioPropietario != null ? tarea.IdUsuarioPropietario : "No Asignado")</td>

@@ -20,3 +20,23 @@ html {
 body {
   margin-bottom: 60px;
 }
+/*Edit Proyecto*/
+.Azul { background-color: blue !important;}
+.Rojo { background-color: red !important; }
+.Amarillo { background-color: yellow !important; }
+.Verde { background-color: green !important; }
+.Rosa { background-color: pink !important; }
+.Morado { background-color: purple !important; }
+
+.circulo-color {
+  width: 40px;
+  height: 40px;
+  border-radius: 30%;
+  border: 0.5px solid black;
+}
+
+.table td-color {
+  text-align: center;
+  vertical-align: middle;
+}
+

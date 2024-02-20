@@ -5,7 +5,7 @@
 @model Proyecto.ViewModels.CrearTareaViewModel
 
 <h1>@ViewData["Title"]</h1>
-<form asp-controller="Tarea" asp-action="AgregarTareaFromForm" method="post">
+<form asp-controller="Tarea" asp-action="AgregarTareaFromForm" method="post" class="formulario-edit">
     <div class="form-group" style="max-width: 200px;">
         <label asp-for="@Model.IdTablero"></label>
         <select asp-for="@Model.IdTablero" class="form-control">
@@ -36,8 +36,12 @@
     </div>
     <div class="form-group" style="max-width: 200px;">
         <label asp-for="@Model.Color"></label>
-        <select asp-for="@Model.Color" asp-items="Html.GetEnumSelectList<Color>()" class="form-control">
+        <select asp-for="@Model.Color" class="form-control">
             <option value="">Seleccionar Color</option>
+            @foreach (var color in Enum.GetValues(typeof(Proyecto.Models.Color)))
+            {
+                <option value="@Model.Color" class="@color.ToString()"></option>
+            }
         </select>
         <span asp-validation-for="@Model.Color" class="text-danger"></span> 
     </div>
