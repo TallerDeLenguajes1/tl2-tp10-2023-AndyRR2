@@ -40,6 +40,7 @@ namespace Proyecto.Controllers{
                     los tableros de ese usuario, o sera un texto "null" si se selecciona ver todos los Tableros*/
                     if (idUsuario.HasValue){
                         tableros = repoTablero.GetByOwnerUser(idUsuario).Concat(repoTablero.GetByUserAsignedTask(idUsuario)).GroupBy(t => t.Id).Select(group => group.First()).ToList();
+                        //tableros = repoTablero.GetByUserAsignedTask(idUsuario).GroupBy(t => t.Id).Select(group => group.First()).ToList();
                     }else{
                         tableros = repoTablero.GetAll();
                     }

@@ -46,7 +46,7 @@ namespace Proyecto.Models{
                 Descripcion = tareaVM.Descripcion,
                 Color = (Proyecto.Models.Color)tareaVM.Color,
                 EstadoTarea = (Proyecto.Models.EstadoTarea)tareaVM.EstadoTarea,
-                IdUsuarioAsignado = 0,
+                IdUsuarioAsignado = null,//se asigna despues de que se crea
                 IdUsuarioPropietario = tareaVM.IdUsuarioPropietario
             };
         }

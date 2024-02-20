@@ -43,8 +43,8 @@ namespace Proyecto.Controllers{
                         tareas = repoTarea.GetAll();
                     }
                 }else{
-                    /*Si no es Admin solo puede acceder a ver las tareas que pertenezcan a los Tableros donde
-                    estos tableros sean propiedad del usuario logueado o tengan alguna tarea asignada al usuario*/
+                    /*Si no es Admin solo puede acceder a ver las tareas que pertenezcan a los Tableros que
+                     sean propiedad del usuario logueado o tengan alguna tarea asignada al usuario logueado*/
                     Usuario usuarioLogeado = repoLogin.ObtenerUsuario(HttpContext.Session.GetString("Nombre"),HttpContext.Session.GetString("Contrasenia"));
                     if ((repoTablero.GetById(idTablero).IdUsuarioPropietario == usuarioLogeado.Id) || repoTarea.ChechAsignedTask(idTablero,usuarioLogeado.Id)){
                         tareas = repoTarea.GetByOwnerBoard(idTablero);   
@@ -132,7 +132,7 @@ namespace Proyecto.Controllers{
                     return RedirectToAction("Index", "Login");
                 }
 
-                if(!idTarea.HasValue) return NotFound();
+                if(!idTarea.HasValue) return NotFound();//Verifica que tenga un Valor asignado
                 Tarea tareaAEditar = repoTarea.GetById(idTarea);
                 EditarTareaViewModel tareaAEditarVM = new EditarTareaViewModel();
                 

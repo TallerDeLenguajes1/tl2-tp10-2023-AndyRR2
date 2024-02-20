@@ -36,9 +36,9 @@
                     <td>@tarea.EstadoTarea</td>
                     <td>@tarea.Descripcion</td>
                     <td>@tarea.Color</td>
-                    <td>@tarea.IdTablero</td>
-                    <td>@tarea.IdUsuarioAsignado</td>
-                    <td>@tarea.IdUsuarioPropietario</td>
+                    <td>@(tarea.IdTablero != null ? tarea.IdTablero : "No Asignado")</td>
+                    <td>@(tarea.IdUsuarioAsignado != null ? tarea.IdUsuarioAsignado : "No Asignado")</td>
+                    <td>@(tarea.IdUsuarioPropietario != null ? tarea.IdUsuarioPropietario : "No Asignado")</td>
                     <td>
                         <div class="action-buttons">
                             <a class="btn btn-primary" asp-controller="Tarea" asp-action="CambiarEstadoTarea" asp-route-idTarea="@tarea.Id">Cambiar Estado</a>

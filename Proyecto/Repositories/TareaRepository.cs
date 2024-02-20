@@ -27,13 +27,25 @@ namespace Proyecto.Repositories{
                     {
                         var newTarea = new Tarea();
                         newTarea.Id = Convert.ToInt32(readerC["id"]);
-                        newTarea.IdTablero = Convert.ToInt32(readerC["id_tablero"]);
+                        if (!readerC.IsDBNull(readerC.GetOrdinal("id_tablero"))){
+                            newTarea.IdTablero = Convert.ToInt32(readerC["id_tablero"]);
+                        }else{
+                            newTarea.IdTablero = null;
+                        }
                         newTarea.Nombre = Convert.ToString(readerC["nombre"]);
                         newTarea.EstadoTarea = (EstadoTarea)Convert.ToInt32(readerC["estado"]);
                         newTarea.Descripcion = Convert.ToString(readerC["descripcion"]);
                         newTarea.Color = (Color)Convert.ToInt32(readerC["color"]);
-                        newTarea.IdUsuarioAsignado = Convert.ToInt32(readerC["id_usuario_asignado"]);
-                        newTarea.IdUsuarioPropietario = Convert.ToInt32(readerC["id_usuario_propietario"]);
+                        if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_propietario"))){
+                            newTarea.IdUsuarioPropietario = Convert.ToInt32(readerC["id_usuario_propietario"]);
+                        }else{
+                            newTarea.IdUsuarioPropietario = null;
+                        }
+                        if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_asignado"))){
+                            newTarea.IdUsuarioAsignado = Convert.ToInt32(readerC["id_usuario_asignado"]);
+                        }else{
+                            newTarea.IdUsuarioAsignado = null;
+                        }
                         tareas.Add(newTarea);
                     }
                 }
@@ -62,13 +74,25 @@ namespace Proyecto.Repositories{
                     while (readerC.Read())
                     {
                         tareaSelec.Id = Convert.ToInt32(readerC["id"]);
-                        tareaSelec.IdTablero = Convert.ToInt32(readerC["id_tablero"]);
+                        if (!readerC.IsDBNull(readerC.GetOrdinal("id_tablero"))){
+                            tareaSelec.IdTablero = Convert.ToInt32(readerC["id_tablero"]);
+                        }else{
+                            tareaSelec.IdTablero = null;
+                        }
                         tareaSelec.Nombre = Convert.ToString(readerC["nombre"]);
                         tareaSelec.EstadoTarea = (EstadoTarea)Convert.ToInt32(readerC["estado"]);
                         tareaSelec.Descripcion = Convert.ToString(readerC["descripcion"]);
                         tareaSelec.Color = (Color)Convert.ToInt32(readerC["color"]);
-                        tareaSelec.IdUsuarioAsignado = Convert.ToInt32(readerC["id_usuario_asignado"]);
-                        tareaSelec.IdUsuarioPropietario = Convert.ToInt32(readerC["id_usuario_propietario"]);
+                        if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_propietario"))){
+                            tareaSelec.IdUsuarioPropietario = Convert.ToInt32(readerC["id_usuario_propietario"]);
+                        }else{
+                            tareaSelec.IdUsuarioPropietario = null;
+                        }
+                        if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_asignado"))){
+                            tareaSelec.IdUsuarioAsignado = Convert.ToInt32(readerC["id_usuario_asignado"]);
+                        }else{
+                            tareaSelec.IdUsuarioAsignado = null;
+                        }
                     }
                 }
                 connectionC.Close();
@@ -114,10 +138,6 @@ namespace Proyecto.Repositories{
             }
         }
         public void Update(Tarea tareaAEditar){
-            if (TaskExists(tareaAEditar.Nombre))
-            {
-                throw new Exception("La Tarea ya existe.");
-            }
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
             string queryC = "UPDATE Tarea SET nombre = @NAME, descripcion = @DESCRIPCION, id_tablero = @IDTAB, estado = @ESTADO, color = @COLOR WHERE id = @ID;";
@@ -185,11 +205,12 @@ namespace Proyecto.Repositories{
                 }   
             }
         }
-        public void Disable(int? idTarea){
+        public void Disable(int? idTarea, int? idTablero){
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             
-            string queryC = "UPDATE Tarea SET estado = @ESTADO WHERE id = @ID";
+            string queryC = "UPDATE Tarea SET estado = @ESTADO, id_tablero = @IDTAB, id_usuario_asignado = NULL, id_usuario_propietario = NULL WHERE id = @ID";
             SQLiteParameter parameterId = new SQLiteParameter("@ID",idTarea);
+            SQLiteParameter parameterIdTab = new SQLiteParameter("@IDTAB",idTablero);
             SQLiteParameter parameterEstado = new SQLiteParameter("@ESTADO",6);
 
             using (connectionC)
@@ -197,6 +218,7 @@ namespace Proyecto.Repositories{
                 connectionC.Open();
                 SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
                 commandC.Parameters.Add(parameterId);
+                commandC.Parameters.Add(parameterIdTab);
                 commandC.Parameters.Add(parameterEstado);
 
                 int rowAffected =  commandC.ExecuteNonQuery();
@@ -226,13 +248,26 @@ namespace Proyecto.Repositories{
                     {
                         Tarea newTarea = new Tarea();
                         newTarea.Id = Convert.ToInt32(readerC["id"]);
+                        if (!readerC.IsDBNull(readerC.GetOrdinal("id_tablero"))){
+                            newTarea.IdTablero = Convert.ToInt32(readerC["id_tablero"]);
+                        }else{
+                            newTarea.IdTablero = null;
+                        }
                         newTarea.IdTablero = Convert.ToInt32(readerC["id_tablero"]);
                         newTarea.Nombre = Convert.ToString(readerC["nombre"]);
                         newTarea.EstadoTarea = (EstadoTarea)Convert.ToInt32(readerC["estado"]);
                         newTarea.Descripcion = Convert.ToString(readerC["descripcion"]);
                         newTarea.Color = (Color)Convert.ToInt32(readerC["color"]);
-                        newTarea.IdUsuarioAsignado = Convert.ToInt32(readerC["id_usuario_asignado"]);
-                        newTarea.IdUsuarioPropietario = Convert.ToInt32(readerC["id_usuario_propietario"]);
+                        if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_propietario"))){
+                            newTarea.IdUsuarioPropietario = Convert.ToInt32(readerC["id_usuario_propietario"]);
+                        }else{
+                            newTarea.IdUsuarioPropietario = null;
+                        }
+                        if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_asignado"))){
+                            newTarea.IdUsuarioAsignado = Convert.ToInt32(readerC["id_usuario_asignado"]);
+                        }else{
+                            newTarea.IdUsuarioAsignado = null;
+                        }
                         tareas.Add(newTarea);
                     }
                 }
@@ -263,13 +298,25 @@ namespace Proyecto.Repositories{
                     {
                         Tarea newTarea = new Tarea();
                         newTarea.Id = Convert.ToInt32(readerC["id"]);
-                        newTarea.IdTablero = Convert.ToInt32(readerC["id_tablero"]);
+                        if (!readerC.IsDBNull(readerC.GetOrdinal("id_tablero"))){
+                            newTarea.IdTablero = Convert.ToInt32(readerC["id_tablero"]);
+                        }else{
+                            newTarea.IdTablero = null;
+                        }
                         newTarea.Nombre = Convert.ToString(readerC["nombre"]);
                         newTarea.EstadoTarea = (EstadoTarea)Convert.ToInt32(readerC["estado"]);
                         newTarea.Descripcion = Convert.ToString(readerC["descripcion"]);
                         newTarea.Color = (Color)Convert.ToInt32(readerC["color"]);
-                        newTarea.IdUsuarioAsignado = Convert.ToInt32(readerC["id_usuario_asignado"]);
-                        newTarea.IdUsuarioPropietario = Convert.ToInt32(readerC["id_usuario_propietario"]);
+                        if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_propietario"))){
+                            newTarea.IdUsuarioPropietario = Convert.ToInt32(readerC["id_usuario_propietario"]);
+                        }else{
+                            newTarea.IdUsuarioPropietario = null;
+                        }
+                        if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_asignado"))){
+                            newTarea.IdUsuarioAsignado = Convert.ToInt32(readerC["id_usuario_asignado"]);
+                        }else{
+                            newTarea.IdUsuarioAsignado = null;
+                        }
                         tareas.Add(newTarea);
                     }
                 }
@@ -312,24 +359,31 @@ namespace Proyecto.Repositories{
             return validacion;
         }
         public bool TaskExists(string? nombreTarea){
-            bool validacion=true;
+            bool validacion=false;
+            string? Nombre=null;
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
             string queryC = "SELECT * FROM Tarea WHERE nombre = @NAME";
             SQLiteParameter parameterName = new SQLiteParameter("@NAME",nombreTarea);
 
-            using(connectionC)
+            using (connectionC)
             {
                 connectionC.Open();
                 SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
                 commandC.Parameters.Add(parameterName);
                 
-                int rowsAffected = commandC.ExecuteNonQuery();
-                
-                if (rowsAffected == 0){
-                    validacion=false;
+                SQLiteDataReader readerC = commandC.ExecuteReader();
+                using (readerC)
+                {
+                    while (readerC.Read())
+                    {
+                        Nombre = Convert.ToString(readerC["nombre"]);
+                    }
                 }
                 connectionC.Close();
+            }
+            if (Nombre!=null){
+                validacion=true;
             }
             return validacion;
         }

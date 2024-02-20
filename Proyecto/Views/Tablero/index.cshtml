@@ -37,7 +37,7 @@
                 <tr>
                     <td>@tablero.Nombre</td>
                     <td>@tablero.Descripcion</td>
-                    <td>@tablero.IdUsuarioPropietario</td>
+                    <td>@(tablero.IdUsuarioPropietario != null ? tablero.IdUsuarioPropietario : "No Asignado")</td>
                     <td>@tablero.EstadoTablero</td>
                     <td>
                         <div class="action-buttons">

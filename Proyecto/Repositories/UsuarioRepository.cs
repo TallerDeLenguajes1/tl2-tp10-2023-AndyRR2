@@ -104,10 +104,6 @@ namespace Proyecto.Repositories{
             }
         }
         public void Update(Usuario newUsuario){
-            if (UserExists(newUsuario.Nombre))
-            {
-                throw new Exception("El Usuario ya existe.");
-            }
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             
             string queryC = "UPDATE Usuario SET nombre_de_usuario = @NAME, contrasenia = @PASS, nivel_de_acceso = @NIVEL WHERE id = @ID";
@@ -142,7 +138,7 @@ namespace Proyecto.Repositories{
 
             foreach (var tarea in repoTarea.GetByOwnerUser(idUsuario))//inhabilita todas las tareas del usuario a borrar
             {
-                repoTarea.Disable(tarea.Id);
+                repoTarea.Disable(tarea.Id,tarea.IdTablero);
             }
 
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
@@ -166,24 +162,31 @@ namespace Proyecto.Repositories{
         }
 
         public bool UserExists(string? nombreUsuario){
-            bool validacion=true;
+            bool validacion=false;
+            string? Nombre=null;
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
             string queryC = "SELECT * FROM Usuario WHERE nombre_de_usuario = @NAME";
             SQLiteParameter parameterName = new SQLiteParameter("@NAME",nombreUsuario);
 
-            using(connectionC)
+            using (connectionC)
             {
                 connectionC.Open();
                 SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
                 commandC.Parameters.Add(parameterName);
                 
-                int rowsAffected = commandC.ExecuteNonQuery();
-                
-                if (rowsAffected == 0){
-                    validacion=false;
+                SQLiteDataReader readerC = commandC.ExecuteReader();
+                using (readerC)
+                {
+                    while (readerC.Read())
+                    {
+                        Nombre = Convert.ToString(readerC["nombre_de_usuario"]);
+                    }
                 }
                 connectionC.Close();
+            }
+            if (Nombre!=null){
+                validacion=true;
             }
             return validacion;
         }

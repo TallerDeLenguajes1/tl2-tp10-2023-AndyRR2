@@ -28,7 +28,11 @@ namespace Proyecto.Repositories{
                     {
                         Tablero tableroPorAgregar = new Tablero();
                         tableroPorAgregar.Id = Convert.ToInt32(readerC["id"]);
-                        tableroPorAgregar.IdUsuarioPropietario = Convert.ToInt32(readerC["id_usuario_propietario"]);
+                        if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_propietario"))){
+                            tableroPorAgregar.IdUsuarioPropietario = Convert.ToInt32(readerC["id_usuario_propietario"]);
+                        }else{
+                            tableroPorAgregar.IdUsuarioPropietario = null;
+                        }
                         tableroPorAgregar.Nombre = Convert.ToString(readerC["nombre_tablero"]);
                         tableroPorAgregar.Descripcion = Convert.ToString(readerC["descripcion"]);
                         tableroPorAgregar.EstadoTablero = (EstadoTablero)Convert.ToInt32(readerC["estado"]);
@@ -62,7 +66,11 @@ namespace Proyecto.Repositories{
                     while (readerC.Read())
                     {
                         tableroSelec.Id = Convert.ToInt32(readerC["id"]);
-                        tableroSelec.IdUsuarioPropietario= Convert.ToInt32(readerC["id_usuario_propietario"]);
+                        if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_propietario"))){
+                            tableroSelec.IdUsuarioPropietario = Convert.ToInt32(readerC["id_usuario_propietario"]);
+                        }else{
+                            tableroSelec.IdUsuarioPropietario = null;
+                        }
                         tableroSelec.Nombre = Convert.ToString(readerC["nombre_tablero"]);
                         tableroSelec.Descripcion = Convert.ToString(readerC["descripcion"]);
                         tableroSelec.EstadoTablero = (EstadoTablero)Convert.ToInt32(readerC["estado"]);
@@ -105,10 +113,6 @@ namespace Proyecto.Repositories{
             }
         }
         public void Update(Tablero newTablero){
-            if ((BoardExists(newTablero.Nombre)))
-            {
-                throw new Exception("El Tablero ya existe.");
-            }
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             
             string queryC = "UPDATE Tablero SET id_usuario_propietario = @IDUSU, nombre_tablero = @NAME, descripcion = @DESCRIPCION, estado = @ESTADO WHERE id = @ID";
@@ -139,7 +143,7 @@ namespace Proyecto.Repositories{
 
             foreach (var tarea in repoTarea.GetByOwnerBoard(idTablero))//Inhabilita todas las Tareas del Tablero a borrar
             {
-                repoTarea.Disable(tarea.Id);
+                repoTarea.Disable(tarea.Id, null);
             }
 
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
@@ -164,12 +168,12 @@ namespace Proyecto.Repositories{
             
             foreach (var tarea in repoTarea.GetByOwnerBoard(idTablero))//Inhabilita todas las Tareas del Tablero a Inhabilitar
             {
-                repoTarea.Disable(tarea.Id);
+                repoTarea.Disable(tarea.Id, tarea.IdTablero);
             }
 
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             
-            string queryC = "UPDATE Tablero SET estado = @ESTADO WHERE id = @ID";
+            string queryC = "UPDATE Tablero SET estado = @ESTADO, id_usuario_propietario = NULL WHERE id = @ID";
             SQLiteParameter parameterId = new SQLiteParameter("@ID",idTablero);
             SQLiteParameter parameterEstado = new SQLiteParameter("@ESTADO",2);
 
@@ -207,7 +211,11 @@ namespace Proyecto.Repositories{
                     {
                         Tablero newTablero = new Tablero();
                         newTablero.Id = Convert.ToInt32(readerC["id"]);
-                        newTablero.IdUsuarioPropietario = Convert.ToInt32(readerC["id_usuario_propietario"]);
+                        if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_propietario"))){
+                            newTablero.IdUsuarioPropietario = Convert.ToInt32(readerC["id_usuario_propietario"]);
+                        }else{
+                            newTablero.IdUsuarioPropietario = null;
+                        }
                         newTablero.Nombre = Convert.ToString(readerC["nombre_tablero"]);
                         newTablero.Descripcion = Convert.ToString(readerC["descripcion"]);
                         newTablero.EstadoTablero = (EstadoTablero)Convert.ToInt32(readerC["estado"]);
@@ -226,7 +234,7 @@ namespace Proyecto.Repositories{
 
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
-            string queryC = "SELECT * FROM Tablero WHERE id IN (SELECT id_tablero FROM Tarea WHERE id_usuario_asignado = @IDUSU)";
+            string queryC = "SELECT * FROM Tablero WHERE id IN (SELECT id_tablero FROM Tarea WHERE id_usuario_asignado = @IDUSU OR id_usuario_propietario = @IDUSU)";
             SQLiteParameter parameterIdAsign = new SQLiteParameter("@IDUSU", idUsuario);
 
             using (connectionC)
@@ -242,7 +250,11 @@ namespace Proyecto.Repositories{
                     {
                         Tablero tableroPorAgregar = new Tablero();
                         tableroPorAgregar.Id = Convert.ToInt32(readerC["id"]);
-                        tableroPorAgregar.IdUsuarioPropietario = Convert.ToInt32(readerC["id_usuario_propietario"]);
+                        if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_propietario"))){
+                            tableroPorAgregar.IdUsuarioPropietario = Convert.ToInt32(readerC["id_usuario_propietario"]);
+                        }else{
+                            tableroPorAgregar.IdUsuarioPropietario = null;
+                        }
                         tableroPorAgregar.Nombre = Convert.ToString(readerC["nombre_tablero"]);
                         tableroPorAgregar.Descripcion = Convert.ToString(readerC["descripcion"]);
                         tableroPorAgregar.EstadoTablero = (EstadoTablero)Convert.ToInt32(readerC["estado"]);
@@ -258,24 +270,31 @@ namespace Proyecto.Repositories{
             return (tableros);
         }
         public bool BoardExists(string? nombreTablero){
-            bool validacion=true;
+            bool validacion=false;
+            string? Nombre=null;
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
             string queryC = "SELECT * FROM Tablero WHERE nombre_tablero = @NAME";
             SQLiteParameter parameterName = new SQLiteParameter("@NAME",nombreTablero);
 
-            using(connectionC)
+            using (connectionC)
             {
                 connectionC.Open();
                 SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
                 commandC.Parameters.Add(parameterName);
                 
-                int rowsAffected = commandC.ExecuteNonQuery();
-                
-                if (rowsAffected == 0){
-                    validacion=false;
+                SQLiteDataReader readerC = commandC.ExecuteReader();
+                using (readerC)
+                {
+                    while (readerC.Read())
+                    {
+                        Nombre = Convert.ToString(readerC["nombre_tablero"]);
+                    }
                 }
                 connectionC.Close();
+            }
+            if (Nombre!=null){
+                validacion=true;
             }
             return validacion;
         }
