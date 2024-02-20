@@ -187,7 +187,7 @@ namespace Proyecto.Controllers{
 
                 Tarea tareaAEditar = Tarea.FromEditarTareaViewModel(tareaAEditarVM);
                 repoTarea.Update(tareaAEditar);
-                return RedirectToAction("Index", new { idTablero = tareaAEditar.IdTablero });
+                return RedirectToAction("Index", "Usuario");
             }
             catch (Exception ex)
             {
