@@ -48,9 +48,10 @@ namespace Proyecto.Controllers{
                     /*Si no es Admin solo puede acceder a ver sus propios Tableros los cuales son los tableros 
                     propiedad del usuario unidos con los tableros donde el usuario tenga alguna tarea asignada.*/
                     Usuario usuarioLogeado = repoLogin.ObtenerUsuario(HttpContext.Session.GetString("Nombre"),HttpContext.Session.GetString("Contrasenia"));
-                    if ((idUsuario == usuarioLogeado.Id)){
+                    if (idUsuario == usuarioLogeado.Id){
                         tableros = repoTablero.GetByOwnerUser(usuarioLogeado.Id).Concat(repoTablero.GetByUserAsignedTask(usuarioLogeado.Id)).GroupBy(t => t.Id).Select(group => group.First()).ToList();   
                     }else{
+                        _logger.LogWarning("Debe ser administrador para realizar la accion");
                         return NotFound();
                     }
                 }
@@ -74,7 +75,10 @@ namespace Proyecto.Controllers{
                     TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
                     return RedirectToAction("Index", "Login");
                 }
-                if(!isAdmin()) return NotFound();
+                if(!isAdmin()){
+                    _logger.LogWarning("Debe ser administrador para realizar la accion");
+                    return NotFound();
+                } 
 
                 CrearTableroViewModel newTableroVM = new CrearTableroViewModel();
                 List<Usuario> usuariosEnBD = repoUsuario.GetAll();
@@ -101,7 +105,10 @@ namespace Proyecto.Controllers{
                     TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
                     return RedirectToAction("Index", "Login");
                 }
-                if(!isAdmin()) return NotFound();
+                if(!isAdmin()){
+                    _logger.LogWarning("Debe ser administrador para realizar la accion");
+                    return NotFound();
+                } 
 
                 Tablero newTablero = Tablero.FromCrearTableroViewModel(newTableroVM);
                 repoTablero.Create(newTablero);
@@ -136,6 +143,7 @@ namespace Proyecto.Controllers{
                     if (usuarioLogeado.Id == repoTablero.GetById(idTablero).IdUsuarioPropietario){
                         tableroAEditarVM = EditarTableroViewModel.FromTablero(tableroAEditar);//Convierto de Model a ViewModel
                     }else{
+                        _logger.LogWarning("Debe ser administrador para realizar la accion");
                         return NotFound();
                     }
                 }
@@ -196,6 +204,7 @@ namespace Proyecto.Controllers{
                     if (usuarioLogeado.Id == repoTablero.GetById(idTablero).IdUsuarioPropietario){
                         return View(tableroAEliminar);
                     }else{
+                        _logger.LogWarning("Debe ser administrador para realizar la accion");
                         return NotFound();
                     }
                 }
@@ -232,7 +241,6 @@ namespace Proyecto.Controllers{
             if (HttpContext.Session != null && HttpContext.Session.GetString("NivelDeAcceso") == "admin"){
                 return true;
             }else{
-                _logger.LogWarning("Debe estar logueado para ingresar a la página");
                 return false;
             }
         }
@@ -241,7 +249,7 @@ namespace Proyecto.Controllers{
             if (HttpContext.Session != null && HttpContext.Session.GetString("NivelDeAcceso") == "admin" || HttpContext.Session.GetString("NivelDeAcceso") == "simple"){
                 return true;
             }else{
-                _logger.LogWarning("Debe ser administrador para realizar la accion");
+                _logger.LogWarning("Debe estar logueado para ingresar a la página");
                 return false;
             }
         }

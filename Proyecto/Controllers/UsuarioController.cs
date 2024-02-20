@@ -46,7 +46,10 @@ namespace Proyecto.Controllers{
                     TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
                     return RedirectToAction("Index", "Login");
                 } 
-                if(!isAdmin()) return NotFound();
+                if(!isAdmin()){
+                    _logger.LogWarning("Debe ser administrador para realizar la accion");
+                    return NotFound();
+                } 
 
                 CrearUsuarioViewModel newUsuarioVM = new CrearUsuarioViewModel();
 
@@ -68,7 +71,10 @@ namespace Proyecto.Controllers{
                     TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
                     return RedirectToAction("Index", "Login");
                 } 
-                if(!isAdmin()) return NotFound();
+                if(!isAdmin()){
+                    _logger.LogWarning("Debe ser administrador para realizar la accion");
+                    return NotFound();
+                } 
 
                 Usuario newUsuario = Usuario.FromCrearUsuario(newUsuarioVM);
                 repoUsuario.Create(newUsuario);
@@ -105,6 +111,7 @@ namespace Proyecto.Controllers{
                     if (usuarioLogeado.Id == idUsuario){//Si coinciden los Id puede editarlo
                         usuarioAEditarVM = EditarUsuarioViewModel.FromUsuario(usuarioAEditar);//Convierto de Model a ViewModel
                     }else{
+                        _logger.LogWarning("Debe ser administrador para realizar la accion");
                         return NotFound();
                     }
                 }
@@ -166,6 +173,7 @@ namespace Proyecto.Controllers{
                     if (usuarioLogeado.Id == idUsuario){//Si coinciden los Id puede Borrarlo
                         return View(usuarioAEliminar);
                     }else{
+                        _logger.LogWarning("Debe ser administrador para realizar la accion");
                         return NotFound();
                     }
                 }
@@ -201,7 +209,6 @@ namespace Proyecto.Controllers{
             if (HttpContext.Session != null && HttpContext.Session.GetString("NivelDeAcceso") == "admin"){
                 return true;
             }else{
-                _logger.LogWarning("Debe estar logueado para ingresar a la página");
                 return false;
             }
         }
@@ -210,7 +217,7 @@ namespace Proyecto.Controllers{
             if (HttpContext.Session != null && HttpContext.Session.GetString("NivelDeAcceso") == "admin" || HttpContext.Session.GetString("NivelDeAcceso") == "simple"){
                 return true;
             }else{
-                _logger.LogWarning("Debe ser administrador para realizar la accion");
+                _logger.LogWarning("Debe estar logueado para ingresar a la página");
                 return false;
             }
         }

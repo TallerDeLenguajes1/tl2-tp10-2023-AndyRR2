@@ -49,6 +49,7 @@ namespace Proyecto.Controllers{
                     if ((repoTablero.GetById(idTablero).IdUsuarioPropietario == usuarioLogeado.Id) || repoTarea.ChechAsignedTask(idTablero,usuarioLogeado.Id)){
                         tareas = repoTarea.GetByOwnerBoard(idTablero);   
                     }else{
+                        _logger.LogWarning("Debe ser administrador para realizar la accion");
                         return NotFound();
                     }
                 }
@@ -72,7 +73,10 @@ namespace Proyecto.Controllers{
                     TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
                     return RedirectToAction("Index", "Login");
                 }
-                if(!isAdmin()) return NotFound();
+                if(!isAdmin()){
+                    _logger.LogWarning("Debe ser administrador para realizar la accion");
+                    return NotFound();
+                } 
 
                 CrearTareaViewModel newTareaVM = new CrearTareaViewModel();
 
@@ -109,7 +113,10 @@ namespace Proyecto.Controllers{
                     TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
                     return RedirectToAction("Index", "Login");
                 }
-                if(!isAdmin()) return NotFound();
+                if(!isAdmin()){
+                    _logger.LogWarning("Debe ser administrador para realizar la accion");
+                    return NotFound();
+                } 
 
                 Tarea newTarea = Tarea.FromCrearTareaViewModel(newTareaVM);
                 repoTarea.Create(newTarea);
@@ -144,6 +151,7 @@ namespace Proyecto.Controllers{
                     if (usuarioLogeado.Id == repoTarea.GetById(idTarea).IdUsuarioPropietario){
                         tareaAEditarVM = EditarTareaViewModel.FromTarea(tareaAEditar);//Convierto de Model a ViewModel
                     }else{
+                        _logger.LogWarning("Debe ser administrador para realizar la accion");
                         return NotFound();
                     }
                 }
@@ -209,6 +217,7 @@ namespace Proyecto.Controllers{
                     if (usuarioLogeado.Id == repoTarea.GetById(idTarea).IdUsuarioPropietario){
                         return View(tareaAEliminar);
                     }else{
+                        _logger.LogWarning("Debe ser administrador para realizar la accion");
                         return NotFound();
                     }
                 }
@@ -261,6 +270,7 @@ namespace Proyecto.Controllers{
                     if (usuarioLogeado.Id == repoTarea.GetById(idTarea).IdUsuarioPropietario){
                         tareaSelecVM = AsignarTareaViewModel.FromTarea(tareaSelec);
                     }else{
+                        _logger.LogWarning("Debe ser administrador para realizar la accion");
                         return NotFound();
                     }
                 }
@@ -290,7 +300,7 @@ namespace Proyecto.Controllers{
                 }
 
                 repoTarea.Assign(tareaSelecVM.Id,tareaSelecVM.IdUsuarioAsignado);
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Usuario");
             }
             catch (Exception ex)
             {
@@ -320,6 +330,7 @@ namespace Proyecto.Controllers{
                     if ((usuarioLogeado.Id == repoTarea.GetById(idTarea).IdUsuarioPropietario) || (usuarioLogeado.Id == repoTarea.GetById(idTarea).IdUsuarioAsignado)){
                         tareaAEditarVM = EditarTareaViewModel.FromTarea(tareaAEditar);
                     }else{
+                        _logger.LogWarning("Debe ser administrador para realizar la accion");
                         return NotFound();
                     }
                 }
@@ -345,7 +356,7 @@ namespace Proyecto.Controllers{
 
                 Tarea tareaAEditar = Tarea.FromCambiarEstadoTareaViewModel(tareaAEditarVM);
                 repoTarea.ChangeStatus(tareaAEditar);
-                return RedirectToAction("Index", new { idTablero = tareaAEditar.IdTablero });
+                return RedirectToAction("Index", "Usuario");
             }
             catch (Exception ex)
             {
@@ -358,7 +369,6 @@ namespace Proyecto.Controllers{
             if (HttpContext.Session != null && HttpContext.Session.GetString("NivelDeAcceso") == "admin"){
                 return true;
             }else{
-                _logger.LogWarning("Debe estar logueado para ingresar a la página");
                 return false;
             }
         }
@@ -367,7 +377,7 @@ namespace Proyecto.Controllers{
             if (HttpContext.Session != null && HttpContext.Session.GetString("NivelDeAcceso") == "admin" || HttpContext.Session.GetString("NivelDeAcceso") == "simple"){
                 return true;
             }else{
-                _logger.LogWarning("Debe ser administrador para realizar la accion");
+                _logger.LogWarning("Debe estar logueado para ingresar a la página");
                 return false;
             }
         }
