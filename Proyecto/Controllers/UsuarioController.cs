@@ -164,19 +164,21 @@ namespace Proyecto.Controllers{
 
                 if(!idUsuario.HasValue) return NotFound();
                 Usuario usuarioAEliminar = repoUsuario.GetById(idUsuario);//Obtengo el usuario por su Id
+                EliminarUsuarioViewModel usuarioAEliminarVM = new EliminarUsuarioViewModel();
 
                 if (isAdmin()){//Si es Admin puede Borrarlo
-                    return View(usuarioAEliminar);
+                    usuarioAEliminarVM = EliminarUsuarioViewModel.FromUsuario(usuarioAEliminar);
                 }else{
                     //Verifica si el id del usuario logueado es el mismo que el del usuario que se quiere Borrar
                     Usuario usuarioLogeado = repoLogin.ObtenerUsuario(HttpContext.Session.GetString("Nombre"),HttpContext.Session.GetString("Contrasenia"));
                     if (usuarioLogeado.Id == idUsuario){//Si coinciden los Id puede Borrarlo
-                        return View(usuarioAEliminar);
+                        usuarioAEliminarVM = EliminarUsuarioViewModel.FromUsuario(usuarioAEliminar);
                     }else{
                         _logger.LogWarning("Debe ser administrador para realizar la accion");
                         return NotFound();
                     }
                 }
+                return View(usuarioAEliminarVM);
             }
             catch (Exception ex)
             {
@@ -185,7 +187,7 @@ namespace Proyecto.Controllers{
             }
         }
         [HttpPost]
-        public IActionResult EliminarFromForm(int? idUsuarioAEliminar){
+        public IActionResult EliminarFromForm(EliminarUsuarioViewModel usuarioAEliminarVM){
             try
             {
                 if(!isLogin())
@@ -194,8 +196,14 @@ namespace Proyecto.Controllers{
                     return RedirectToAction("Index", "Login");
                 }
 
-                repoUsuario.Remove(idUsuarioAEliminar);
-                return RedirectToAction("Index");
+                if(usuarioAEliminarVM.ContraseniaActual == repoUsuario.GetById(usuarioAEliminarVM.Id).Contrasenia){
+                    Usuario usuarioAEliminar = Usuario.FromEliminarUsuario(usuarioAEliminarVM);//Convierto de ViewModel a Model
+                    repoUsuario.Remove(usuarioAEliminar.Id);
+                    return RedirectToAction("Index");
+                }else{
+                    _logger.LogInformation($"La contraseña ingresada es incorrecta");
+                    return RedirectToAction("EliminarUsuario", new { idUsuario = usuarioAEliminarVM.Id });//Regresa a EliminarUsuario con el mismo Id del usuario que se queria eliminar
+                }
             }
             catch (Exception ex)
             {

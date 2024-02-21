@@ -2,11 +2,18 @@
     ViewData["Title"] = "Eliminar Usuario";
 }
 
-@model Proyecto.Models.Usuario
+@model Proyecto.ViewModels.EliminarUsuarioViewModel
 
 <h2>Confirmar eliminación</h2>
 
-<form asp-controller="Usuario" asp-action="EliminarFromForm">
-    <input name="idUsuarioAEliminar" type="hidden" value="@Model.Id" />
-    <button type="submit" class="btn btn-danger">Eliminar</button>
+<form asp-controller="Usuario" asp-action="EliminarFromForm" method="post">
+    <input hidden asp-for="@Model.Id">
+    <div class="form-group" style="max-width: 200px;">
+        <label asp-for="@Model.ContraseniaActual"></label>
+        <input asp-for="@Model.ContraseniaActual" class="form-control" id="contrasenia actual" />
+        <span asp-validation-for="@Model.ContraseniaActual" class="text-danger"></span>   
+    </div>
+    <div class="form-group" style="margin-top: 10px;">
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+    </div>
 </form>

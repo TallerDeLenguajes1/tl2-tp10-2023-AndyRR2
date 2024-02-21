@@ -30,5 +30,13 @@ namespace Proyecto.Models{
                 NivelDeAcceso=usuarioVM.NivelDeAcceso
             };
         }
+
+        public static Usuario FromEliminarUsuario(EliminarUsuarioViewModel usuarioVM){
+            return new Usuario
+            {
+                Id=usuarioVM.Id,
+                Contrasenia=usuarioVM.ContraseniaActual
+            };
+        }
     }
 }
