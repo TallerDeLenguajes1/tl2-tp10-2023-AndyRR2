@@ -29,8 +29,6 @@ namespace Proyecto.Repositories{
                         newTarea.Id = Convert.ToInt32(readerC["id"]);
                         if (!readerC.IsDBNull(readerC.GetOrdinal("id_tablero"))){
                             newTarea.IdTablero = Convert.ToInt32(readerC["id_tablero"]);
-                        }else{
-                            newTarea.IdTablero = null;
                         }
                         newTarea.Nombre = Convert.ToString(readerC["nombre"]);
                         newTarea.EstadoTarea = (EstadoTarea)Convert.ToInt32(readerC["estado"]);
@@ -38,13 +36,9 @@ namespace Proyecto.Repositories{
                         newTarea.Color = (Color)Convert.ToInt32(readerC["color"]);
                         if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_propietario"))){
                             newTarea.IdUsuarioPropietario = Convert.ToInt32(readerC["id_usuario_propietario"]);
-                        }else{
-                            newTarea.IdUsuarioPropietario = null;
                         }
                         if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_asignado"))){
                             newTarea.IdUsuarioAsignado = Convert.ToInt32(readerC["id_usuario_asignado"]);
-                        }else{
-                            newTarea.IdUsuarioAsignado = null;
                         }
                         tareas.Add(newTarea);
                     }
@@ -76,8 +70,6 @@ namespace Proyecto.Repositories{
                         tareaSelec.Id = Convert.ToInt32(readerC["id"]);
                         if (!readerC.IsDBNull(readerC.GetOrdinal("id_tablero"))){
                             tareaSelec.IdTablero = Convert.ToInt32(readerC["id_tablero"]);
-                        }else{
-                            tareaSelec.IdTablero = null;
                         }
                         tareaSelec.Nombre = Convert.ToString(readerC["nombre"]);
                         tareaSelec.EstadoTarea = (EstadoTarea)Convert.ToInt32(readerC["estado"]);
@@ -85,13 +77,9 @@ namespace Proyecto.Repositories{
                         tareaSelec.Color = (Color)Convert.ToInt32(readerC["color"]);
                         if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_propietario"))){
                             tareaSelec.IdUsuarioPropietario = Convert.ToInt32(readerC["id_usuario_propietario"]);
-                        }else{
-                            tareaSelec.IdUsuarioPropietario = null;
                         }
                         if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_asignado"))){
                             tareaSelec.IdUsuarioAsignado = Convert.ToInt32(readerC["id_usuario_asignado"]);
-                        }else{
-                            tareaSelec.IdUsuarioAsignado = null;
                         }
                     }
                 }
@@ -273,8 +261,6 @@ namespace Proyecto.Repositories{
                         newTarea.Id = Convert.ToInt32(readerC["id"]);
                         if (!readerC.IsDBNull(readerC.GetOrdinal("id_tablero"))){
                             newTarea.IdTablero = Convert.ToInt32(readerC["id_tablero"]);
-                        }else{
-                            newTarea.IdTablero = null;
                         }
                         newTarea.IdTablero = Convert.ToInt32(readerC["id_tablero"]);
                         newTarea.Nombre = Convert.ToString(readerC["nombre"]);
@@ -283,13 +269,9 @@ namespace Proyecto.Repositories{
                         newTarea.Color = (Color)Convert.ToInt32(readerC["color"]);
                         if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_propietario"))){
                             newTarea.IdUsuarioPropietario = Convert.ToInt32(readerC["id_usuario_propietario"]);
-                        }else{
-                            newTarea.IdUsuarioPropietario = null;
                         }
                         if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_asignado"))){
                             newTarea.IdUsuarioAsignado = Convert.ToInt32(readerC["id_usuario_asignado"]);
-                        }else{
-                            newTarea.IdUsuarioAsignado = null;
                         }
                         tareas.Add(newTarea);
                     }
@@ -323,8 +305,6 @@ namespace Proyecto.Repositories{
                         newTarea.Id = Convert.ToInt32(readerC["id"]);
                         if (!readerC.IsDBNull(readerC.GetOrdinal("id_tablero"))){
                             newTarea.IdTablero = Convert.ToInt32(readerC["id_tablero"]);
-                        }else{
-                            newTarea.IdTablero = null;
                         }
                         newTarea.Nombre = Convert.ToString(readerC["nombre"]);
                         newTarea.EstadoTarea = (EstadoTarea)Convert.ToInt32(readerC["estado"]);
@@ -332,13 +312,9 @@ namespace Proyecto.Repositories{
                         newTarea.Color = (Color)Convert.ToInt32(readerC["color"]);
                         if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_propietario"))){
                             newTarea.IdUsuarioPropietario = Convert.ToInt32(readerC["id_usuario_propietario"]);
-                        }else{
-                            newTarea.IdUsuarioPropietario = null;
                         }
                         if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_asignado"))){
                             newTarea.IdUsuarioAsignado = Convert.ToInt32(readerC["id_usuario_asignado"]);
-                        }else{
-                            newTarea.IdUsuarioAsignado = null;
                         }
                         tareas.Add(newTarea);
                     }
@@ -349,37 +325,6 @@ namespace Proyecto.Repositories{
                 throw new Exception("El Usuario proporcionado no tiene tareas.");
             }
             return(tareas);
-        }
-        public bool ChechAsignedTask(int? idTablero, int? idUsuario){
-            bool validacion = false;
-            SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
-
-            string queryC = "SELECT * FROM Tarea WHERE id_usuario_asignado = @IDASIGN AND id_tablero = @IDTAB";
-            SQLiteParameter parameterIdAsign = new SQLiteParameter("@IDASIGN", idUsuario);
-            SQLiteParameter parameterIdTab = new SQLiteParameter("@IDTAB", idTablero);
-
-            using (connectionC)
-            {
-                connectionC.Open();
-                SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
-                commandC.Parameters.Add(parameterIdAsign);
-                commandC.Parameters.Add(parameterIdTab);
-
-                SQLiteDataReader readerC = commandC.ExecuteReader();
-                using (readerC)
-                {
-                    while (readerC.Read())
-                    {
-                        validacion = true;
-                    }
-                }
-                connectionC.Close();
-            }
-            if (validacion == false)
-            {
-                throw new Exception("No se encontraron tareas asignadas al tablero proporcionado en la base de datos.");
-            }
-            return validacion;
         }
         public bool TaskExists(string? nombreTarea){
             bool validacion=false;

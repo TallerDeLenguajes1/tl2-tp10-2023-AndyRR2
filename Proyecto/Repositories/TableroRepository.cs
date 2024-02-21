@@ -30,8 +30,6 @@ namespace Proyecto.Repositories{
                         tableroPorAgregar.Id = Convert.ToInt32(readerC["id"]);
                         if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_propietario"))){
                             tableroPorAgregar.IdUsuarioPropietario = Convert.ToInt32(readerC["id_usuario_propietario"]);
-                        }else{
-                            tableroPorAgregar.IdUsuarioPropietario = null;
                         }
                         tableroPorAgregar.Nombre = Convert.ToString(readerC["nombre_tablero"]);
                         tableroPorAgregar.Descripcion = Convert.ToString(readerC["descripcion"]);
@@ -68,8 +66,6 @@ namespace Proyecto.Repositories{
                         tableroSelec.Id = Convert.ToInt32(readerC["id"]);
                         if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_propietario"))){
                             tableroSelec.IdUsuarioPropietario = Convert.ToInt32(readerC["id_usuario_propietario"]);
-                        }else{
-                            tableroSelec.IdUsuarioPropietario = null;
                         }
                         tableroSelec.Nombre = Convert.ToString(readerC["nombre_tablero"]);
                         tableroSelec.Descripcion = Convert.ToString(readerC["descripcion"]);
@@ -213,8 +209,6 @@ namespace Proyecto.Repositories{
                         newTablero.Id = Convert.ToInt32(readerC["id"]);
                         if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_propietario"))){
                             newTablero.IdUsuarioPropietario = Convert.ToInt32(readerC["id_usuario_propietario"]);
-                        }else{
-                            newTablero.IdUsuarioPropietario = null;
                         }
                         newTablero.Nombre = Convert.ToString(readerC["nombre_tablero"]);
                         newTablero.Descripcion = Convert.ToString(readerC["descripcion"]);
@@ -283,8 +277,6 @@ namespace Proyecto.Repositories{
                         tableroPorAgregar.Id = Convert.ToInt32(readerC["id"]);
                         if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_propietario"))){
                             tableroPorAgregar.IdUsuarioPropietario = Convert.ToInt32(readerC["id_usuario_propietario"]);
-                        }else{
-                            tableroPorAgregar.IdUsuarioPropietario = null;
                         }
                         tableroPorAgregar.Nombre = Convert.ToString(readerC["nombre_tablero"]);
                         tableroPorAgregar.Descripcion = Convert.ToString(readerC["descripcion"]);
