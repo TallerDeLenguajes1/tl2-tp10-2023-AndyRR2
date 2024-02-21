@@ -1,47 +1,158 @@
 Programador: Andy Alejandro Rodriguez Rodriguez
 Git: https://github.com/TallerDeLenguajes1/tl2-tp10-2023-AndyRR2/tree/main/Proyecto
 
-*Controladores, controles de Login y Niveles de Acceso:
++ Controladores, controles de Login y Niveles de Acceso:
+
 UsuarioController:
-    -Index: Permitido para todos los usuarios Logueados
-    -AgregarUsuario: Solo permitido para usuarios Logueados que sean Administradores.
-    -EditarUsuario: Debe estar logueado
-                    Un Administrador puede editar cualquier usuario.
-                    Cualquier usuario Logueado puede editar su propio usuario.
-    -EliminarUsuario: Debe estar logueado
-                      Un Administrador puede eliminar cualquier usuario.
-                      Cualquier usuario Logueado puede eliminar su propio usuario.
+    *Index: -Permitido para todos los usuarios Logueados
+
+    *AgregarUsuario: -Solo permitido para usuarios Logueados que sean Administradores.
+
+    *EditarUsuario: -Debe estar logueado
+                    -Un Administrador puede editar cualquier usuario.
+                    -Un usuario Simple puede editar solo su propio usuario.
+    
+    *EliminarUsuario: -Debe estar logueado
+                      -Un Administrador puede eliminar cualquier usuario.
+                      -Un usuario Simple puede eliminar solo su propio usuario.
 
 TableroController:
-    -Index: Debe estar Logueado
-            Solo el Administrador tiene permitido ver todos los tableros
-            Un Administrador puede ver los tableros de cualquier usuario por individual
-            Cualquier usuario Logueado puede ver los tableros donde es usuario propietario o tiene una tarea asignada
-    -AgregarTablero: Solo permitido para usuarios Logueados que sean Administradores.
-    -EditarTablero: Debe estar logueado
-                    Un Administrador puede editar cualquier tablero.
-                    Cualquier usuario Logueado puede editar un tablero si es el usuario propietario.
-    -EliminarTablero: Debe estar logueado
-                      Un Administrador puede eliminar cualquier tablero.
-                      Cualquier usuario Logueado puede eliminar un tablero si es el usuario propietario. 
+    *Index: -Debe estar Logueado
+            -Solo el Administrador tiene permitido ver todos los tableros
+            -Un Administrador puede ver los tableros de cualquier usuario por individual
+            -Un usuario Simple puede ver solo los tableros donde es usuario propietario o tiene una tarea asignada
+    
+    *AgregarTablero: -Solo permitido para usuarios Logueados que sean Administradores.
+    
+    *EditarTablero: -Debe estar logueado
+                    -Un Administrador puede editar cualquier tablero.
+                    -Un usuario Simple puede editar un tablero solo si es el usuario propietario.
+    
+    *EliminarTablero: -Debe estar logueado
+                      -Un Administrador puede eliminar cualquier tablero.
+                      -Un usuario Simple puede eliminar un tablero solo si es el usuario propietario. 
 
 TareaController:
-    -Index: Debe estar Logueado
-            Solo el Administrador tiene permitido ver todas las tareas
-            Un Administrador puede ver las tareas de cualquier tablero por individual
-            Cualquier usuario Logueado puede ver las tareas de los tableros donde es usuario propietario o tiene una tarea asignada
-    -AgregarTarea: Solo permitido para usuarios Logueados que sean Administradores.
-    -EditarTarea: Debe estar logueado
-                  Un Administrador puede editar cualquier tarea.
-                  Cualquier usuario Logueado puede editar una tarea si es el usuario propietario.
-    -EliminarTarea: Debe estar logueado
-                    Un Administrador puede eliminar cualquier tarea.
-                    Cualquier usuario Logueado puede eliminar una tarea si es el usuario propietario. 
-    -AsignarTarea: Debe estar logueado
-                   Un Administrador puede asignar un usuario a cualquier tarea.
-                   Cualquier usuario Logueado puede asignar un usuario a una tarea si es el usuario propietario. 
+    *Index: -Debe estar Logueado
+            -Solo el Administrador tiene permitido ver todas las tareas
+            -Un Administrador puede ver las tareas de cualquier tablero por individual
+            -Un usuario Simple solo puede ver las tareas de los tableros donde es usuario propietario
+             o tiene una tarea asignada o es propietario de la tarea
+    
+    *AgregarTarea: -Solo permitido para usuarios Logueados que sean Administradores.
+    
+    *EditarTarea: -Debe estar logueado
+                  -Un Administrador puede editar cualquier tarea.
+                  -Un usuario Simple puede editar una tarea solo si es el usuario propietario, los asignados no.
+    
+    *EliminarTarea: -Debe estar logueado
+                    -Un Administrador puede eliminar cualquier tarea.
+                    -Un usuario Simple puede eliminar una tarea solo si es el usuario propietario, los asignados no. 
+    
+    *AsignarTarea: -Debe estar logueado
+                   -Un Administrador puede asignar un usuario a cualquier tarea.
+                   -Un usuario Simple puede asignar un usuario a una tarea si es el usuario propietario. 
+
+    *CambiarEstadoTarea: -Debe estar logueado
+                         -Un Administrador puede cambiar el estado de cualquier tarea.
+                         -Un usuario Simple puede cambiar el estado de una tarea solos si es el usuario propietario o asignado.
 
 
++ Repositorios, funcionamiento en general:
 
+*UsuarioRepository:
+        -public List<Usuario> GetAll();
+                Obtiene todos los usuarios de la BD
+
+        -public Usuario GetById(int? idUsuario);
+                Obtiene un usuario segun su id
+
+        -public void Create(Usuario newUsuario);
+                Crea un usuario segun un objeto usuario
+
+        -public void Update(Usuario newUsuario);
+                Actualiza un usuario segun un objeto usuario
+
+        -public void Remove(int? idUsuario);
+                Elimina un usuario segun su id
+
+(******)-public bool UserExists(string? nombreUsuario);
+                Verifica si existe un usuario con el mismo nombre, control utilizado antes de crear un usuario
+
+*TableroRepository:
+        -public List<Tablero> GetAll();
+                Obtiene todos los tableros de la BD
+
+        -public Tablero GetById(int? idTablero);
+                Obtiene un tablero segun su id
+
+        -public void Create(Tablero newTablero);
+                Crea un tablero segun un objeto tablero
+
+        -public void Update(Tablero newTablero);
+                Actualiza un tablero segun un objeto tablero
+
+        -public void Remove(int? idTablero);
+                Elimina un tablero segun su id
+
+(******)-public void Disable(int? idTablero);
+                Inhabilita un tablero segun su id, se utiliza al eliminar el usuario propietario del mismo
+
+(******)-public List<Tablero> GetByOwnerUser(int? idUsuario);
+                Obtiene los tableros que son propiedad de un usuario segun el id del usuario, se utiliza para mostrar los tableros
+                de los usuarios por individual
+
+(******)-public bool ChechAsignedTask(int? idUsuario, int? idTablero);
+                Verifica si el tablero tiene alguna tarea que tenga como propietario al usuario dado o este esta asignado
+                Se utiliza para que los usuarios Simple solo puedan ver las tareas d eun tablero que tenga esas tareas
+
+(******)-public List<Tablero> GetByUserAsignedTask(int? idUsuario);
+                Obtiene los tableros en donde un usuario tiene una tarea asignada segun el id del usuario, se utiliza para 
+                mostrar los tableros de los usuarios por individual
+
+(******)-public bool BoardExists(string? nombreTablero);
+                Verifica si existe un tablero con el mismo nombre, control utilizado antes de crear un tablero
+
+*TareaRepository:
+        -public List<Tarea> GetAll();
+                Obtiene todas las tareas de la BD
+
+        -public Tarea GetById(int? idTarea);
+                Obtiene una tareasegun su id
+
+        -public void Create(Tarea newTarea);
+                Crea una tarea segun un objeto tarea
+
+        -public void Update(Tarea newTarea);
+                Actualiza una tarea segun un objeto tarea
+
+        -public void Remove(int? idTarea);
+                Elimina una tarea segun su id
+
+(******)-public void Assign(int? idTarea, int? idUsuario);
+                Asigna un usuario a una tarea segun sus id
+
+(******)-public void ChangeStatus(Tarea tarea);
+                Cambia el estado de una tarea segun un objeto tarea
+
+(******)-public void Disable(int? idTarea, int? idTablero);
+                Inhabilita una tarea segun su id y:
+                        -si el idTablero es null significa que el tablero se Borro, por lo cual queda como No Asignado 
+                        -si el idTablero no es null significa que el tablero solo se inhabilito, por lo cual la tarea queda con el id del tablero correspondiente
+                        se toma la decición de hacerlo de esta manera ya que como Admin se podria editar el tablero y poner otro usuario como propietario
+                        por lo tanto podrian continuarse las tareas
+
+(******)-public List<Tarea> GetByOwnerBoard(int? idTablero);
+                Obtiene las tareas que estan en un tablero segun el id del tablero, se utiliza para mostrar las tareas
+                de los tableros por individual
+                Se usa para inhabilitar las tareas de ese tablero
+
+(******)-public List<Tarea> GetByOwnerUser(int? idUsuario);
+                Obtiene las tareas que son propiedad de un usuario segun el id del usuario, se utiliza para mostrar los tableros
+                de los usuarios por individual
+                Se usa para inhabilitar las tareas de ese usuario
+
+(******)-public bool TaskExists(string? nombreTarea);
+                Verifica si existe una tarea con el mismo nombre, control utilizado antes de crear una tarea
 
 

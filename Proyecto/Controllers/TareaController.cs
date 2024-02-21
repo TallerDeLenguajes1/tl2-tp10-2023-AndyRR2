@@ -46,7 +46,7 @@ namespace Proyecto.Controllers{
                     /*Si no es Admin solo puede acceder a ver las tareas que pertenezcan a los Tableros que
                      sean propiedad del usuario logueado o tengan alguna tarea asignada al usuario logueado*/
                     Usuario usuarioLogeado = repoLogin.ObtenerUsuario(HttpContext.Session.GetString("Nombre"),HttpContext.Session.GetString("Contrasenia"));
-                    if ((repoTablero.GetById(idTablero).IdUsuarioPropietario == usuarioLogeado.Id) || repoTarea.ChechAsignedTask(idTablero,usuarioLogeado.Id)){
+                    if ((repoTablero.GetById(idTablero).IdUsuarioPropietario == usuarioLogeado.Id) || repoTablero.ChechAsignedTask(idTablero,usuarioLogeado.Id)){
                         tareas = repoTarea.GetByOwnerBoard(idTablero);   
                     }else{
                         _logger.LogWarning("Debe ser administrador para realizar la accion");

@@ -229,6 +229,37 @@ namespace Proyecto.Repositories{
             }
             return(tableros);
         }
+        public bool ChechAsignedTask(int? idTablero, int? idUsuario){
+            bool validacion = false;
+            SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
+
+            string queryC = "SELECT * FROM Tarea WHERE id_usuario_asignado = @IDASIGN AND id_tablero = @IDTAB";
+            SQLiteParameter parameterIdAsign = new SQLiteParameter("@IDASIGN", idUsuario);
+            SQLiteParameter parameterIdTab = new SQLiteParameter("@IDTAB", idTablero);
+
+            using (connectionC)
+            {
+                connectionC.Open();
+                SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
+                commandC.Parameters.Add(parameterIdAsign);
+                commandC.Parameters.Add(parameterIdTab);
+
+                SQLiteDataReader readerC = commandC.ExecuteReader();
+                using (readerC)
+                {
+                    while (readerC.Read())
+                    {
+                        validacion = true;
+                    }
+                }
+                connectionC.Close();
+            }
+            if (validacion == false)
+            {
+                throw new Exception("No se encontraron tareas asignadas al tablero proporcionado en la base de datos.");
+            }
+            return validacion;
+        }
         public List<Tablero> GetByUserAsignedTask(int? idUsuario){
             List<Tablero> tableros = new List<Tablero>();
 
