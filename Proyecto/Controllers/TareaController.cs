@@ -55,6 +55,12 @@ namespace Proyecto.Controllers{
                 }
 
                 List<ListarTareaViewModel> listaTareasVM = ListarTareaViewModel.FromTarea(tareas);
+                foreach (var tarea in listaTareasVM)
+                {
+                    tarea.NombreTablero=repoTablero.GetById(tarea.IdTablero).Nombre;
+                    tarea.NombreUsuarioAsignado=repoUsuario.GetById(tarea.IdUsuarioAsignado).Nombre;
+                    tarea.NombreUsuarioPropietario=repoUsuario.GetById(tarea.IdUsuarioPropietario).Nombre;
+                }
                 return View(listaTareasVM);
             }
             catch (Exception ex)
@@ -73,10 +79,6 @@ namespace Proyecto.Controllers{
                     TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
                     return RedirectToAction("Index", "Login");
                 }
-                if(!isAdmin()){
-                    _logger.LogWarning("Debe ser administrador para realizar la accion");
-                    return NotFound();
-                } 
 
                 CrearTareaViewModel newTareaVM = new CrearTareaViewModel();
 
@@ -113,14 +115,20 @@ namespace Proyecto.Controllers{
                     TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
                     return RedirectToAction("Index", "Login");
                 }
-                if(!isAdmin()){
-                    _logger.LogWarning("Debe ser administrador para realizar la accion");
-                    return NotFound();
-                } 
+                Usuario usuarioLogeado = repoLogin.ObtenerUsuario(HttpContext.Session.GetString("Nombre"),HttpContext.Session.GetString("Contrasenia"));
+                if (!isAdmin())
+                {
+                    if (newTareaVM.IdUsuarioPropietario!=usuarioLogeado.Id)
+                    {
+                        _logger.LogWarning("Debe ser administrador o ser propietario del tablero para realizar la accion");
+                        return NotFound();
+                    }
+                }
+                
 
                 Tarea newTarea = Tarea.FromCrearTareaViewModel(newTareaVM);
                 repoTarea.Create(newTarea);
-                return RedirectToAction("Index", new { iTablero = newTarea.IdTablero });//Redirecciona al index con el idDelTablero
+                return RedirectToAction("Index", "Usuario");//Redirecciona al index con el idDelTablero
             }
             catch (Exception ex)
             {

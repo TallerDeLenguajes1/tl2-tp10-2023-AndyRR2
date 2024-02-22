@@ -26,7 +26,7 @@
             <tr>
                 <th>Nombre</th>
                 <th>Descripcion</th>
-                <th>Id del Propietario</th>
+                <th>Usuario Propietario</th>
                 <th>Estado</th>
                 <th>Acciones</th>
             </tr>
@@ -37,7 +37,7 @@
                 <tr>
                     <td>@tablero.Nombre</td>
                     <td>@tablero.Descripcion</td>
-                    <td>@(tablero.IdUsuarioPropietario != null ? tablero.IdUsuarioPropietario : "No Asignado")</td>
+                    <td>@(tablero.IdUsuarioPropietario != null ? tablero.NombreUsuarioPropietario : "No Asignado")</td>
                     <td>@tablero.EstadoTablero</td>
                     <td>
                         <div class="action-buttons">

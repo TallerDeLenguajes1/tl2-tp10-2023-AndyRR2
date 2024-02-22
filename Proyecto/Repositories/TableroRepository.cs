@@ -227,7 +227,7 @@ namespace Proyecto.Repositories{
             bool validacion = false;
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
-            string queryC = "SELECT * FROM Tarea WHERE id_usuario_asignado = @IDASIGN AND id_tablero = @IDTAB";
+            string queryC = "SELECT * FROM Tarea WHERE id_usuario_asignado = @IDASIGN OR id_tablero = @IDTAB";
             SQLiteParameter parameterIdAsign = new SQLiteParameter("@IDASIGN", idUsuario);
             SQLiteParameter parameterIdTab = new SQLiteParameter("@IDTAB", idTablero);
 

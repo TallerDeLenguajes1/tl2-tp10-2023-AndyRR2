@@ -57,6 +57,10 @@ namespace Proyecto.Controllers{
                 }
     
                 List<ListarTableroViewModel> listaTablerosVM = ListarTableroViewModel.FromTablero(tableros);
+                foreach (var tablero in listaTablerosVM)
+                {
+                    tablero.NombreUsuarioPropietario = repoUsuario.GetById(tablero.IdUsuarioPropietario).Nombre;
+                }
                 return View(listaTablerosVM);
             }
             catch (Exception ex)

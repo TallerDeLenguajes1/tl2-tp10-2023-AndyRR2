@@ -22,9 +22,9 @@
                 <th>Estado</th>
                 <th>Descripcion</th>
                 <th>Color</th>
-                <th>Id Tablero</th>
-                <th>Id Usuario Asignado</th>
-                <th>Id Usuario Propietario</th>
+                <th>Tablero</th>
+                <th>Usuario Asignado</th>
+                <th>Usuario Propietario</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -38,9 +38,9 @@
                     <td class"td-color">
                         <div class="circulo-color @tarea.Color.ToString()"></div>
                     </td>
-                    <td>@(tarea.IdTablero != null ? tarea.IdTablero : "No Asignado")</td>
-                    <td>@(tarea.IdUsuarioAsignado != null ? tarea.IdUsuarioAsignado : "No Asignado")</td>
-                    <td>@(tarea.IdUsuarioPropietario != null ? tarea.IdUsuarioPropietario : "No Asignado")</td>
+                    <td>@(tarea.IdTablero != null ? tarea.NombreTablero : "No Asignado")</td>
+                    <td>@(tarea.IdUsuarioAsignado != null ? tarea.NombreUsuarioAsignado : "No Asignado")</td>
+                    <td>@(tarea.IdUsuarioPropietario != null ? tarea.NombreUsuarioPropietario : "No Asignado")</td>
                     <td>
                         <div class="action-buttons">
                             <a class="btn btn-primary" asp-controller="Tarea" asp-action="CambiarEstadoTarea" asp-route-idTarea="@tarea.Id">Cambiar Estado</a>

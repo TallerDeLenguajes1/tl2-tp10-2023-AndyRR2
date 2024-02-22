@@ -4,15 +4,18 @@ namespace Proyecto.ViewModels{
     public class ListarTareaViewModel{
         public int? Id{get;set;}
         public int? IdTablero{get;set;}
+        public string? NombreTablero{get;set;}
         public string? Nombre{get;set;}
         public EstadoTarea EstadoTarea{get;set;}
         public string? Descripcion{get;set;}
         public Color Color{get;set;}
         public int? IdUsuarioAsignado{get;set;}
+        public string? NombreUsuarioAsignado{get;set;}
         public int? IdUsuarioPropietario{get;set;}
+        public string? NombreUsuarioPropietario{get;set;}
 
         public ListarTareaViewModel(){}
-        public ListarTareaViewModel(int? id, int? idTablero, string? nombre, EstadoTarea estado, string? descripcion, Color color, int? idUsuarioAsig, int? idUsuarioProp){
+        public ListarTareaViewModel(string? nombreTab, string? nombreProp, string? nombreAsign, int? id, int? idTablero, string? nombre, EstadoTarea estado, string? descripcion, Color color, int? idUsuarioAsig, int? idUsuarioProp){
             Id=id;
             IdTablero=idTablero;
             Nombre=nombre;
@@ -21,6 +24,9 @@ namespace Proyecto.ViewModels{
             Color=color;
             IdUsuarioAsignado=idUsuarioAsig;
             IdUsuarioPropietario=idUsuarioProp;
+            NombreUsuarioPropietario=nombreProp;
+            NombreUsuarioAsignado=nombreAsign;
+            NombreTablero=nombreTab;
         }
         public static List<ListarTareaViewModel> FromTarea(List<Tarea> tareas)
         {

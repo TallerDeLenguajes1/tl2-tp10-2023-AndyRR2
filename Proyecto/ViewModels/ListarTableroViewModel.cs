@@ -4,16 +4,18 @@ namespace Proyecto.ViewModels{
     public class ListarTableroViewModel{
         public int? Id{get;set;}
         public int? IdUsuarioPropietario{get;set;}
+        public string? NombreUsuarioPropietario{get;set;}
         public string? Nombre{get;set;}
         public string? Descripcion{get;set;}
         public EstadoTablero EstadoTablero{get;set;}
         public ListarTableroViewModel(){}
-        public ListarTableroViewModel(int? id, int? idUsu, string? nombre, string? descripcion, EstadoTablero estado){
+        public ListarTableroViewModel(int? id, int? idUsu, string? nombre, string? descripcion, EstadoTablero estado, string? nombreUsu){
             Id=id;
             IdUsuarioPropietario=idUsu;
             Nombre=nombre;
             Descripcion=descripcion;
             EstadoTablero=estado;
+            NombreUsuarioPropietario=nombreUsu;
         }
         public static List<ListarTableroViewModel> FromTablero(List<Tablero> tableros)
         {
