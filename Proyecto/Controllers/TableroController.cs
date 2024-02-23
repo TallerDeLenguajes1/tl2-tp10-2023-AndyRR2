@@ -37,17 +37,15 @@ namespace Proyecto.Controllers{
                     }else{
                         tableros = repoTablero.GetAll();
                     }
-                }/*else{
-                    //Si no es Admin solo puede acceder a ver sus propios Tableros los cuales son los tableros 
-                    //propiedad del usuario unidos con los tableros donde el usuario tenga alguna tarea asignada.
+                }else{
                     Usuario usuarioLogeado = repoLogin.ObtenerUsuario(HttpContext.Session.GetString("Nombre"),HttpContext.Session.GetString("Contrasenia"));
                     if (idUsuario == usuarioLogeado.Id){
-                        tableros = repoTablero.GetByOwnerUser(usuarioLogeado.Id).Concat(repoTablero.GetByUserAsignedTask(usuarioLogeado.Id)).GroupBy(t => t.Id).Select(group => group.First()).ToList();   
+                        tableros = repoTablero.GetAllByOwnerUser(idUsuario).Union(repoTablero.GetAllByAsignedTask(idUsuario)).GroupBy(t => t.Id).Select(group => group.First()).ToList();   
                     }else{
                         _logger.LogWarning("Debe ser administrador para realizar la accion");
                         return NotFound();
                     }
-                }*/
+                }
     
                 List<ListarTableroViewModel> listaTablerosVM = ListarTableroViewModel.FromTablero(tableros);
                 foreach (var tablero in listaTablerosVM)
