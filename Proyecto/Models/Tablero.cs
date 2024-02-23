@@ -7,21 +7,21 @@ namespace Proyecto.Models{
     }
     public class Tablero{
         public int? Id{get;set;}
-        public Usuario Propietario{get;set;}
         public string? Nombre{get;set;}
         public string? Descripcion{get;set;}
         public EstadoTablero EstadoTablero{get;set;}
+        public Usuario Propietario{get;set;}
 
         public Tablero(){
-            
+            Propietario = new Usuario();
         }
         
-        public Tablero(int? id, int? idUsu, string? nombreUsu, string? nombre, string? descripcion, EstadoTablero estado){
+        public Tablero(int? id, string? nombre, string? descripcion, EstadoTablero estado, int? idUsu, string? nombreUsu){
             Id=id;
-            Propietario = new Usuario(idUsu, nombreUsu);
             Nombre=nombre;
             Descripcion=descripcion;
             EstadoTablero=estado;
+            Propietario = new Usuario(idUsu, nombreUsu);
         }
         public static Tablero FromCrearTableroViewModel(CrearTableroViewModel tableroVM)
         {

@@ -31,19 +31,12 @@ namespace Proyecto.Controllers{
 
                 List<Tablero> tableros = new List<Tablero>();
 
-                if (isAdmin()){//Si es Admin puede ver todos los tableros
-                    /*Si el idUsuario tiene un Valor o es Nulo obtiene los tableros propiedad de ese usuario
-                    y los une con los tableros donde ese usuario tenga alguna tarea asignada.
-                    ***Se hace énfasis en idUsuario.HasValue ya que segun los enlaces del Index de Usario se puede acceder a...
-                    los tableros de un usuario seleccionado o a TODOS los tableros de todos los usuarios, y segun lo que se elija
-                    el parámetro en la ruta tendra un Valor cuando se selecciona al usuario en especifico por lo tanto solo se mostraran
-                    los tableros de ese usuario, o sera un texto "null" si se selecciona ver todos los Tableros*/
-                    /*if (idUsuario.HasValue){
-                        tableros = repoTablero.GetByOwnerUser(idUsuario).Concat(repoTablero.GetByUserAsignedTask(idUsuario)).GroupBy(t => t.Id).Select(group => group.First()).ToList();
-                        //tableros = repoTablero.GetByUserAsignedTask(idUsuario).GroupBy(t => t.Id).Select(group => group.First()).ToList();
-                    }else{*/
+                if (isAdmin()){
+                    if (idUsuario.HasValue){//OBS: se podria dividir en dos Index uno con parametro y otro vacio********************
+                        tableros = repoTablero.GetAllByOwnerUser(idUsuario).Union(repoTablero.GetAllByAsignedTask(idUsuario)).GroupBy(t => t.Id).Select(group => group.First()).ToList();
+                    }else{
                         tableros = repoTablero.GetAll();
-                    //}
+                    }
                 }/*else{
                     //Si no es Admin solo puede acceder a ver sus propios Tableros los cuales son los tableros 
                     //propiedad del usuario unidos con los tableros donde el usuario tenga alguna tarea asignada.
