@@ -8,15 +8,13 @@ namespace Proyecto.Controllers{
     public class TableroController: Controller{
         private readonly ITableroRepository repoTablero;
         private readonly IUsuarioRepository repoUsuario;
-        private readonly ITareaRepository repoTarea;
         private readonly ILoginRepository repoLogin;
         private readonly ILogger<HomeController> _logger;
-        public TableroController(ILogger<HomeController> logger, ITableroRepository tabRepo, IUsuarioRepository usuRepo, ITareaRepository tarRepo, ILoginRepository logRepo) 
+        public TableroController(ILogger<HomeController> logger, ITableroRepository tabRepo, IUsuarioRepository usuRepo, ILoginRepository logRepo) 
         {
             _logger = logger;
             repoTablero = tabRepo;
             repoUsuario = usuRepo;
-            repoTarea = tarRepo;
             repoLogin = logRepo;
         }
 
@@ -61,7 +59,7 @@ namespace Proyecto.Controllers{
             }
         }
 
-        /*[HttpGet]
+        [HttpGet]
         public IActionResult AgregarTablero(){
             try
             {
@@ -76,12 +74,8 @@ namespace Proyecto.Controllers{
                 } 
 
                 CrearTableroViewModel newTableroVM = new CrearTableroViewModel();
-                List<Usuario> usuariosEnBD = repoUsuario.GetAll();
-                foreach (var usuario in usuariosEnBD)//Obtiene las lista de Id de Usuarios disponibles para seleccionar
-                {
-                    (newTableroVM.IdUsuarios).Add(usuario.Id);
-                }
-
+                newTableroVM.Usuarios = repoUsuario.GetAll();
+                
                 return View(newTableroVM);
             }
             catch (Exception ex)
@@ -107,7 +101,7 @@ namespace Proyecto.Controllers{
 
                 Tablero newTablero = Tablero.FromCrearTableroViewModel(newTableroVM);
                 repoTablero.Create(newTablero);
-                return RedirectToAction("Index", new { idUsuario = newTablero.IdUsuarioPropietario });//Redirecciona al index con el idDelUsuario
+                return RedirectToAction("Index", new { idUsuario = newTablero.Propietario.Id });//Redirecciona al index con el idDelUsuario
             }
             catch (Exception ex)
             {
@@ -116,7 +110,7 @@ namespace Proyecto.Controllers{
             }
         }
 
-        [HttpGet]
+        /*[HttpGet]
         public IActionResult EditarTablero(int? idTablero){
             try
             {   

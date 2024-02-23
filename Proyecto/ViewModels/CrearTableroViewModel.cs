@@ -12,11 +12,6 @@ namespace Proyecto.ViewModels{
         [Required(ErrorMessage = "Este campo es requerido.")]
         [Display(Name = "Nombre Tablero")]
         [MaxLength(20)]
-        public string? NombreUsuarioPropietario{get;set;}
-
-        [Required(ErrorMessage = "Este campo es requerido.")]
-        [Display(Name = "Nombre Tablero")]
-        [MaxLength(20)]
         public string? Nombre{get;set;}
 
         [Required(ErrorMessage = "Este campo es requerido.")]
@@ -28,17 +23,16 @@ namespace Proyecto.ViewModels{
         [Display(Name = "Estado")]
         public EstadoTablero EstadoTablero{get;set;}
 
-        public List<int?> IdUsuarios{get;set;}//Necesario para guardar la lista de Id seleccionables obtenidos de la DB
+        public List<Usuario> Usuarios{get;set;}//Necesario para guardar la lista de Id seleccionables obtenidos de la DB
         public CrearTableroViewModel(){
-            IdUsuarios = new List<int?>();//Asegura que siempre tenga una instancia de la lista válida
+            Usuarios = new List<Usuario>();//Asegura que siempre tenga una instancia de la lista válida
         }
-        public CrearTableroViewModel(int? idUsu, string? nombre, string? descripcion, EstadoTablero estado, List<int?> idUsuarios){
-            NombreUsuarioPropietario=nombre;
+        public CrearTableroViewModel(int? idUsu, string? nombre, string? nombreUsu, string? descripcion, EstadoTablero estado, List<Usuario> listaUsu){
             IdUsuarioPropietario=idUsu;
             Nombre=nombre;
             Descripcion=descripcion;
             EstadoTablero=estado;
-            IdUsuarios=idUsuarios;
+            Usuarios=listaUsu;
         }
     }
 }

@@ -27,7 +27,7 @@ namespace Proyecto.Models{
         {
             return new Tablero
             {
-                Propietario = new Usuario(tableroVM.IdUsuarioPropietario,tableroVM.Nombre),
+                Propietario = new Usuario(tableroVM.IdUsuarioPropietario,null),
                 Nombre = tableroVM.Nombre,
                 Descripcion=tableroVM.Descripcion,
                 EstadoTablero = (Proyecto.Models.EstadoTablero)tableroVM.EstadoTablero
@@ -38,7 +38,7 @@ namespace Proyecto.Models{
             return new Tablero
             {
                 Id = tableroVM.Id,
-                Propietario = new Usuario(tableroVM.IdUsuarioPropietario,tableroVM.Nombre),
+                Propietario = new Usuario(tableroVM.IdUsuarioPropietario,null),
                 Nombre = tableroVM.Nombre,
                 Descripcion=tableroVM.Descripcion,
                 EstadoTablero = (Proyecto.Models.EstadoTablero)tableroVM.EstadoTablero

@@ -5,11 +5,11 @@ using Proyecto.Models;
 namespace Proyecto.Repositories{
     public class TableroRepository: ITableroRepository{
         private readonly string direccionBD;
-        private readonly ITareaRepository repoTarea;
-        public TableroRepository(string cadenaDeConexion, ITareaRepository tareRepo)
+        private readonly IUsuarioRepository repoUsuario;
+        public TableroRepository(string cadenaDeConexion, IUsuarioRepository usuRepo)
         {
             direccionBD = cadenaDeConexion;
-            repoTarea = tareRepo;
+            repoUsuario = usuRepo;
         }
         public List<Tablero> GetAll(){
             List<Tablero> tableros = new List<Tablero>();
@@ -159,7 +159,7 @@ namespace Proyecto.Repositories{
                 throw new Exception("No se encontro el tablero con el id proporcionado en la base de datos.");
             }
             return(tableroSelec);
-        }
+        }*/
 
         public void Create(Tablero newTablero){
             if (BoardExists(newTablero.Nombre))
@@ -168,8 +168,9 @@ namespace Proyecto.Repositories{
             }
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
-            string queryC = $"INSERT INTO Tablero (id_usuario_propietario,nombre_tablero,descripcion,estado) VALUES(@IDUSU,@NAME,@DESCRIPCION,@ESTADO)";
-            SQLiteParameter parameterIdUsu = new SQLiteParameter("@IDUSU",newTablero.IdUsuarioPropietario);
+            string queryC = $"INSERT INTO Tablero (id_usuario_propietario,nombre_propietario,nombre_tablero,descripcion,estado) VALUES(@IDUSU,@NAMEUSU,@NAME,@DESCRIPCION,@ESTADO)";
+            SQLiteParameter parameterIdUsu = new SQLiteParameter("@IDUSU",newTablero.Propietario.Id);
+            SQLiteParameter parameterNameUsu = new SQLiteParameter("@NAMEUSU",repoUsuario.GetById(newTablero.Propietario.Id).Nombre);
             SQLiteParameter parameterNombre = new SQLiteParameter("@NAME",newTablero.Nombre);
             SQLiteParameter parameterDescripcion = new SQLiteParameter("@DESCRIPCION",newTablero.Descripcion);
             SQLiteParameter parameterEstado = new SQLiteParameter("@ESTADO",newTablero.EstadoTablero);
@@ -179,6 +180,7 @@ namespace Proyecto.Repositories{
                 connectionC.Open();
                 SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
                 commandC.Parameters.Add(parameterIdUsu);
+                commandC.Parameters.Add(parameterNameUsu);
                 commandC.Parameters.Add(parameterNombre);
                 commandC.Parameters.Add(parameterDescripcion);
                 commandC.Parameters.Add(parameterEstado);
@@ -189,7 +191,7 @@ namespace Proyecto.Repositories{
                 throw new Exception("El Tablero no se creo correctamente.");
             }
         }
-        public void Update(Tablero newTablero){
+        /*public void Update(Tablero newTablero){
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             
             string queryC = "UPDATE Tablero SET id_usuario_propietario = @IDUSU, nombre_tablero = @NAME, descripcion = @DESCRIPCION, estado = @ESTADO WHERE id = @ID";
@@ -301,7 +303,7 @@ namespace Proyecto.Repositories{
             return validacion;
         }*/
         
-        /*public bool BoardExists(string? nombreTablero){
+        public bool BoardExists(string? nombreTablero){
             bool validacion=false;
             string? Nombre=null;
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
@@ -329,6 +331,6 @@ namespace Proyecto.Repositories{
                 validacion=true;
             }
             return validacion;
-        }*/
+        }
     }
 }

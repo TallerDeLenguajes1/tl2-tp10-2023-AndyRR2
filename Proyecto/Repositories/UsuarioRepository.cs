@@ -5,12 +5,10 @@ using Proyecto.Models;
 namespace Proyecto.Repositories{
     public class UsuarioRepository: IUsuarioRepository{
         private readonly string direccionBD;
-        private readonly ITableroRepository repoTablero;
         private readonly ITareaRepository repoTarea;
-        public UsuarioRepository(string cadenaDeConexion, ITableroRepository tabRepo, ITareaRepository tareRepo)
+        public UsuarioRepository(string cadenaDeConexion, ITareaRepository tareRepo)
         {
             direccionBD = cadenaDeConexion;
-            repoTablero = tabRepo;
             repoTarea = tareRepo;
         }
         public List<Usuario> GetAll(){

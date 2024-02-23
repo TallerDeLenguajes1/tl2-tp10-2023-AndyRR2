@@ -9,13 +9,13 @@
     <div class="form-group" style="max-width: 200px;">
         <label asp-for="@Model.IdUsuarioPropietario"></label>
         <select asp-for="@Model.IdUsuarioPropietario" class="form-control">
-            <option value="">Seleccionar Id</option>
-            @foreach (var idUsuario in Model.IdUsuarios)
+            <option value="">Seleccionar Propietario</option>
+            @foreach (var usuario in Model.Usuarios)
             {
-                <option value="@idUsuario">@idUsuario</option>
+                <option value="@usuario.Id">@usuario.Nombre</option>
             }
         </select>
-        <span asp-validation-for="Nombre" class="text-danger"></span>
+        <span asp-validation-for="@Model.IdUsuarioPropietario" class="text-danger"></span>
     </div>
     <div class="form-group" style="max-width: 200px;">
         <label asp-for="@Model.Nombre"></label>
