@@ -13,6 +13,10 @@ namespace Proyecto.Models{
             Contrasenia=contrasenia;
             NivelDeAcceso=nivel;
         }
+        public Usuario(int? id, string? nombre){
+            Id=id;
+            Nombre=nombre;
+        }
         public static Usuario FromCrearUsuario(CrearUsuarioViewModel usuarioVM){
             return new Usuario
             {

@@ -12,10 +12,10 @@ namespace Proyecto.ViewModels{
         public ListarTableroViewModel(int? id, int? idUsu, string? nombre, string? descripcion, EstadoTablero estado, string? nombreUsu){
             Id=id;
             IdUsuarioPropietario=idUsu;
+            NombreUsuarioPropietario=nombreUsu;
             Nombre=nombre;
             Descripcion=descripcion;
             EstadoTablero=estado;
-            NombreUsuarioPropietario=nombreUsu;
         }
         public static List<ListarTableroViewModel> FromTablero(List<Tablero> tableros)
         {
@@ -25,7 +25,8 @@ namespace Proyecto.ViewModels{
             {
                 ListarTableroViewModel newTableroVM = new ListarTableroViewModel();
                 newTableroVM.Id = tablero.Id;
-                newTableroVM.IdUsuarioPropietario = tablero.IdUsuarioPropietario;
+                newTableroVM.IdUsuarioPropietario = tablero.Propietario.Id;
+                newTableroVM.NombreUsuarioPropietario = tablero.Propietario.Nombre;
                 newTableroVM.Nombre = tablero.Nombre;
                 newTableroVM.Descripcion = tablero.Descripcion;
                 newTableroVM.EstadoTablero = (Proyecto.Models.EstadoTablero)tablero.EstadoTablero;

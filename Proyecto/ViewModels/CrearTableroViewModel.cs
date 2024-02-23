@@ -12,6 +12,11 @@ namespace Proyecto.ViewModels{
         [Required(ErrorMessage = "Este campo es requerido.")]
         [Display(Name = "Nombre Tablero")]
         [MaxLength(20)]
+        public string? NombreUsuarioPropietario{get;set;}
+
+        [Required(ErrorMessage = "Este campo es requerido.")]
+        [Display(Name = "Nombre Tablero")]
+        [MaxLength(20)]
         public string? Nombre{get;set;}
 
         [Required(ErrorMessage = "Este campo es requerido.")]
@@ -28,6 +33,7 @@ namespace Proyecto.ViewModels{
             IdUsuarios = new List<int?>();//Asegura que siempre tenga una instancia de la lista válida
         }
         public CrearTableroViewModel(int? idUsu, string? nombre, string? descripcion, EstadoTablero estado, List<int?> idUsuarios){
+            NombreUsuarioPropietario=nombre;
             IdUsuarioPropietario=idUsu;
             Nombre=nombre;
             Descripcion=descripcion;

@@ -13,6 +13,11 @@ namespace Proyecto.ViewModels{
         [Required(ErrorMessage = "Este campo es requerido.")]
         [Display(Name = "Nombre Tablero")]
         [MaxLength(20)]
+        public string? NombreUsuarioPropietario{get;set;}
+
+        [Required(ErrorMessage = "Este campo es requerido.")]
+        [Display(Name = "Nombre Tablero")]
+        [MaxLength(20)]
         public string? Nombre{get;set;}
 
         [Required(ErrorMessage = "Este campo es requerido.")]
@@ -41,7 +46,8 @@ namespace Proyecto.ViewModels{
             return new EditarTableroViewModel
             {
                 Id = tablero.Id,
-                IdUsuarioPropietario = tablero.IdUsuarioPropietario,
+                IdUsuarioPropietario = tablero.Propietario.Id,
+                NombreUsuarioPropietario = tablero.Propietario.Nombre,
                 Nombre = tablero.Nombre,
                 Descripcion=tablero.Descripcion,
                 EstadoTablero = (Proyecto.Models.EstadoTablero)tablero.EstadoTablero

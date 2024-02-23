@@ -38,15 +38,15 @@ namespace Proyecto.Controllers{
                     los tableros de un usuario seleccionado o a TODOS los tableros de todos los usuarios, y segun lo que se elija
                     el parámetro en la ruta tendra un Valor cuando se selecciona al usuario en especifico por lo tanto solo se mostraran
                     los tableros de ese usuario, o sera un texto "null" si se selecciona ver todos los Tableros*/
-                    if (idUsuario.HasValue){
+                    /*if (idUsuario.HasValue){
                         tableros = repoTablero.GetByOwnerUser(idUsuario).Concat(repoTablero.GetByUserAsignedTask(idUsuario)).GroupBy(t => t.Id).Select(group => group.First()).ToList();
                         //tableros = repoTablero.GetByUserAsignedTask(idUsuario).GroupBy(t => t.Id).Select(group => group.First()).ToList();
-                    }else{
+                    }else{*/
                         tableros = repoTablero.GetAll();
-                    }
-                }else{
-                    /*Si no es Admin solo puede acceder a ver sus propios Tableros los cuales son los tableros 
-                    propiedad del usuario unidos con los tableros donde el usuario tenga alguna tarea asignada.*/
+                    //}
+                }/*else{
+                    //Si no es Admin solo puede acceder a ver sus propios Tableros los cuales son los tableros 
+                    //propiedad del usuario unidos con los tableros donde el usuario tenga alguna tarea asignada.
                     Usuario usuarioLogeado = repoLogin.ObtenerUsuario(HttpContext.Session.GetString("Nombre"),HttpContext.Session.GetString("Contrasenia"));
                     if (idUsuario == usuarioLogeado.Id){
                         tableros = repoTablero.GetByOwnerUser(usuarioLogeado.Id).Concat(repoTablero.GetByUserAsignedTask(usuarioLogeado.Id)).GroupBy(t => t.Id).Select(group => group.First()).ToList();   
@@ -54,7 +54,7 @@ namespace Proyecto.Controllers{
                         _logger.LogWarning("Debe ser administrador para realizar la accion");
                         return NotFound();
                     }
-                }
+                }*/
     
                 List<ListarTableroViewModel> listaTablerosVM = ListarTableroViewModel.FromTablero(tableros);
                 foreach (var tablero in listaTablerosVM)
@@ -70,7 +70,7 @@ namespace Proyecto.Controllers{
             }
         }
 
-        [HttpGet]
+        /*[HttpGet]
         public IActionResult AgregarTablero(){
             try
             {
@@ -238,7 +238,7 @@ namespace Proyecto.Controllers{
                 _logger.LogError($"Error al procesar la solicitud en el método EliminarTableroFromForm del controlador de Tablero: {ex.ToString()}");
                 return BadRequest();
             }
-        }
+        }*/
 
         private bool isAdmin()
         {

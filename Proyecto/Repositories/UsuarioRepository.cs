@@ -131,10 +131,10 @@ namespace Proyecto.Repositories{
         }
         public void Remove(int? idUsuario){
             
-            foreach (var tablero in repoTablero.GetByOwnerUser(idUsuario))//inhabilita todos los tableros del usuario a borrar
+            /*foreach (var tablero in repoTablero.GetByOwnerUser(idUsuario))//inhabilita todos los tableros del usuario a borrar
             {
                 repoTablero.Disable(tablero.Id);
-            }
+            }*/
 
             foreach (var tarea in repoTarea.GetByOwnerUser(idUsuario))//inhabilita todas las tareas del usuario a borrar
             {

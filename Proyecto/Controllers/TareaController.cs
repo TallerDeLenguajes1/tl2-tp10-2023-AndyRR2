@@ -42,9 +42,9 @@ namespace Proyecto.Controllers{
                     }else{
                         tareas = repoTarea.GetAll();
                     }
-                }else{
-                    /*Si no es Admin solo puede acceder a ver las tareas que pertenezcan a los Tableros que
-                     sean propiedad del usuario logueado o tengan alguna tarea asignada al usuario logueado*/
+                }/*else{
+                    //Si no es Admin solo puede acceder a ver las tareas que pertenezcan a los Tableros que
+                     //sean propiedad del usuario logueado o tengan alguna tarea asignada al usuario logueado
                     Usuario usuarioLogeado = repoLogin.ObtenerUsuario(HttpContext.Session.GetString("Nombre"),HttpContext.Session.GetString("Contrasenia"));
                     if ((repoTablero.GetById(idTablero).IdUsuarioPropietario == usuarioLogeado.Id) || repoTablero.ChechAsignedTask(idTablero,usuarioLogeado.Id)){
                         tareas = repoTarea.GetByOwnerBoard(idTablero);   
@@ -52,12 +52,12 @@ namespace Proyecto.Controllers{
                         _logger.LogWarning("Debe ser administrador para realizar la accion");
                         return NotFound();
                     }
-                }
+                }*/
 
                 List<ListarTareaViewModel> listaTareasVM = ListarTareaViewModel.FromTarea(tareas);
                 foreach (var tarea in listaTareasVM)
                 {
-                    tarea.NombreTablero=repoTablero.GetById(tarea.IdTablero).Nombre;
+                    //tarea.NombreTablero=repoTablero.GetById(tarea.IdTablero).Nombre;
                     tarea.NombreUsuarioAsignado=repoUsuario.GetById(tarea.IdUsuarioAsignado).Nombre;
                     tarea.NombreUsuarioPropietario=repoUsuario.GetById(tarea.IdUsuarioPropietario).Nombre;
                 }

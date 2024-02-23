@@ -7,14 +7,18 @@ namespace Proyecto.Models{
     }
     public class Tablero{
         public int? Id{get;set;}
-        public int? IdUsuarioPropietario{get;set;}
+        public Usuario Propietario{get;set;}
         public string? Nombre{get;set;}
         public string? Descripcion{get;set;}
         public EstadoTablero EstadoTablero{get;set;}
-        public Tablero(){}
-        public Tablero(int? id, int? idUsu, string? nombre, string? descripcion, EstadoTablero estado){
+
+        public Tablero(){
+            
+        }
+        
+        public Tablero(int? id, int? idUsu, string? nombreUsu, string? nombre, string? descripcion, EstadoTablero estado){
             Id=id;
-            IdUsuarioPropietario=idUsu;
+            Propietario = new Usuario(idUsu, nombreUsu);
             Nombre=nombre;
             Descripcion=descripcion;
             EstadoTablero=estado;
@@ -23,7 +27,7 @@ namespace Proyecto.Models{
         {
             return new Tablero
             {
-                IdUsuarioPropietario = tableroVM.IdUsuarioPropietario,
+                Propietario = new Usuario(tableroVM.IdUsuarioPropietario,tableroVM.Nombre),
                 Nombre = tableroVM.Nombre,
                 Descripcion=tableroVM.Descripcion,
                 EstadoTablero = (Proyecto.Models.EstadoTablero)tableroVM.EstadoTablero
@@ -34,7 +38,7 @@ namespace Proyecto.Models{
             return new Tablero
             {
                 Id = tableroVM.Id,
-                IdUsuarioPropietario = tableroVM.IdUsuarioPropietario,
+                Propietario = new Usuario(tableroVM.IdUsuarioPropietario,tableroVM.Nombre),
                 Nombre = tableroVM.Nombre,
                 Descripcion=tableroVM.Descripcion,
                 EstadoTablero = (Proyecto.Models.EstadoTablero)tableroVM.EstadoTablero

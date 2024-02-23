@@ -15,8 +15,9 @@ namespace Proyecto.Repositories{
             List<Tablero> tableros = new List<Tablero>();
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
-            string queryC = "SELECT * FROM Tablero;";
-            
+            string queryC = @"SELECT Tablero.id AS TableroId, id_usuario_propietario, nombre_tablero, nombre_propietario, descripcion, estado 
+    	                    FROM Tablero
+                            LEFT JOIN Usuario ON Tablero.id_usuario_propietario = Usuario.id;";
             using(connectionC){
                 connectionC.Open();
                 SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
@@ -27,9 +28,11 @@ namespace Proyecto.Repositories{
                     while (readerC.Read())
                     {
                         Tablero tableroPorAgregar = new Tablero();
-                        tableroPorAgregar.Id = Convert.ToInt32(readerC["id"]);
+                        tableroPorAgregar.Id = Convert.ToInt32(readerC["TableroId"]);
+                        tableroPorAgregar.Propietario = new Usuario();
                         if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_propietario"))){
-                            tableroPorAgregar.IdUsuarioPropietario = Convert.ToInt32(readerC["id_usuario_propietario"]);
+                            tableroPorAgregar.Propietario.Id = Convert.ToInt32(readerC["id_usuario_propietario"]);
+                            tableroPorAgregar.Propietario.Nombre = Convert.ToString(readerC["nombre_propietario"]);
                         }
                         tableroPorAgregar.Nombre = Convert.ToString(readerC["nombre_tablero"]);
                         tableroPorAgregar.Descripcion = Convert.ToString(readerC["descripcion"]);
@@ -45,7 +48,7 @@ namespace Proyecto.Repositories{
             return(tableros);
         }
 
-        public Tablero GetById(int? Id){
+        /*public Tablero GetById(int? Id){
             Tablero tableroSelec = new Tablero();
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             
@@ -320,6 +323,6 @@ namespace Proyecto.Repositories{
                 validacion=true;
             }
             return validacion;
-        }
+        }*/
     }
 }
