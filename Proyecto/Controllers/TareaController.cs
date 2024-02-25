@@ -132,7 +132,7 @@ namespace Proyecto.Controllers{
                     return RedirectToAction("Index", "Login");
                 }
                 if(!idTarea.HasValue) return NotFound();//Verifica que tenga un Valor asignado
-                
+
                 Tarea tareaAEditar = repoTarea.GetById(idTarea);
                 EditarTareaViewModel tareaAEditarVM = new EditarTareaViewModel();
                 
@@ -180,7 +180,7 @@ namespace Proyecto.Controllers{
             } 
         }
 
-        /*[HttpGet]
+        [HttpGet]
         public IActionResult EliminarTarea(int? idTarea){
             try
             {
@@ -198,7 +198,7 @@ namespace Proyecto.Controllers{
                 }else{
                     //Verifica si el id del usuario logueado es el mismo que el del usuario propietario de la Tarea que se quiere Borrar
                     Usuario usuarioLogeado = repoLogin.ObtenerUsuario(HttpContext.Session.GetString("Nombre"),HttpContext.Session.GetString("Contrasenia"));
-                    if (usuarioLogeado.Id == repoTarea.GetById(idTarea).IdUsuarioPropietario){
+                    if (usuarioLogeado.Id == repoTarea.GetById(idTarea).Propietario.Id){
                         return View(tareaAEliminar);
                     }else{
                         _logger.LogWarning("Debe ser administrador para realizar la accion");
@@ -232,7 +232,7 @@ namespace Proyecto.Controllers{
             }
         }
 
-        [HttpGet]
+        /*[HttpGet]
         public IActionResult AsignarTarea(int? idTarea){
             try
             {

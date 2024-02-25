@@ -41,7 +41,8 @@
             @foreach (var color in Enum.GetValues(typeof(Proyecto.Models.Color)))
             {
                 <li class="@color.ToString()">
-                    <input type="radio" name="color" value="@color">
+                    <input type="radio" name="color" value="@color" 
+                        @(Model.Color.ToString() == color.ToString() ? "checked" : "")>
                     <label for="@color.ToString()" class></label>
                 </li>
             }

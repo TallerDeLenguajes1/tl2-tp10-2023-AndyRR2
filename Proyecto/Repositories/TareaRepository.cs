@@ -133,7 +133,7 @@ namespace Proyecto.Repositories{
                         newTarea.Nombre = Convert.ToString(readerC["nombre"]);
                         newTarea.EstadoTarea = (EstadoTarea)Convert.ToInt32(readerC["estado"]);
                         newTarea.Descripcion = Convert.ToString(readerC["descripcion"]);
-                        newTarea.Color = (Color)Convert.ToInt32(readerC["color"]);
+                        newTarea.Color = (Proyecto.Models.Color)Convert.ToInt32(readerC["color"]);
                         newTarea.TableroPropio = new Tablero();
                         if (!readerC.IsDBNull(readerC.GetOrdinal("id_tablero"))){
                             newTarea.TableroPropio.Id = Convert.ToInt32(readerC["id_tablero"]);
@@ -205,13 +205,13 @@ namespace Proyecto.Repositories{
             string queryC = "UPDATE Tarea SET nombre = @NAME, descripcion = @DESCRIPCION, id_tablero = @IDTAB, estado = @ESTADO, color = @COLOR, id_usuario_propietario = @IDUSUP, nombre_propietario = @NAMEPROP, nombre_tablero = @NAMETAB WHERE id = @ID;";
             SQLiteParameter parameterId = new SQLiteParameter("@ID",tareaAEditar.Id);
             SQLiteParameter parameterIdTab = new SQLiteParameter("@IDTAB",tareaAEditar.TableroPropio.Id);
-            SQLiteParameter parameterNombreTab = new SQLiteParameter("@NAMETAB",tareaAEditar.TableroPropio.Nombre);
+            SQLiteParameter parameterNombreTab = new SQLiteParameter("@NAMETAB",repoTablero.GetById(tareaAEditar.TableroPropio.Id).Nombre);
             SQLiteParameter parameterNombre = new SQLiteParameter("@NAME",tareaAEditar.Nombre);
             SQLiteParameter parameterEstado = new SQLiteParameter("@ESTADO",tareaAEditar.EstadoTarea);
             SQLiteParameter parameterDescripcion = new SQLiteParameter("@DESCRIPCION",tareaAEditar.Descripcion);
             SQLiteParameter parameterColor = new SQLiteParameter("@COLOR",tareaAEditar.Color);
             SQLiteParameter parameterIdUsuP = new SQLiteParameter("@IDUSUP",tareaAEditar.Propietario.Id);
-            SQLiteParameter parameterNombreProp = new SQLiteParameter("@NAMEPROP",tareaAEditar.Propietario.Nombre);
+            SQLiteParameter parameterNombreProp = new SQLiteParameter("@NAMEPROP",repoUsuario.GetById(tareaAEditar.Propietario.Id).Nombre);
             using (connectionC)
             {
                 connectionC.Open();
@@ -233,7 +233,7 @@ namespace Proyecto.Repositories{
                 }   
             }
         }
-        /*public void Remove(int? idTarea){
+        public void Remove(int? idTarea){
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
             string queryC = "DELETE FROM Tarea WHERE id = @ID";
@@ -252,7 +252,7 @@ namespace Proyecto.Repositories{
                 }
             }
         }
-        public void Assign(int? idTarea, int? idUsuario){
+        /*public void Assign(int? idTarea, int? idUsuario){
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
             string queryC = "UPDATE Tarea SET id_usuario_asignado = @IDUSU WHERE id = @ID;";
