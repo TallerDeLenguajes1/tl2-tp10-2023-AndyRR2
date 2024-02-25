@@ -293,7 +293,7 @@ namespace Proyecto.Controllers{
             }
         }
         [HttpGet]
-        /*public IActionResult CambiarEstadoTarea(int? idTarea){  
+        public IActionResult CambiarEstadoTarea(int? idTarea){  
             try
             {
                 if(!isLogin())
@@ -311,7 +311,7 @@ namespace Proyecto.Controllers{
                 }else{
                     //Verifica que el id del usuario logueado sea el mismo que el usuario Propietario o el del usuario Asignado a la Tarea
                     Usuario usuarioLogeado = repoLogin.ObtenerUsuario(HttpContext.Session.GetString("Nombre"),HttpContext.Session.GetString("Contrasenia"));
-                    if ((usuarioLogeado.Id == repoTarea.GetById(idTarea).IdUsuarioPropietario) || (usuarioLogeado.Id == repoTarea.GetById(idTarea).IdUsuarioAsignado)){
+                    if ((usuarioLogeado.Id == repoTarea.GetById(idTarea).Propietario.Id) || (usuarioLogeado.Id == repoTarea.GetById(idTarea).Asignado.Id)){
                         tareaAEditarVM = EditarTareaViewModel.FromTarea(tareaAEditar);
                     }else{
                         _logger.LogWarning("Debe ser administrador para realizar la accion");
@@ -347,7 +347,7 @@ namespace Proyecto.Controllers{
                 _logger.LogError($"Error al procesar la solicitud en el método CambiarEstadoFromForm del controlador de Tarea: {ex.ToString()}");
                 return BadRequest();
             } 
-        }*/
+        }
         private bool isAdmin()
         {
             if (HttpContext.Session != null && HttpContext.Session.GetString("NivelDeAcceso") == "admin"){

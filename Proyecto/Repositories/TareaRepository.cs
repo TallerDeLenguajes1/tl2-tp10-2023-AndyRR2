@@ -275,7 +275,7 @@ namespace Proyecto.Repositories{
                 }   
             }
         }
-        /*public void ChangeStatus(Tarea tarea){
+        public void ChangeStatus(Tarea tarea){
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
             string queryC = "UPDATE Tarea SET estado = @ESTADO WHERE id = @ID;";
@@ -296,7 +296,7 @@ namespace Proyecto.Repositories{
                 }   
             }
         }
-        public void Disable(int? idTarea, int? idTablero){
+        /*public void Disable(int? idTarea, int? idTablero){
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             
             string queryC = "UPDATE Tarea SET estado = @ESTADO, id_tablero = @IDTAB, id_usuario_asignado = NULL, id_usuario_propietario = NULL WHERE id = @ID";
