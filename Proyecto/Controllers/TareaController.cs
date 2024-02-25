@@ -122,7 +122,7 @@ namespace Proyecto.Controllers{
             }
         }
 
-        /*[HttpGet]
+        [HttpGet]
         public IActionResult EditarTarea(int? idTarea){  
             try
             {
@@ -131,8 +131,8 @@ namespace Proyecto.Controllers{
                     TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
                     return RedirectToAction("Index", "Login");
                 }
-
                 if(!idTarea.HasValue) return NotFound();//Verifica que tenga un Valor asignado
+                
                 Tarea tareaAEditar = repoTarea.GetById(idTarea);
                 EditarTareaViewModel tareaAEditarVM = new EditarTareaViewModel();
                 
@@ -141,24 +141,15 @@ namespace Proyecto.Controllers{
                 }else{
                     //Verifica si el id del usuario logueado es el mismo que el del usuario propietario de la Tarea que se quiere editar
                     Usuario usuarioLogeado = repoLogin.ObtenerUsuario(HttpContext.Session.GetString("Nombre"),HttpContext.Session.GetString("Contrasenia"));
-                    if (usuarioLogeado.Id == repoTarea.GetById(idTarea).IdUsuarioPropietario){
+                    if (usuarioLogeado.Id == repoTarea.GetById(idTarea).Propietario.Id){
                         tareaAEditarVM = EditarTareaViewModel.FromTarea(tareaAEditar);//Convierto de Model a ViewModel
                     }else{
                         _logger.LogWarning("Debe ser administrador para realizar la accion");
                         return NotFound();
                     }
                 }
-                List<Usuario> usuariosEnBD = repoUsuario.GetAll();
-                foreach (var usuario in usuariosEnBD)//Obtiene las lista de Id de Usuarios disponibles para seleccionar
-                {
-                    (tareaAEditarVM.IdUsuarios).Add(usuario.Id);
-                }
-
-                List<Tablero> tablerosEnBD = repoTablero.GetAll();
-                foreach (var tablero in tablerosEnBD)//Obtiene las lista de Id de Tableros disponibles para seleccionar
-                {
-                    (tareaAEditarVM.IdTableros).Add(tablero.Id);
-                }
+                tareaAEditarVM.Tableros = repoTablero.GetAll();
+                tareaAEditarVM.Usuarios = repoUsuario.GetAll();
                 return View(tareaAEditarVM);
             }
             catch (Exception ex)
@@ -189,7 +180,7 @@ namespace Proyecto.Controllers{
             } 
         }
 
-        [HttpGet]
+        /*[HttpGet]
         public IActionResult EliminarTarea(int? idTarea){
             try
             {

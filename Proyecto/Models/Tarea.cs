@@ -58,6 +58,9 @@ namespace Proyecto.Models{
         {
             return new Tarea
             {
+                Propietario = new Usuario(tareaVM.IdUsuarioPropietario,null),
+                Asignado = new Usuario(null,null),
+                TableroPropio = new Tablero(tareaVM.IdTablero,null),
                 Id = tareaVM.Id,
                 Nombre = tareaVM.Nombre,
                 Descripcion = tareaVM.Descripcion,
