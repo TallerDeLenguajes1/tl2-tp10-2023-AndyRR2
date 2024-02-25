@@ -7,12 +7,14 @@ using Proyecto.ViewModels;
 namespace Proyecto.Controllers{
     public class TableroController: Controller{
         private readonly ITableroRepository repoTablero;
+        private readonly ITareaRepository repoTarea;
         private readonly IUsuarioRepository repoUsuario;
         private readonly ILoginRepository repoLogin;
         private readonly ILogger<HomeController> _logger;
-        public TableroController(ILogger<HomeController> logger, ITableroRepository tabRepo, IUsuarioRepository usuRepo, ILoginRepository logRepo) 
+        public TableroController(ILogger<HomeController> logger, ITableroRepository tabRepo, IUsuarioRepository usuRepo, ITareaRepository tarRepo, ILoginRepository logRepo) 
         {
             _logger = logger;
+            repoTarea = tarRepo;
             repoTablero = tabRepo;
             repoUsuario = usuRepo;
             repoLogin = logRepo;
@@ -207,7 +209,11 @@ namespace Proyecto.Controllers{
                     TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
                     return RedirectToAction("Index", "Login");
                 }
-                
+                foreach (var tarea in repoTarea.GetAllByOwnerBoard(idTableroAEliminar))//inhabilita todos los tableros del usuario a borrar
+                {
+                    repoTarea.Disable(tarea.Id, idTableroAEliminar);
+                }
+                return RedirectToAction("Index");
                 repoTablero.Remove(idTableroAEliminar);
                 return RedirectToAction("Index", "Usuario");
             }

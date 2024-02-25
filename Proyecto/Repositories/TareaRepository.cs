@@ -296,7 +296,7 @@ namespace Proyecto.Repositories{
                 }   
             }
         }
-        /*public void Disable(int? idTarea, int? idTablero){
+        public void Disable(int? idTarea, int? idTablero){
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             
             string queryC = "UPDATE Tarea SET estado = @ESTADO, id_tablero = @IDTAB, id_usuario_asignado = NULL, id_usuario_propietario = NULL WHERE id = @ID";
@@ -320,11 +320,13 @@ namespace Proyecto.Repositories{
             }
         }
         
-        public List<Tarea> GetByOwnerUser(int? idUsuario){
+        public List<Tarea> GetAllByOwnerUser(int? idUsuario){
             List<Tarea> tareas = new List<Tarea>();
+
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             
-            string queryC = "SELECT * FROM Tarea WHERE id_usuario_propietario = @IDUSU OR id_usuario_asignado = @IDUSU";
+            string queryC = @"SELECT Tarea.id AS TareaId, Tarea.id_tablero, Tarea.nombre, Tarea.estado, Tarea.descripcion, Tarea.color, Tarea.id_usuario_asignado, Tarea.id_usuario_propietario, Tarea.nombre_tablero, Tarea.nombre_asignado, Tarea.nombre_propietario
+    	                    FROM Tarea WHERE Tarea.id_usuario_propietario = @IDUSU OR Tarea.id_usuario_asignado = @IDUSU;";
             SQLiteParameter parameterIdTab = new SQLiteParameter("@IDUSU",idUsuario);
 
             using(connectionC)
@@ -338,20 +340,26 @@ namespace Proyecto.Repositories{
                 {
                     while (readerC.Read())
                     {
-                        Tarea newTarea = new Tarea();
-                        newTarea.Id = Convert.ToInt32(readerC["id"]);
-                        if (!readerC.IsDBNull(readerC.GetOrdinal("id_tablero"))){
-                            newTarea.IdTablero = Convert.ToInt32(readerC["id_tablero"]);
-                        }
+                        var newTarea = new Tarea();
+                        newTarea.Id = Convert.ToInt32(readerC["TareaId"]);
                         newTarea.Nombre = Convert.ToString(readerC["nombre"]);
                         newTarea.EstadoTarea = (EstadoTarea)Convert.ToInt32(readerC["estado"]);
                         newTarea.Descripcion = Convert.ToString(readerC["descripcion"]);
                         newTarea.Color = (Color)Convert.ToInt32(readerC["color"]);
-                        if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_propietario"))){
-                            newTarea.IdUsuarioPropietario = Convert.ToInt32(readerC["id_usuario_propietario"]);
+                        newTarea.TableroPropio = new Tablero();
+                        if (!readerC.IsDBNull(readerC.GetOrdinal("id_tablero"))){
+                            newTarea.TableroPropio.Id = Convert.ToInt32(readerC["id_tablero"]);
+                            newTarea.TableroPropio.Nombre = Convert.ToString(readerC["nombre_tablero"]);
                         }
+                        newTarea.Asignado = new Usuario();
                         if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_asignado"))){
-                            newTarea.IdUsuarioAsignado = Convert.ToInt32(readerC["id_usuario_asignado"]);
+                            newTarea.Asignado.Id = Convert.ToInt32(readerC["id_usuario_asignado"]);
+                            newTarea.Asignado.Nombre = Convert.ToString(readerC["nombre_asignado"]);
+                        }
+                        newTarea.Propietario = new Usuario();
+                        if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_propietario"))){
+                            newTarea.Propietario.Id = Convert.ToInt32(readerC["id_usuario_propietario"]);
+                            newTarea.Propietario.Nombre = Convert.ToString(readerC["nombre_propietario"]);
                         }
                         tareas.Add(newTarea);
                     }
@@ -362,7 +370,7 @@ namespace Proyecto.Repositories{
                 throw new Exception("El Usuario proporcionado no tiene tareas.");
             }
             return(tareas);
-        }*/
+        }
         public bool TaskExists(string? nombreTarea){
             bool validacion=false;
             string? Nombre=null;

@@ -205,6 +205,10 @@ namespace Proyecto.Controllers{
                     {
                         repoTablero.Disable(tablero.Id);
                     }
+                    /*foreach (var tarea in repoTarea.GetAllByOwnerUser(usuarioAEliminarVM.Id))//inhabilita todos los tableros del usuario a borrar
+                    {
+                        repoTarea.Disable(tarea.Id, null);
+                    }*/
                     return RedirectToAction("Index");
                 }else{
                     _logger.LogInformation($"La contraseña ingresada es incorrecta");

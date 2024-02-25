@@ -53,7 +53,7 @@ namespace Proyecto.Repositories{
 
             string queryC = @"SELECT Tablero.id AS TableroId, id_usuario_propietario, nombre_tablero, nombre_propietario, descripcion, estado 
     	                    FROM Tablero WHERE Tablero.id_usuario_propietario = @ID;";
-             SQLiteParameter parameterId = new SQLiteParameter("@ID",idUsuario);
+            SQLiteParameter parameterId = new SQLiteParameter("@ID",idUsuario);
             
             using(connectionC){
                 connectionC.Open();
