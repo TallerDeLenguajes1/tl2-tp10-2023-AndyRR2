@@ -126,7 +126,7 @@ namespace Proyecto.Repositories{
             }
             return(tableros);
         }
-        /*public Tablero GetById(int? Id){
+        public Tablero GetById(int? Id){
             Tablero tableroSelec = new Tablero();
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             
@@ -145,8 +145,10 @@ namespace Proyecto.Repositories{
                     while (readerC.Read())
                     {
                         tableroSelec.Id = Convert.ToInt32(readerC["id"]);
+                        tableroSelec.Propietario = new Usuario();
                         if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_propietario"))){
-                            tableroSelec.IdUsuarioPropietario = Convert.ToInt32(readerC["id_usuario_propietario"]);
+                            tableroSelec.Propietario.Id = Convert.ToInt32(readerC["id_usuario_propietario"]);
+                            tableroSelec.Propietario.Nombre = Convert.ToString(readerC["nombre_propietario"]);
                         }
                         tableroSelec.Nombre = Convert.ToString(readerC["nombre_tablero"]);
                         tableroSelec.Descripcion = Convert.ToString(readerC["descripcion"]);
@@ -159,7 +161,7 @@ namespace Proyecto.Repositories{
                 throw new Exception("No se encontro el tablero con el id proporcionado en la base de datos.");
             }
             return(tableroSelec);
-        }*/
+        }
 
         public void Create(Tablero newTablero){
             if (BoardExists(newTablero.Nombre))
@@ -191,12 +193,13 @@ namespace Proyecto.Repositories{
                 throw new Exception("El Tablero no se creo correctamente.");
             }
         }
-        /*public void Update(Tablero newTablero){
+        public void Update(Tablero newTablero){
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             
-            string queryC = "UPDATE Tablero SET id_usuario_propietario = @IDUSU, nombre_tablero = @NAME, descripcion = @DESCRIPCION, estado = @ESTADO WHERE id = @ID";
+            string queryC = "UPDATE Tablero SET id_usuario_propietario = @IDUSU, nombre_tablero = @NAME, descripcion = @DESCRIPCION, estado = @ESTADO, nombre_propietario = @NAMEUSU WHERE id = @ID;";
             SQLiteParameter parameterId = new SQLiteParameter("@ID",newTablero.Id);
-            SQLiteParameter parameterIdUsu = new SQLiteParameter("@IDUSU",newTablero.IdUsuarioPropietario);
+            SQLiteParameter parameterIdUsu = new SQLiteParameter("@IDUSU",newTablero.Propietario.Id);
+            SQLiteParameter parameterNameUsu = new SQLiteParameter("@NAMEUSU",repoUsuario.GetById(newTablero.Propietario.Id).Nombre);
             SQLiteParameter parameterNombre = new SQLiteParameter("@NAME",newTablero.Nombre);
             SQLiteParameter parameterDescripcion = new SQLiteParameter("@DESCRIPCION",newTablero.Descripcion);
             SQLiteParameter parameterEstado = new SQLiteParameter("@ESTADO",newTablero.EstadoTablero);
@@ -207,6 +210,7 @@ namespace Proyecto.Repositories{
                 SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
                 commandC.Parameters.Add(parameterId);
                 commandC.Parameters.Add(parameterIdUsu);
+                commandC.Parameters.Add(parameterNameUsu);
                 commandC.Parameters.Add(parameterNombre);
                 commandC.Parameters.Add(parameterDescripcion);
                 commandC.Parameters.Add(parameterEstado);
@@ -218,7 +222,7 @@ namespace Proyecto.Repositories{
                 }
             }
         }
-        public void Remove(int? idTablero){
+        /*public void Remove(int? idTablero){
 
             foreach (var tarea in repoTarea.GetByOwnerBoard(idTablero))//Inhabilita todas las Tareas del Tablero a borrar
             {

@@ -7,13 +7,8 @@ namespace Proyecto.ViewModels{
         public int? Id{get;set;}//No necesita atributos ya que va oculto en el View
 
         [Required(ErrorMessage = "Este campo es requerido.")]
-        [Display(Name = "Id de Usuario Propietario")]
+        [Display(Name = "Usuario Propietario")]
         public int? IdUsuarioPropietario{get;set;}
-
-        [Required(ErrorMessage = "Este campo es requerido.")]
-        [Display(Name = "Nombre Tablero")]
-        [MaxLength(20)]
-        public string? NombreUsuarioPropietario{get;set;}
 
         [Required(ErrorMessage = "Este campo es requerido.")]
         [Display(Name = "Nombre Tablero")]
@@ -29,17 +24,17 @@ namespace Proyecto.ViewModels{
         [Display(Name = "Estado")]
         public EstadoTablero EstadoTablero{get;set;}
 
-        public List<int?> IdUsuarios{get;set;}//Necesario para guardar la lista de Id seleccionables obtenidos de la DB
+        public List<Usuario> Usuarios{get;set;}//Necesario para guardar la lista de Usuarios seleccionables obtenidos de la DB
         public EditarTableroViewModel(){
-            IdUsuarios = new List<int?>();//Asegura que siempre tenga una instancia de la lista válida
+            Usuarios = new List<Usuario>();//Asegura que siempre tenga una instancia de la lista válida
         }
-        public EditarTableroViewModel(int? id, int? idUsu, string? nombre, string? descripcion, EstadoTablero estado, List<int?> idUsuarios){
+        public EditarTableroViewModel(int? id, int? idUsu, string? nombre, string? descripcion, EstadoTablero estado, List<Usuario> listaUsu){
             Id=id;
             IdUsuarioPropietario=idUsu;
             Nombre=nombre;
             Descripcion=descripcion;
             EstadoTablero=estado;
-            IdUsuarios=idUsuarios;
+            Usuarios=listaUsu;
         }
         public static EditarTableroViewModel FromTablero(Tablero tablero)
         {
@@ -47,7 +42,6 @@ namespace Proyecto.ViewModels{
             {
                 Id = tablero.Id,
                 IdUsuarioPropietario = tablero.Propietario.Id,
-                NombreUsuarioPropietario = tablero.Propietario.Nombre,
                 Nombre = tablero.Nombre,
                 Descripcion=tablero.Descripcion,
                 EstadoTablero = (Proyecto.Models.EstadoTablero)tablero.EstadoTablero

@@ -73,7 +73,7 @@ namespace Proyecto.Controllers{
                     return NotFound();
                 } 
 
-                CrearTableroViewModel newTableroVM = new CrearTableroViewModel();
+                CrearTableroViewModel newTableroVM = new CrearTableroViewModel();//Obtiene usuarios a seleccionar
                 newTableroVM.Usuarios = repoUsuario.GetAll();
                 
                 return View(newTableroVM);
@@ -110,7 +110,7 @@ namespace Proyecto.Controllers{
             }
         }
 
-        /*[HttpGet]
+        [HttpGet]
         public IActionResult EditarTablero(int? idTablero){
             try
             {   
@@ -119,8 +119,8 @@ namespace Proyecto.Controllers{
                     TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
                     return RedirectToAction("Index", "Login");
                 }
-
                 if(!idTablero.HasValue) return NotFound();//Verifica que tenga un Valor asignado
+                
                 Tablero tableroAEditar = repoTablero.GetById(idTablero);//Obtengo el tablero de la DB con el Modelo base
                 EditarTableroViewModel tableroAEditarVM = new EditarTableroViewModel();//Instancia inicial del ViewModel
                 
@@ -129,7 +129,7 @@ namespace Proyecto.Controllers{
                 }else{
                     //Verifica si el id del usuario logueado es el mismo que el del usuario propietario del tablero que se quiere editar
                     Usuario usuarioLogeado = repoLogin.ObtenerUsuario(HttpContext.Session.GetString("Nombre"),HttpContext.Session.GetString("Contrasenia"));
-                    if (usuarioLogeado.Id == repoTablero.GetById(idTablero).IdUsuarioPropietario){
+                    if (usuarioLogeado.Id == repoTablero.GetById(idTablero).Propietario.Id){
                         tableroAEditarVM = EditarTableroViewModel.FromTablero(tableroAEditar);//Convierto de Model a ViewModel
                     }else{
                         _logger.LogWarning("Debe ser administrador para realizar la accion");
@@ -137,11 +137,8 @@ namespace Proyecto.Controllers{
                     }
                 }
 
-                List<Usuario> usuariosEnBD = repoUsuario.GetAll();
-                foreach (var usuario in usuariosEnBD)//Obtiene las lista de Id de Usuarios disponibles para seleccionar
-                {
-                    (tableroAEditarVM.IdUsuarios).Add(usuario.Id);
-                }
+                tableroAEditarVM.Usuarios = repoUsuario.GetAll();//Obtiene usuarios a seleccionar
+    
                 return View(tableroAEditarVM);
             }
             catch (Exception ex)
@@ -163,7 +160,7 @@ namespace Proyecto.Controllers{
 
                 Tablero tableroAEditar = Tablero.FromEditarTableroViewModel(tableroAEditarVM);
                 repoTablero.Update(tableroAEditar);
-                return RedirectToAction("Index", new { idUsuario = tableroAEditar.IdUsuarioPropietario });
+                return RedirectToAction("Index", new { idUsuario = tableroAEditar.Propietario.Id});
             }
             catch (Exception ex)
             {
@@ -172,7 +169,7 @@ namespace Proyecto.Controllers{
             }
         }
 
-        [HttpGet]
+        /*[HttpGet]
         public IActionResult EliminarTablero(int? idTablero){
             try
             {   

@@ -6,7 +6,7 @@ namespace Proyecto.ViewModels{
     public class CrearTableroViewModel{
 
         [Required(ErrorMessage = "Este campo es requerido.")]
-        [Display(Name = "Id de Usuario Propietario")]
+        [Display(Name = "Usuario Propietario")]
         public int? IdUsuarioPropietario{get;set;}
 
         [Required(ErrorMessage = "Este campo es requerido.")]
@@ -23,7 +23,7 @@ namespace Proyecto.ViewModels{
         [Display(Name = "Estado")]
         public EstadoTablero EstadoTablero{get;set;}
 
-        public List<Usuario> Usuarios{get;set;}//Necesario para guardar la lista de Id seleccionables obtenidos de la DB
+        public List<Usuario> Usuarios{get;set;}//Necesario para guardar la lista de Usuarios seleccionables obtenidos de la DB
         public CrearTableroViewModel(){
             Usuarios = new List<Usuario>();//Asegura que siempre tenga una instancia de la lista válida
         }
