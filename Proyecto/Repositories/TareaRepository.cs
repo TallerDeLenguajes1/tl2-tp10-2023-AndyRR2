@@ -5,9 +5,13 @@ using Proyecto.Models;
 namespace Proyecto.Repositories{
     public class TareaRepository: ITareaRepository{
         private readonly string direccionBD;
-        public TareaRepository(string cadenaDeConexion)
+        private readonly IUsuarioRepository repoUsuario;
+        private readonly ITableroRepository repoTablero;
+        public TareaRepository(string cadenaDeConexion, IUsuarioRepository usuRepo , ITableroRepository tabRepo)
         {
             direccionBD = cadenaDeConexion;
+            repoUsuario = usuRepo;
+            repoTablero = tabRepo;
         }
         public List<Tarea> GetAll(){
             List<Tarea> tareas = new List<Tarea>();
@@ -147,7 +151,7 @@ namespace Proyecto.Repositories{
                 throw new Exception("No se encontró ninguna tarea con el ID proporcionado.");
             }
             return(tareaSelec);
-        }
+        }*/
         public void Create(Tarea newTarea){
             if (TaskExists(newTarea.Nombre))
             {
@@ -155,26 +159,32 @@ namespace Proyecto.Repositories{
             }
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
-            string queryC = $"INSERT INTO Tarea (id_tablero,nombre,estado,descripcion,color,id_usuario_asignado,id_usuario_propietario) VALUES (@IDTAB,@NAME,@ESTADO,@DESCRIPCION,@COLOR,@IDUSUA,@IDUSUP)";
-            SQLiteParameter parameterIdTab = new SQLiteParameter("@IDTAB",newTarea.IdTablero);
+            string queryC = $"INSERT INTO Tarea (id_tablero,nombre,estado,descripcion,color,id_usuario_asignado,id_usuario_propietario,nombre_tablero,nombre_asignado,nombre_propietario) VALUES (@IDTAB,@NAME,@ESTADO,@DESCRIPCION,@COLOR,@IDUSUA,@IDUSUP,@NAMETAB,@NAMEASIG,@NAMEPROP)";
             SQLiteParameter parameterNombre = new SQLiteParameter("@NAME",newTarea.Nombre);
             SQLiteParameter parameterEstado = new SQLiteParameter("@ESTADO",newTarea.EstadoTarea);
             SQLiteParameter parameterDescripcion = new SQLiteParameter("@DESCRIPCION",newTarea.Descripcion);
             SQLiteParameter parameterColor = new SQLiteParameter("@COLOR",newTarea.Color);
-            SQLiteParameter parameterIdUsuA = new SQLiteParameter("@IDUSUA",newTarea.IdUsuarioAsignado);
-            SQLiteParameter parameterIdUsuP = new SQLiteParameter("@IDUSUP",newTarea.IdUsuarioPropietario);
+            SQLiteParameter parameterIdUsuA = new SQLiteParameter("@IDUSUA",newTarea.Asignado.Id);
+            SQLiteParameter parameterNombreA = new SQLiteParameter("@NAMEASIG",repoUsuario.GetById(newTarea.Asignado.Id).Nombre);
+            SQLiteParameter parameterIdTab = new SQLiteParameter("@IDTAB",newTarea.TableroPropio.Id);
+            SQLiteParameter parameterNombreTab = new SQLiteParameter("@NAMETAB",repoTablero.GetById(newTarea.TableroPropio.Id).Nombre);
+            SQLiteParameter parameterIdUsuP = new SQLiteParameter("@IDUSUP",newTarea.Propietario.Id);
+            SQLiteParameter parameterNombreP = new SQLiteParameter("@NAMEPROP",repoUsuario.GetById(newTarea.Propietario.Id).Nombre);
             
             using (connectionC)
             {
                 connectionC.Open();
                 var commandC = new SQLiteCommand(queryC, connectionC);
-                commandC.Parameters.Add(parameterIdTab);
                 commandC.Parameters.Add(parameterNombre);
                 commandC.Parameters.Add(parameterEstado);
                 commandC.Parameters.Add(parameterDescripcion);
                 commandC.Parameters.Add(parameterColor);
+                commandC.Parameters.Add(parameterIdTab);
+                commandC.Parameters.Add(parameterNombreTab);
                 commandC.Parameters.Add(parameterIdUsuA);
+                commandC.Parameters.Add(parameterNombreA);
                 commandC.Parameters.Add(parameterIdUsuP);
+                commandC.Parameters.Add(parameterNombreP);
                 
                 commandC.ExecuteNonQuery();
                 connectionC.Close();   
@@ -183,7 +193,7 @@ namespace Proyecto.Repositories{
                 throw new Exception("La Tarea no se creo correctamente.");
             }
         }
-        public void Update(Tarea tareaAEditar){
+        /*public void Update(Tarea tareaAEditar){
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
             string queryC = "UPDATE Tarea SET nombre = @NAME, descripcion = @DESCRIPCION, id_tablero = @IDTAB, estado = @ESTADO, color = @COLOR, id_usuario_propietario = @IDUSUP WHERE id = @ID;";
@@ -340,7 +350,7 @@ namespace Proyecto.Repositories{
                 throw new Exception("El Usuario proporcionado no tiene tareas.");
             }
             return(tareas);
-        }
+        }*/
         public bool TaskExists(string? nombreTarea){
             bool validacion=false;
             string? Nombre=null;
@@ -369,6 +379,6 @@ namespace Proyecto.Repositories{
                 validacion=true;
             }
             return validacion;
-        }*/
+        }
     }
 }

@@ -6,7 +6,7 @@ namespace Proyecto.ViewModels{
     public class CrearTareaViewModel{
         
         [Required(ErrorMessage = "Este campo es requerido.")]
-        [Display(Name = "Id Tablero")]
+        [Display(Name = "Tablero Propio")]
         public int? IdTablero{get;set;}
 
         [Required(ErrorMessage = "Este campo es requerido.")]
@@ -28,24 +28,24 @@ namespace Proyecto.ViewModels{
         public Color Color{get;set;}
 
         [Required(ErrorMessage = "Este campo es requerido.")]
-        [Display(Name = "Id Usuario Propietario")]
+        [Display(Name = "Usuario Propietario")]
         public int? IdUsuarioPropietario{get;set;}
 
-        public List<int?> IdTableros{get;set;}//Necesario para guardar la lista de Id seleccionables obtenidos de la DB
-        public List<int?> IdUsuarios{get;set;}//Necesario para guardar la lista de Id seleccionables obtenidos de la DB
+        public List<Tablero> Tableros{get;set;}//Necesario para guardar la lista a seleccionables obtenidos de la DB
+        public List<Usuario> Usuarios{get;set;}//Necesario para guardar la lista a seleccionables obtenidos de la DB
         public CrearTareaViewModel(){
-            IdTableros = new List<int?>();//Asegura que siempre tenga una instancia de la lista válida
-            IdUsuarios = new List<int?>();//Asegura que siempre tenga una instancia de la lista válida
+            Tableros = new List<Tablero>();//Asegura que siempre tenga una instancia de la lista válida
+            Usuarios = new List<Usuario>();//Asegura que siempre tenga una instancia de la lista válida
         }
-        public CrearTareaViewModel(int? idTablero, string? nombre, EstadoTarea estado, string? descripcion, Color color, int? idUsuarioProp, List<int?> idTableros, List<int?> idUsuarios){
-            IdTablero=idTablero;
+        public CrearTareaViewModel(int? idTablero, string? nombre, EstadoTarea estado, string? descripcion, Color color, int? idUsuarioProp, List<Tablero> tableros, List<Usuario> usuarios){
             Nombre=nombre;
             EstadoTarea=estado;
             Descripcion=descripcion;
             Color=color;
+            IdTablero=idTablero;
             IdUsuarioPropietario=idUsuarioProp;
-            IdTableros=idTableros;
-            IdUsuarios=idUsuarios;
+            Tableros=tableros;
+            Usuarios=usuarios;
         }
         
     }

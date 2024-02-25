@@ -63,7 +63,7 @@ namespace Proyecto.Controllers{
             }
         }
 
-        /*[HttpGet]
+        [HttpGet]
         public IActionResult AgregarTarea(){
             try
             {
@@ -75,18 +75,10 @@ namespace Proyecto.Controllers{
 
                 CrearTareaViewModel newTareaVM = new CrearTareaViewModel();
 
-                List<Usuario> usuariosEnBD = repoUsuario.GetAll();
-                foreach (var usuario in usuariosEnBD)//Obtiene las lista de Id de Usuarios disponibles para seleccionar
-                {
-                    (newTareaVM.IdUsuarios).Add(usuario.Id);
-                }
-
-                List<Tablero> tablerosEnBD = repoTablero.GetAll();
-                foreach (var tablero in tablerosEnBD)//Obtiene las lista de Id de Tableros disponibles para seleccionar
-                {
-                    (newTareaVM.IdTableros).Add(tablero.Id);
-                }
-                if((newTareaVM.IdTableros).Count == 0){//Si no hay tableros no puede crear Tareas
+                newTareaVM.Usuarios = repoUsuario.GetAll();
+                newTareaVM.Tableros = repoTablero.GetAll();
+                
+                if((newTareaVM.Tableros).Count == 0){//Si no hay tableros no puede crear Tareas
                     TempData["Mensaje"] = "No hay tableros donde puede agregarce la tarea.";
                     return RedirectToAction("Index", "Usuario");
                 }
@@ -130,7 +122,7 @@ namespace Proyecto.Controllers{
             }
         }
 
-        [HttpGet]
+        /*[HttpGet]
         public IActionResult EditarTarea(int? idTarea){  
             try
             {

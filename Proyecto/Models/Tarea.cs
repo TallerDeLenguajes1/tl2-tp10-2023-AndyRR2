@@ -19,7 +19,6 @@ namespace Proyecto.Models{
     }
     public class Tarea{
         public int? Id{get;set;}
-        public int? IdTablero{get;set;}
         public string? Nombre{get;set;}
         public EstadoTarea EstadoTarea{get;set;}
         public string? Descripcion{get;set;}
@@ -32,22 +31,23 @@ namespace Proyecto.Models{
             Asignado = new Usuario();
             TableroPropio = new Tablero();
         }
-        public Tarea(int? id, int? idTablero, string? nombreProp, string? nombreAsig, string nombreTab,string? nombre, EstadoTarea estado, string? descripcion, Color color, int? idUsuarioAsig, int? idUsuarioProp, int? idTab){
+        public Tarea(int? id, int? idTablero, string? nombreProp, string? nombreAsig, string nombreTab,string? nombre, EstadoTarea estado, string? descripcion, Color color, int? idUsuarioAsig, int? idUsuarioProp){
             Id=id;
-            IdTablero=idTablero;
             Nombre=nombre;
             EstadoTarea=estado;
             Descripcion=descripcion;
             Color=color;
             Propietario = new Usuario(idUsuarioProp, nombreProp);
             Asignado = new Usuario(idUsuarioAsig, nombreAsig);
-            TableroPropio = new Tablero(idTab, nombreTab);
+            TableroPropio = new Tablero(idTablero, nombreTab);
         }
         public static Tarea FromCrearTareaViewModel(CrearTareaViewModel tareaVM)//Usuario asignado es 0, luego se asigna en AsignarUsuario
         {
             return new Tarea
             {
-                IdTablero = tareaVM.IdTablero,
+                Propietario = new Usuario(tareaVM.IdUsuarioPropietario,null),
+                Asignado = new Usuario(null,null),
+                TableroPropio = new Tablero(tareaVM.IdTablero,null),
                 Nombre = tareaVM.Nombre,
                 Descripcion = tareaVM.Descripcion,
                 Color = (Proyecto.Models.Color)tareaVM.Color,
@@ -59,7 +59,6 @@ namespace Proyecto.Models{
             return new Tarea
             {
                 Id = tareaVM.Id,
-                IdTablero = tareaVM.IdTablero,
                 Nombre = tareaVM.Nombre,
                 Descripcion = tareaVM.Descripcion,
                 Color = (Proyecto.Models.Color)tareaVM.Color,

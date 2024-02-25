@@ -53,7 +53,6 @@ namespace Proyecto.ViewModels{
         {
             EditarTareaViewModel newTareaVM = new EditarTareaViewModel();
             newTareaVM.Id = newTarea.Id;
-            newTareaVM.IdTablero = newTarea.IdTablero;
             newTareaVM.Nombre = newTarea.Nombre;
             newTareaVM.EstadoTarea = (Proyecto.Models.EstadoTarea)newTarea.EstadoTarea;
             newTareaVM.Descripcion = newTarea.Descripcion;

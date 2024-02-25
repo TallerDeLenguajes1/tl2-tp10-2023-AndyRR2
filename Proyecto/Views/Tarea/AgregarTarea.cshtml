@@ -9,10 +9,10 @@
     <div class="form-group" style="max-width: 200px;">
         <label asp-for="@Model.IdTablero"></label>
         <select asp-for="@Model.IdTablero" class="form-control">
-            <option value="">Seleccionar Id</option>
-            @foreach (var idTablero in Model.IdTableros)
+            <option value="">Seleccionar Tablero</option>
+            @foreach (var tablero in Model.Tableros)
             {
-                <option value="@idTablero">@idTablero</option>
+                <option value="@tablero.Id">@tablero.Nombre</option>
             }
         </select>
         <span asp-validation-for="@Model.IdTablero" class="text-danger"></span>
@@ -50,10 +50,10 @@
     <div class="form-group" style="max-width: 200px;">
         <label asp-for="@Model.IdUsuarioPropietario"></label>
         <select asp-for="@Model.IdUsuarioPropietario" class="form-control">
-            <option value="">Seleccionar Id</option>
-            @foreach (var idUsuario in Model.IdUsuarios)
+            <option value="">Seleccionar Propietario</option>
+            @foreach (var usuario in Model.Usuarios)
             {
-                <option value="@idUsuario">@idUsuario</option>
+                <option value="@usuario.Id">@usuario.Nombre</option>
             }
         </select>
         <span asp-validation-for="@Model.IdUsuarioPropietario" class="text-danger"></span>
