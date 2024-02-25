@@ -58,6 +58,56 @@ namespace Proyecto.Repositories{
             }
             return tareas;
         }
+        public List<Tarea> GetAllByOwnerBoard(int? idTablero){
+            List<Tarea> tareas = new List<Tarea>();
+            SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
+            
+            string queryC = @"SELECT Tarea.id AS TareaId, Tarea.id_tablero, Tarea.nombre, Tarea.estado, Tarea.descripcion, Tarea.color, Tarea.id_usuario_asignado, Tarea.id_usuario_propietario, Tarea.nombre_tablero, Tarea.nombre_asignado, Tarea.nombre_propietario
+    	                    FROM Tarea WHERE Tarea.id_tablero = @IDTAB;";
+            SQLiteParameter parameterIdTab = new SQLiteParameter("@IDTAB",idTablero);
+
+            using(connectionC)
+            {
+                connectionC.Open();
+                SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
+                commandC.Parameters.Add(parameterIdTab);
+
+                SQLiteDataReader readerC = commandC.ExecuteReader();
+                using (readerC)
+                {
+                    while (readerC.Read())
+                    {
+                        var newTarea = new Tarea();
+                        newTarea.Id = Convert.ToInt32(readerC["TareaId"]);
+                        newTarea.Nombre = Convert.ToString(readerC["nombre"]);
+                        newTarea.EstadoTarea = (EstadoTarea)Convert.ToInt32(readerC["estado"]);
+                        newTarea.Descripcion = Convert.ToString(readerC["descripcion"]);
+                        newTarea.Color = (Color)Convert.ToInt32(readerC["color"]);
+                        newTarea.TableroPropio = new Tablero();
+                        if (!readerC.IsDBNull(readerC.GetOrdinal("id_tablero"))){
+                            newTarea.TableroPropio.Id = Convert.ToInt32(readerC["id_tablero"]);
+                            newTarea.TableroPropio.Nombre = Convert.ToString(readerC["nombre_tablero"]);
+                        }
+                        newTarea.Asignado = new Usuario();
+                        if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_asignado"))){
+                            newTarea.Asignado.Id = Convert.ToInt32(readerC["id_usuario_asignado"]);
+                            newTarea.Asignado.Nombre = Convert.ToString(readerC["nombre_asignado"]);
+                        }
+                        newTarea.Propietario = new Usuario();
+                        if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_propietario"))){
+                            newTarea.Propietario.Id = Convert.ToInt32(readerC["id_usuario_propietario"]);
+                            newTarea.Propietario.Nombre = Convert.ToString(readerC["nombre_propietario"]);
+                        }
+                        tareas.Add(newTarea);
+                    }
+                }
+                connectionC.Close();           
+            }
+            if (tareas == null){
+                throw new Exception("El Tablero proporcionado no tiene tareas.");
+            }
+            return(tareas);
+        }
         /*public Tarea GetById(int? idTarea){
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             Tarea tareaSelec = new Tarea();
@@ -247,50 +297,7 @@ namespace Proyecto.Repositories{
                 }
             }
         }
-        public List<Tarea> GetByOwnerBoard(int? idTablero){
-            List<Tarea> tareas = new List<Tarea>();
-            SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
-            
-            string queryC = "SELECT * FROM Tarea WHERE id_tablero = @IDTAB";
-            SQLiteParameter parameterIdTab = new SQLiteParameter("@IDTAB",idTablero);
-
-            using(connectionC)
-            {
-                connectionC.Open();
-                SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
-                commandC.Parameters.Add(parameterIdTab);
-
-                SQLiteDataReader readerC = commandC.ExecuteReader();
-                using (readerC)
-                {
-                    while (readerC.Read())
-                    {
-                        Tarea newTarea = new Tarea();
-                        newTarea.Id = Convert.ToInt32(readerC["id"]);
-                        if (!readerC.IsDBNull(readerC.GetOrdinal("id_tablero"))){
-                            newTarea.IdTablero = Convert.ToInt32(readerC["id_tablero"]);
-                        }
-                        newTarea.IdTablero = Convert.ToInt32(readerC["id_tablero"]);
-                        newTarea.Nombre = Convert.ToString(readerC["nombre"]);
-                        newTarea.EstadoTarea = (EstadoTarea)Convert.ToInt32(readerC["estado"]);
-                        newTarea.Descripcion = Convert.ToString(readerC["descripcion"]);
-                        newTarea.Color = (Color)Convert.ToInt32(readerC["color"]);
-                        if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_propietario"))){
-                            newTarea.IdUsuarioPropietario = Convert.ToInt32(readerC["id_usuario_propietario"]);
-                        }
-                        if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_asignado"))){
-                            newTarea.IdUsuarioAsignado = Convert.ToInt32(readerC["id_usuario_asignado"]);
-                        }
-                        tareas.Add(newTarea);
-                    }
-                }
-                connectionC.Close();           
-            }
-            if (tareas == null){
-                throw new Exception("El Tablero proporcionado no tiene tareas.");
-            }
-            return(tareas);
-        }
+        
         public List<Tarea> GetByOwnerUser(int? idUsuario){
             List<Tarea> tareas = new List<Tarea>();
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);

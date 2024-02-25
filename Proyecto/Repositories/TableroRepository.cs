@@ -224,11 +224,6 @@ namespace Proyecto.Repositories{
         }
         public void Remove(int? idTablero){
 
-            /*foreach (var tarea in repoTarea.GetByOwnerBoard(idTablero))//Inhabilita todas las Tareas del Tablero a borrar
-            {
-                repoTarea.Disable(tarea.Id, null);
-            }*/
-
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
             string queryC = "DELETE FROM Tablero WHERE id = @ID";
@@ -248,11 +243,6 @@ namespace Proyecto.Repositories{
             }
         }
         public void Disable(int? idTablero){
-            
-            /*foreach (var tarea in repoTarea.GetByOwnerBoard(idTablero))//Inhabilita todas las Tareas del Tablero a Inhabilitar
-            {
-                repoTarea.Disable(tarea.Id, tarea.IdTablero);
-            }*/
 
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             
@@ -275,7 +265,7 @@ namespace Proyecto.Repositories{
             }
         }
         
-        /*public bool ChechAsignedTask(int? idTablero, int? idUsuario){
+        public bool ChechAsignedTask(int? idTablero, int? idUsuario){
             bool validacion = false;
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
@@ -305,7 +295,7 @@ namespace Proyecto.Repositories{
                 throw new Exception("No se encontraron tareas asignadas al tablero proporcionado en la base de datos.");
             }
             return validacion;
-        }*/
+        }
         
         public bool BoardExists(string? nombreTablero){
             bool validacion=false;

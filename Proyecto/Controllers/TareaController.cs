@@ -32,20 +32,20 @@ namespace Proyecto.Controllers{
                 List<Tarea> tareas = new List<Tarea>();
 
                 if(isAdmin()){//Si es Admin puede ver todas las tareas
-                    /*if (idTablero.HasValue){
-                        tareas = repoTarea.GetByOwnerBoard(idTablero);
-                    }else{*/
+                    if (idTablero.HasValue){
+                        tareas = repoTarea.GetAllByOwnerBoard(idTablero);
+                    }else{
                         tareas = repoTarea.GetAll();
-                    //}
-                }/*else{
+                    }
+                }else{
                     Usuario usuarioLogeado = repoLogin.ObtenerUsuario(HttpContext.Session.GetString("Nombre"),HttpContext.Session.GetString("Contrasenia"));
-                    if ((repoTablero.GetById(idTablero).IdUsuarioPropietario == usuarioLogeado.Id) || repoTablero.ChechAsignedTask(idTablero,usuarioLogeado.Id)){
-                        tareas = repoTarea.GetByOwnerBoard(idTablero);   
+                    if ((repoTablero.GetById(idTablero).Propietario.Id == usuarioLogeado.Id) || repoTablero.ChechAsignedTask(idTablero,usuarioLogeado.Id)){
+                        tareas = repoTarea.GetAllByOwnerBoard(idTablero);   
                     }else{
                         _logger.LogWarning("Debe ser administrador para realizar la accion");
                         return NotFound();
                     }
-                }*/
+                }
 
                 List<ListarTareaViewModel> listaTareasVM = ListarTareaViewModel.FromTarea(tareas);
                 foreach (var tarea in listaTareasVM)
