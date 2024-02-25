@@ -222,12 +222,12 @@ namespace Proyecto.Repositories{
                 }
             }
         }
-        /*public void Remove(int? idTablero){
+        public void Remove(int? idTablero){
 
-            foreach (var tarea in repoTarea.GetByOwnerBoard(idTablero))//Inhabilita todas las Tareas del Tablero a borrar
+            /*foreach (var tarea in repoTarea.GetByOwnerBoard(idTablero))//Inhabilita todas las Tareas del Tablero a borrar
             {
                 repoTarea.Disable(tarea.Id, null);
-            }
+            }*/
 
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
@@ -247,7 +247,7 @@ namespace Proyecto.Repositories{
                 }
             }
         }
-        public void Disable(int? idTablero){
+        /*public void Disable(int? idTablero){
             
             foreach (var tarea in repoTarea.GetByOwnerBoard(idTablero))//Inhabilita todas las Tareas del Tablero a Inhabilitar
             {

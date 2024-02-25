@@ -169,7 +169,7 @@ namespace Proyecto.Controllers{
             }
         }
 
-        /*[HttpGet]
+        [HttpGet]
         public IActionResult EliminarTablero(int? idTablero){
             try
             {   
@@ -187,7 +187,7 @@ namespace Proyecto.Controllers{
                 }else{
                     //Verifica si el id del usuario logueado es el mismo que el del usuario propietario del tablero que se quiere Borrar
                     Usuario usuarioLogeado = repoLogin.ObtenerUsuario(HttpContext.Session.GetString("Nombre"),HttpContext.Session.GetString("Contrasenia"));
-                    if (usuarioLogeado.Id == repoTablero.GetById(idTablero).IdUsuarioPropietario){
+                    if (usuarioLogeado.Id == repoTablero.GetById(idTablero).Propietario.Id){
                         return View(tableroAEliminar);
                     }else{
                         _logger.LogWarning("Debe ser administrador para realizar la accion");
@@ -220,7 +220,7 @@ namespace Proyecto.Controllers{
                 _logger.LogError($"Error al procesar la solicitud en el método EliminarTableroFromForm del controlador de Tablero: {ex.ToString()}");
                 return BadRequest();
             }
-        }*/
+        }
 
         private bool isAdmin()
         {
