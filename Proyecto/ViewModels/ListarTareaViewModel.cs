@@ -3,12 +3,12 @@ using Proyecto.Models;
 namespace Proyecto.ViewModels{
     public class ListarTareaViewModel{
         public int? Id{get;set;}
-        public int? IdTablero{get;set;}
-        public string? NombreTablero{get;set;}
         public string? Nombre{get;set;}
         public EstadoTarea EstadoTarea{get;set;}
         public string? Descripcion{get;set;}
         public Color Color{get;set;}
+        public int? IdTablero{get;set;}
+        public string? NombreTablero{get;set;}
         public int? IdUsuarioAsignado{get;set;}
         public string? NombreUsuarioAsignado{get;set;}
         public int? IdUsuarioPropietario{get;set;}
@@ -36,13 +36,16 @@ namespace Proyecto.ViewModels{
             {
                 ListarTareaViewModel newTareaVM = new ListarTareaViewModel();
                 newTareaVM.Id=tarea.Id;
-                newTareaVM.IdTablero=tarea.IdTablero;
                 newTareaVM.Nombre=tarea.Nombre;
                 newTareaVM.EstadoTarea=tarea.EstadoTarea;
                 newTareaVM.Descripcion=tarea.Descripcion;
                 newTareaVM.Color=tarea.Color;
-                newTareaVM.IdUsuarioAsignado=tarea.IdUsuarioAsignado;
-                newTareaVM.IdUsuarioPropietario=tarea.IdUsuarioPropietario;
+                newTareaVM.IdTablero=tarea.TableroPropio.Id;
+                newTareaVM.NombreTablero=tarea.TableroPropio.Nombre;
+                newTareaVM.IdUsuarioAsignado=tarea.Asignado.Id;
+                newTareaVM.NombreUsuarioAsignado=tarea.Asignado.Nombre;
+                newTareaVM.IdUsuarioPropietario=tarea.Propietario.Id;
+                newTareaVM.NombreUsuarioPropietario=tarea.Propietario.Nombre;
                 ListaTareaVM.Add(newTareaVM);
             }
             return(ListaTareaVM);

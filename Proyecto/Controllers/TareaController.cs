@@ -32,19 +32,12 @@ namespace Proyecto.Controllers{
                 List<Tarea> tareas = new List<Tarea>();
 
                 if(isAdmin()){//Si es Admin puede ver todas las tareas
-                    /*Si el idTablero tiene un Valor o es Nulo obtiene las tareas de ese tablero
-                    ***Se hace énfasis en idUsuario.HasValue ya que segun los enlaces del Index de Tablero se puede acceder a...
-                    las tareas de un tablero seleccionado o a TODAS las tareas de todos los Tableros, y segun lo que se elija,
-                    el parámetro en la ruta tendra un Valor cuando se selecciona un tablero en especifico por lo tanto solo se mostraran
-                    las tareas de ese tablero, o sera un texto "null" si se selecciona ver todas las Tareas*/
-                    if (idTablero.HasValue){
+                    /*if (idTablero.HasValue){
                         tareas = repoTarea.GetByOwnerBoard(idTablero);
-                    }else{
+                    }else{*/
                         tareas = repoTarea.GetAll();
-                    }
+                    //}
                 }/*else{
-                    //Si no es Admin solo puede acceder a ver las tareas que pertenezcan a los Tableros que
-                     //sean propiedad del usuario logueado o tengan alguna tarea asignada al usuario logueado
                     Usuario usuarioLogeado = repoLogin.ObtenerUsuario(HttpContext.Session.GetString("Nombre"),HttpContext.Session.GetString("Contrasenia"));
                     if ((repoTablero.GetById(idTablero).IdUsuarioPropietario == usuarioLogeado.Id) || repoTablero.ChechAsignedTask(idTablero,usuarioLogeado.Id)){
                         tareas = repoTarea.GetByOwnerBoard(idTablero);   
@@ -57,7 +50,7 @@ namespace Proyecto.Controllers{
                 List<ListarTareaViewModel> listaTareasVM = ListarTareaViewModel.FromTarea(tareas);
                 foreach (var tarea in listaTareasVM)
                 {
-                    //tarea.NombreTablero=repoTablero.GetById(tarea.IdTablero).Nombre;
+                    tarea.NombreTablero=repoTablero.GetById(tarea.IdTablero).Nombre;
                     tarea.NombreUsuarioAsignado=repoUsuario.GetById(tarea.IdUsuarioAsignado).Nombre;
                     tarea.NombreUsuarioPropietario=repoUsuario.GetById(tarea.IdUsuarioPropietario).Nombre;
                 }
@@ -70,7 +63,7 @@ namespace Proyecto.Controllers{
             }
         }
 
-        [HttpGet]
+        /*[HttpGet]
         public IActionResult AgregarTarea(){
             try
             {
@@ -371,7 +364,7 @@ namespace Proyecto.Controllers{
                 _logger.LogError($"Error al procesar la solicitud en el método CambiarEstadoFromForm del controlador de Tarea: {ex.ToString()}");
                 return BadRequest();
             } 
-        }
+        }*/
         private bool isAdmin()
         {
             if (HttpContext.Session != null && HttpContext.Session.GetString("NivelDeAcceso") == "admin"){

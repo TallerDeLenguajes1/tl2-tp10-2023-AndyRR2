@@ -58,7 +58,6 @@ namespace Proyecto.ViewModels{
             newTareaVM.EstadoTarea = (Proyecto.Models.EstadoTarea)newTarea.EstadoTarea;
             newTareaVM.Descripcion = newTarea.Descripcion;
             newTareaVM.Color = newTarea.Color;
-            newTareaVM.IdUsuarioPropietario = newTarea.IdUsuarioPropietario;
             return(newTareaVM);
         } 
     }

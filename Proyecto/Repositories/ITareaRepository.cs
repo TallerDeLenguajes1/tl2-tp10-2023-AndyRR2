@@ -3,7 +3,7 @@ using Proyecto.Models;
 namespace Proyecto.Repositories{
     public interface ITareaRepository{
         public List<Tarea> GetAll();
-        public Tarea GetById(int? idTarea);
+        /*public Tarea GetById(int? idTarea);
         public void Create(Tarea newTarea);
         public void Update(Tarea newTarea);
         public void Remove(int? idTarea);
@@ -12,6 +12,6 @@ namespace Proyecto.Repositories{
         public void Disable(int? idTarea, int? idTablero);
         public List<Tarea> GetByOwnerBoard(int? idTablero);
         public List<Tarea> GetByOwnerUser(int? idUsuario);
-        public bool TaskExists(string? nombreTarea);
+        public bool TaskExists(string? nombreTarea);*/
     }
 }

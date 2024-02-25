@@ -15,6 +15,10 @@ namespace Proyecto.Models{
         public Tablero(){
             Propietario = new Usuario();
         }
+        public Tablero(int? id, string? nombre){
+            Id=id;
+            Nombre=nombre;
+        }
         
         public Tablero(int? id, string? nombre, string? descripcion, EstadoTablero estado, int? idUsu, string? nombreUsu){
             Id=id;

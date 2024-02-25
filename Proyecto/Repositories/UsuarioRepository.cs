@@ -129,10 +129,10 @@ namespace Proyecto.Repositories{
         }
         public void Remove(int? idUsuario){
 
-            foreach (var tarea in repoTarea.GetByOwnerUser(idUsuario))//inhabilita todas las tareas del usuario a borrar
+            /*foreach (var tarea in repoTarea.GetByOwnerUser(idUsuario))//inhabilita todas las tareas del usuario a borrar
             {
                 repoTarea.Disable(tarea.Id,tarea.IdTablero);
-            }
+            }*/
 
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             
