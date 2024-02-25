@@ -247,16 +247,16 @@ namespace Proyecto.Repositories{
                 }
             }
         }
-        /*public void Disable(int? idTablero){
+        public void Disable(int? idTablero){
             
-            foreach (var tarea in repoTarea.GetByOwnerBoard(idTablero))//Inhabilita todas las Tareas del Tablero a Inhabilitar
+            /*foreach (var tarea in repoTarea.GetByOwnerBoard(idTablero))//Inhabilita todas las Tareas del Tablero a Inhabilitar
             {
                 repoTarea.Disable(tarea.Id, tarea.IdTablero);
-            }
+            }*/
 
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             
-            string queryC = "UPDATE Tablero SET estado = @ESTADO, id_usuario_propietario = NULL WHERE id = @ID";
+            string queryC = "UPDATE Tablero SET estado = @ESTADO, id_usuario_propietario = NULL, nombre_propietario = NULL WHERE id = @ID";
             SQLiteParameter parameterId = new SQLiteParameter("@ID",idTablero);
             SQLiteParameter parameterEstado = new SQLiteParameter("@ESTADO",2);
 
@@ -273,7 +273,7 @@ namespace Proyecto.Repositories{
                     throw new Exception("No se encontró ningún tablero con el ID proporcionado.");
                 }
             }
-        }*/
+        }
         
         /*public bool ChechAsignedTask(int? idTablero, int? idUsuario){
             bool validacion = false;

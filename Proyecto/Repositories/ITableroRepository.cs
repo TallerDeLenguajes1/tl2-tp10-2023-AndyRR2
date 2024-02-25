@@ -9,7 +9,7 @@ namespace Proyecto.Repositories{
         public void Create(Tablero newTablero);
         public void Update(Tablero newTablero);
         public void Remove(int? idTablero);
-        //public void Disable(int? idTablero);
+        public void Disable(int? idTablero);
         //public bool ChechAsignedTask(int? idUsuario, int? idTablero);
         public bool BoardExists(string? nombreTablero);
     }
