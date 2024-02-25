@@ -48,12 +48,12 @@ namespace Proyecto.Controllers{
                 }
 
                 List<ListarTareaViewModel> listaTareasVM = ListarTareaViewModel.FromTarea(tareas);
-                foreach (var tarea in listaTareasVM)
+                /*foreach (var tarea in listaTareasVM)
                 {
                     tarea.NombreTablero=repoTablero.GetById(tarea.IdTablero).Nombre;
                     tarea.NombreUsuarioAsignado=repoUsuario.GetById(tarea.IdUsuarioAsignado).Nombre;
                     tarea.NombreUsuarioPropietario=repoUsuario.GetById(tarea.IdUsuarioPropietario).Nombre;
-                }
+                }*/
                 return View(listaTareasVM);
             }
             catch (Exception ex)
@@ -232,7 +232,7 @@ namespace Proyecto.Controllers{
             }
         }
 
-        /*[HttpGet]
+        [HttpGet]
         public IActionResult AsignarTarea(int? idTarea){
             try
             {
@@ -251,7 +251,7 @@ namespace Proyecto.Controllers{
                 }else{
                     //Verifica que el id del usuario logueado sea el mismo que el del usuario propietario de la Tarea a Asignar
                     Usuario usuarioLogeado = repoLogin.ObtenerUsuario(HttpContext.Session.GetString("Nombre"),HttpContext.Session.GetString("Contrasenia"));
-                    if (usuarioLogeado.Id == repoTarea.GetById(idTarea).IdUsuarioPropietario){
+                    if (usuarioLogeado.Id == repoTarea.GetById(idTarea).Propietario.Id){
                         tareaSelecVM = AsignarTareaViewModel.FromTarea(tareaSelec);
                     }else{
                         _logger.LogWarning("Debe ser administrador para realizar la accion");
@@ -293,7 +293,7 @@ namespace Proyecto.Controllers{
             }
         }
         [HttpGet]
-        public IActionResult CambiarEstadoTarea(int? idTarea){  
+        /*public IActionResult CambiarEstadoTarea(int? idTarea){  
             try
             {
                 if(!isLogin())

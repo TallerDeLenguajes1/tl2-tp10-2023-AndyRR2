@@ -252,19 +252,21 @@ namespace Proyecto.Repositories{
                 }
             }
         }
-        /*public void Assign(int? idTarea, int? idUsuario){
+        public void Assign(int? idTarea, int? idUsuario){
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
-            string queryC = "UPDATE Tarea SET id_usuario_asignado = @IDUSU WHERE id = @ID;";
+            string queryC = "UPDATE Tarea SET id_usuario_asignado = @IDUSU, nombre_asignado = @NAMEASIG WHERE id = @ID;";
             SQLiteParameter parameterId = new SQLiteParameter("@ID",idTarea);
             SQLiteParameter parameterIdUsu = new SQLiteParameter("@IDUSU",idUsuario);
-            
+            SQLiteParameter parameterNombreA= new SQLiteParameter("@NAMEASIG",repoUsuario.GetById(idUsuario).Nombre);
+
             using (connectionC)
             {
                 connectionC.Open();
                 SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
                 commandC.Parameters.Add(parameterId);
                 commandC.Parameters.Add(parameterIdUsu);
+                commandC.Parameters.Add(parameterNombreA);
 
                 int rowsAffected = commandC.ExecuteNonQuery();
                 connectionC.Close();
@@ -273,7 +275,7 @@ namespace Proyecto.Repositories{
                 }   
             }
         }
-        public void ChangeStatus(Tarea tarea){
+        /*public void ChangeStatus(Tarea tarea){
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
             string queryC = "UPDATE Tarea SET estado = @ESTADO WHERE id = @ID;";
