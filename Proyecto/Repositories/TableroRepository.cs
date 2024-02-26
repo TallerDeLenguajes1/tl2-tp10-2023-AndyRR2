@@ -134,7 +134,11 @@ namespace Proyecto.Repositories{
             Tablero tableroSelec = new Tablero();
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             
-            string queryC = "SELECT * FROM Tablero WHERE id = @ID";
+            string queryC = @"SELECT Tablero.id AS TableroId, id_usuario_propietario, nombre_tablero, Usuario.nombre_de_usuario AS nombre_propietario, descripcion, estado 
+                            FROM Tablero
+    	                    INNER JOIN Usuario ON Tablero.id_usuario_propietario = Usuario.id
+                            WHERE TableroId = @ID;";
+            
             SQLiteParameter parameterId = new SQLiteParameter("@ID",Id);
             
             using(connectionC)
@@ -148,7 +152,7 @@ namespace Proyecto.Repositories{
                 {
                     while (readerC.Read())
                     {
-                        tableroSelec.Id = Convert.ToInt32(readerC["id"]);
+                        tableroSelec.Id = Convert.ToInt32(readerC["TableroId"]);
                         tableroSelec.Propietario = new Usuario();
                         if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_propietario"))){
                             tableroSelec.Propietario.Id = Convert.ToInt32(readerC["id_usuario_propietario"]);
@@ -198,10 +202,9 @@ namespace Proyecto.Repositories{
         public void Update(Tablero newTablero){
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             
-            string queryC = "UPDATE Tablero SET id_usuario_propietario = @IDUSU, nombre_tablero = @NAME, descripcion = @DESCRIPCION, estado = @ESTADO, nombre_propietario = @NAMEUSU WHERE id = @ID;";
+            string queryC = "UPDATE Tablero SET id_usuario_propietario = @IDUSU, nombre_tablero = @NAME, descripcion = @DESCRIPCION, estado = @ESTADO WHERE id = @ID;";
             SQLiteParameter parameterId = new SQLiteParameter("@ID",newTablero.Id);
             SQLiteParameter parameterIdUsu = new SQLiteParameter("@IDUSU",newTablero.Propietario.Id);
-            SQLiteParameter parameterNameUsu = new SQLiteParameter("@NAMEUSU",repoUsuario.GetById(newTablero.Propietario.Id).Nombre);
             SQLiteParameter parameterNombre = new SQLiteParameter("@NAME",newTablero.Nombre);
             SQLiteParameter parameterDescripcion = new SQLiteParameter("@DESCRIPCION",newTablero.Descripcion);
             SQLiteParameter parameterEstado = new SQLiteParameter("@ESTADO",newTablero.EstadoTablero);
@@ -212,7 +215,6 @@ namespace Proyecto.Repositories{
                 SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
                 commandC.Parameters.Add(parameterId);
                 commandC.Parameters.Add(parameterIdUsu);
-                commandC.Parameters.Add(parameterNameUsu);
                 commandC.Parameters.Add(parameterNombre);
                 commandC.Parameters.Add(parameterDescripcion);
                 commandC.Parameters.Add(parameterEstado);
@@ -248,8 +250,7 @@ namespace Proyecto.Repositories{
 
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             
-            string queryC = @"UPDATE Tablero SET estado = @ESTADO, id_usuario_propietario = NULL, nombre_propietario = NULL WHERE id = @ID;
-
+            string queryC = @"UPDATE Tablero SET estado = @ESTADO, id_usuario_propietario = NULL WHERE id = @ID;
                             UPDATE Tarea SET estado = @ESTADOT WHERE id_tablero = @ID;";
 
             SQLiteParameter parameterId = new SQLiteParameter("@ID",idTablero);
