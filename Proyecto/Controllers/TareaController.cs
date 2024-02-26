@@ -48,12 +48,6 @@ namespace Proyecto.Controllers{
                 }
 
                 List<ListarTareaViewModel> listaTareasVM = ListarTareaViewModel.FromTarea(tareas);
-                /*foreach (var tarea in listaTareasVM)
-                {
-                    tarea.NombreTablero=repoTablero.GetById(tarea.IdTablero).Nombre;
-                    tarea.NombreUsuarioAsignado=repoUsuario.GetById(tarea.IdUsuarioAsignado).Nombre;
-                    tarea.NombreUsuarioPropietario=repoUsuario.GetById(tarea.IdUsuarioPropietario).Nombre;
-                }*/
                 return View(listaTareasVM);
             }
             catch (Exception ex)
@@ -79,7 +73,7 @@ namespace Proyecto.Controllers{
                 newTareaVM.Tableros = repoTablero.GetAll();
                 
                 if((newTareaVM.Tableros).Count == 0){//Si no hay tableros no puede crear Tareas
-                    TempData["Mensaje"] = "No hay tableros donde puede agregarce la tarea.";
+                    TempData["Mensaje"] = "No hay tableros donde agregar la tarea.";
                     return RedirectToAction("Index", "Usuario");
                 }
                 return View(newTareaVM);
