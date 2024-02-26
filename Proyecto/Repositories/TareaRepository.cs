@@ -317,10 +317,11 @@ namespace Proyecto.Repositories{
                 }
             }
         }
-        /*public void DisableByDeletedUser(int? idTarea){
+        public void DisableByDeletedUser(int? idTarea){
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             
-            string queryC = "UPDATE Tarea SET estado = @ESTADO, id_usuario_asignado = NULL, id_usuario_propietario = NULL WHERE id = @ID";
+            string queryC = "UPDATE Tarea SET estado = @ESTADO, id_usuario_asignado = NULL, id_usuario_propietario = NULL, nombre_asignado = NULL, nombre_propietario = NULL WHERE id = @ID";
+            
             SQLiteParameter parameterId = new SQLiteParameter("@ID",idTarea);
             SQLiteParameter parameterEstado = new SQLiteParameter("@ESTADO",6);
 
@@ -337,7 +338,7 @@ namespace Proyecto.Repositories{
                     throw new Exception("No se encontró ninguna tarea con el ID proporcionado.");
                 }
             }
-        }*/
+        }
         
         public List<Tarea> GetAllByOwnerUser(int? idUsuario){
             List<Tarea> tareas = new List<Tarea>();

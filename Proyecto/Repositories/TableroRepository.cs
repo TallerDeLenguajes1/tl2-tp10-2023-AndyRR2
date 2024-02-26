@@ -260,6 +260,7 @@ namespace Proyecto.Repositories{
                 SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
                 commandC.Parameters.Add(parameterId);
                 commandC.Parameters.Add(parameterEstado);
+                commandC.Parameters.Add(parameterEstadoT);
 
                 int rowAffected =  commandC.ExecuteNonQuery();
                 connectionC.Close();

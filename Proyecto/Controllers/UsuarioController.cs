@@ -8,12 +8,14 @@ namespace Proyecto.Controllers{
     public class UsuarioController: Controller{
         private readonly IUsuarioRepository repoUsuario;
         private readonly ITableroRepository repoTablero;
+        private readonly ITareaRepository repoTarea;
         private readonly ILoginRepository repoLogin;
         private readonly ILogger<HomeController> _logger;
-        public UsuarioController(ILogger<HomeController> logger, IUsuarioRepository usuRepo, ITableroRepository tabRepo, ILoginRepository logRepo) 
+        public UsuarioController(ILogger<HomeController> logger, IUsuarioRepository usuRepo, ITableroRepository tabRepo, ITareaRepository tarRepo, ILoginRepository logRepo) 
         {
             _logger = logger;
             repoUsuario = usuRepo;
+            repoTarea = tarRepo;
             repoTablero = tabRepo;
             repoLogin = logRepo;
         }
@@ -205,10 +207,10 @@ namespace Proyecto.Controllers{
                     {
                         repoTablero.Disable(tablero.Id);
                     }
-                    /*foreach (var tarea in repoTarea.GetAllByOwnerUser(usuarioAEliminarVM.Id))//inhabilita todos los tableros del usuario a borrar
+                    foreach (var tarea in repoTarea.GetAllByOwnerUser(usuarioAEliminarVM.Id))//inhabilita todos los tableros del usuario a borrar
                     {
-                        repoTarea.Disable(tarea.Id, null);
-                    }*/
+                        repoTarea.DisableByDeletedUser(tarea.Id);
+                    }
                     return RedirectToAction("Index");
                 }else{
                     _logger.LogInformation($"La contraseña ingresada es incorrecta");
