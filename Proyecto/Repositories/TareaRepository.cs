@@ -296,12 +296,11 @@ namespace Proyecto.Repositories{
                 }   
             }
         }
-        public void Disable(int? idTarea, int? idTablero){
+        public void DisableByDeletedBoard(int? idTarea){
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             
-            string queryC = "UPDATE Tarea SET estado = @ESTADO, id_tablero = @IDTAB, id_usuario_asignado = NULL, id_usuario_propietario = NULL WHERE id = @ID";
+            string queryC = "UPDATE Tarea SET estado = @ESTADO, id_tablero = NULL, nombre_tablero = NULL WHERE id = @ID";
             SQLiteParameter parameterId = new SQLiteParameter("@ID",idTarea);
-            SQLiteParameter parameterIdTab = new SQLiteParameter("@IDTAB",idTablero);
             SQLiteParameter parameterEstado = new SQLiteParameter("@ESTADO",6);
 
             using (connectionC)
@@ -309,7 +308,6 @@ namespace Proyecto.Repositories{
                 connectionC.Open();
                 SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
                 commandC.Parameters.Add(parameterId);
-                commandC.Parameters.Add(parameterIdTab);
                 commandC.Parameters.Add(parameterEstado);
 
                 int rowAffected =  commandC.ExecuteNonQuery();
@@ -319,6 +317,27 @@ namespace Proyecto.Repositories{
                 }
             }
         }
+        /*public void DisableByDeletedUser(int? idTarea){
+            SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
+            
+            string queryC = "UPDATE Tarea SET estado = @ESTADO, id_usuario_asignado = NULL, id_usuario_propietario = NULL WHERE id = @ID";
+            SQLiteParameter parameterId = new SQLiteParameter("@ID",idTarea);
+            SQLiteParameter parameterEstado = new SQLiteParameter("@ESTADO",6);
+
+            using (connectionC)
+            {
+                connectionC.Open();
+                SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
+                commandC.Parameters.Add(parameterId);
+                commandC.Parameters.Add(parameterEstado);
+
+                int rowAffected =  commandC.ExecuteNonQuery();
+                connectionC.Close();
+                if (rowAffected == 0){
+                    throw new Exception("No se encontró ninguna tarea con el ID proporcionado.");
+                }
+            }
+        }*/
         
         public List<Tarea> GetAllByOwnerUser(int? idUsuario){
             List<Tarea> tareas = new List<Tarea>();

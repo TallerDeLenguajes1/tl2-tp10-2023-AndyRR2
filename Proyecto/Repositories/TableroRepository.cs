@@ -246,9 +246,13 @@ namespace Proyecto.Repositories{
 
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             
-            string queryC = "UPDATE Tablero SET estado = @ESTADO, id_usuario_propietario = NULL, nombre_propietario = NULL WHERE id = @ID";
+            string queryC = @"UPDATE Tablero SET estado = @ESTADO, id_usuario_propietario = NULL, nombre_propietario = NULL WHERE id = @ID;
+
+                            UPDATE Tarea SET estado = @ESTADOT WHERE id_tablero = @ID;";
+
             SQLiteParameter parameterId = new SQLiteParameter("@ID",idTablero);
             SQLiteParameter parameterEstado = new SQLiteParameter("@ESTADO",2);
+            SQLiteParameter parameterEstadoT = new SQLiteParameter("@ESTADOT",6);
 
             using (connectionC)
             {

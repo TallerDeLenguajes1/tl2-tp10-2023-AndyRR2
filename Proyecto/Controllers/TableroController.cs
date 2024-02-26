@@ -211,9 +211,8 @@ namespace Proyecto.Controllers{
                 }
                 foreach (var tarea in repoTarea.GetAllByOwnerBoard(idTableroAEliminar))//inhabilita todos los tableros del usuario a borrar
                 {
-                    repoTarea.Disable(tarea.Id, idTableroAEliminar);
+                    repoTarea.DisableByDeletedBoard(tarea.Id);
                 }
-                return RedirectToAction("Index");
                 repoTablero.Remove(idTableroAEliminar);
                 return RedirectToAction("Index", "Usuario");
             }
