@@ -7,16 +7,12 @@ using Proyecto.ViewModels;
 namespace Proyecto.Controllers{
     public class UsuarioController: Controller{
         private readonly IUsuarioRepository repoUsuario;
-        private readonly ITableroRepository repoTablero;
-        private readonly ITareaRepository repoTarea;
         private readonly ILoginRepository repoLogin;
         private readonly ILogger<HomeController> _logger;
-        public UsuarioController(ILogger<HomeController> logger, IUsuarioRepository usuRepo, ITableroRepository tabRepo, ITareaRepository tarRepo, ILoginRepository logRepo) 
+        public UsuarioController(ILogger<HomeController> logger, IUsuarioRepository usuRepo, ILoginRepository logRepo) 
         {
             _logger = logger;
             repoUsuario = usuRepo;
-            repoTarea = tarRepo;
-            repoTablero = tabRepo;
             repoLogin = logRepo;
         }
 
@@ -203,14 +199,6 @@ namespace Proyecto.Controllers{
                 if(usuarioAEliminarVM.ContraseniaActual == repoUsuario.GetById(usuarioAEliminarVM.Id).Contrasenia){
                     Usuario usuarioAEliminar = Usuario.FromEliminarUsuario(usuarioAEliminarVM);//Convierto de ViewModel a Model
                     repoUsuario.Remove(usuarioAEliminar.Id);
-                    foreach (var tablero in repoTablero.GetAllByOwnerUser(usuarioAEliminar.Id))//inhabilita todos los tableros del usuario a borrar
-                    {
-                        repoTablero.Disable(tablero.Id);
-                    }
-                    foreach (var tarea in repoTarea.GetAllByOwnerUser(usuarioAEliminarVM.Id))//inhabilita todos los tableros del usuario a borrar
-                    {
-                        repoTarea.DisableByDeletedUser(tarea.Id);
-                    }
                     return RedirectToAction("Index");
                 }else{
                     _logger.LogInformation($"La contraseña ingresada es incorrecta");

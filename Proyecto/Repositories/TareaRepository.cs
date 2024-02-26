@@ -5,13 +5,9 @@ using Proyecto.Models;
 namespace Proyecto.Repositories{
     public class TareaRepository: ITareaRepository{
         private readonly string direccionBD;
-        private readonly IUsuarioRepository repoUsuario;
-        private readonly ITableroRepository repoTablero;
-        public TareaRepository(string cadenaDeConexion, IUsuarioRepository usuRepo , ITableroRepository tabRepo)
+        public TareaRepository(string cadenaDeConexion)
         {
             direccionBD = cadenaDeConexion;
-            repoUsuario = usuRepo;
-            repoTablero = tabRepo;
         }
         public List<Tarea> GetAll(){
             List<Tarea> tareas = new List<Tarea>();
@@ -22,9 +18,9 @@ namespace Proyecto.Repositories{
                             UsuarioAsignado.nombre_de_usuario AS nombre_asignado, 
                             UsuarioPropietario.nombre_de_usuario AS nombre_propietario
                             FROM Tarea
-                            INNER JOIN Tablero ON Tablero.id = Tarea.id_tablero
-                            INNER JOIN Usuario AS UsuarioAsignado ON UsuarioAsignado.id = Tarea.id_usuario_asignado
-                            INNER JOIN Usuario AS UsuarioPropietario ON UsuarioPropietario.id = Tarea.id_usuario_propietario;";
+                            LEFT JOIN Tablero ON Tablero.id = Tarea.id_tablero
+                            LEFT JOIN Usuario AS UsuarioAsignado ON UsuarioAsignado.id = Tarea.id_usuario_asignado
+                            LEFT JOIN Usuario AS UsuarioPropietario ON UsuarioPropietario.id = Tarea.id_usuario_propietario;";
 
             using (connectionC)
             {
@@ -77,8 +73,8 @@ namespace Proyecto.Repositories{
                             UsuarioPropietario.nombre_de_usuario AS nombre_propietario
                             FROM Tarea
                             INNER JOIN Tablero ON Tablero.id = Tarea.id_tablero
-                            INNER JOIN Usuario AS UsuarioAsignado ON UsuarioAsignado.id = Tarea.id_usuario_asignado
-                            INNER JOIN Usuario AS UsuarioPropietario ON UsuarioPropietario.id = Tarea.id_usuario_propietario
+                            LEFT JOIN Usuario AS UsuarioAsignado ON UsuarioAsignado.id = Tarea.id_usuario_asignado
+                            LEFT JOIN Usuario AS UsuarioPropietario ON UsuarioPropietario.id = Tarea.id_usuario_propietario
                             WHERE Tarea.id_tablero = @IDTAB;"; 
             SQLiteParameter parameterIdTab = new SQLiteParameter("@IDTAB",idTablero);
 
@@ -132,9 +128,9 @@ namespace Proyecto.Repositories{
                             UsuarioAsignado.nombre_de_usuario AS nombre_asignado, 
                             UsuarioPropietario.nombre_de_usuario AS nombre_propietario
                             FROM Tarea
-                            INNER JOIN Tablero ON Tablero.id = Tarea.id_tablero
-                            INNER JOIN Usuario AS UsuarioAsignado ON UsuarioAsignado.id = Tarea.id_usuario_asignado
-                            INNER JOIN Usuario AS UsuarioPropietario ON UsuarioPropietario.id = Tarea.id_usuario_propietario
+                            LEFT JOIN Tablero ON Tablero.id = Tarea.id_tablero
+                            LEFT JOIN Usuario AS UsuarioAsignado ON UsuarioAsignado.id = Tarea.id_usuario_asignado
+                            LEFT JOIN Usuario AS UsuarioPropietario ON UsuarioPropietario.id = Tarea.id_usuario_propietario
                             WHERE Tarea.id = @ID;"; 
             SQLiteParameter parameterId = new SQLiteParameter("@ID", idTarea);
             
@@ -185,17 +181,14 @@ namespace Proyecto.Repositories{
             }
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
-            string queryC = $"INSERT INTO Tarea (id_tablero,nombre,estado,descripcion,color,id_usuario_asignado,id_usuario_propietario,nombre_tablero,nombre_asignado,nombre_propietario) VALUES (@IDTAB,@NAME,@ESTADO,@DESCRIPCION,@COLOR,@IDUSUA,@IDUSUP,@NAMETAB,@NAMEASIG,@NAMEPROP)";
+            string queryC = $"INSERT INTO Tarea (id_tablero,nombre,estado,descripcion,color,id_usuario_asignado,id_usuario_propietario) VALUES (@IDTAB,@NAME,@ESTADO,@DESCRIPCION,@COLOR,@IDUSUA,@IDUSUP)";
             SQLiteParameter parameterNombre = new SQLiteParameter("@NAME",newTarea.Nombre);
             SQLiteParameter parameterEstado = new SQLiteParameter("@ESTADO",newTarea.EstadoTarea);
             SQLiteParameter parameterDescripcion = new SQLiteParameter("@DESCRIPCION",newTarea.Descripcion);
             SQLiteParameter parameterColor = new SQLiteParameter("@COLOR",newTarea.Color);
             SQLiteParameter parameterIdUsuA = new SQLiteParameter("@IDUSUA",newTarea.Asignado.Id);
-            SQLiteParameter parameterNombreA = new SQLiteParameter("@NAMEASIG",repoUsuario.GetById(newTarea.Asignado.Id).Nombre);
             SQLiteParameter parameterIdTab = new SQLiteParameter("@IDTAB",newTarea.TableroPropio.Id);
-            SQLiteParameter parameterNombreTab = new SQLiteParameter("@NAMETAB",repoTablero.GetById(newTarea.TableroPropio.Id).Nombre);
             SQLiteParameter parameterIdUsuP = new SQLiteParameter("@IDUSUP",newTarea.Propietario.Id);
-            SQLiteParameter parameterNombreP = new SQLiteParameter("@NAMEPROP",repoUsuario.GetById(newTarea.Propietario.Id).Nombre);
             
             using (connectionC)
             {
@@ -206,11 +199,8 @@ namespace Proyecto.Repositories{
                 commandC.Parameters.Add(parameterDescripcion);
                 commandC.Parameters.Add(parameterColor);
                 commandC.Parameters.Add(parameterIdTab);
-                commandC.Parameters.Add(parameterNombreTab);
                 commandC.Parameters.Add(parameterIdUsuA);
-                commandC.Parameters.Add(parameterNombreA);
                 commandC.Parameters.Add(parameterIdUsuP);
-                commandC.Parameters.Add(parameterNombreP);
                 
                 commandC.ExecuteNonQuery();
                 connectionC.Close();   
@@ -222,29 +212,25 @@ namespace Proyecto.Repositories{
         public void Update(Tarea tareaAEditar){
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
-            string queryC = "UPDATE Tarea SET nombre = @NAME, descripcion = @DESCRIPCION, id_tablero = @IDTAB, estado = @ESTADO, color = @COLOR, id_usuario_propietario = @IDUSUP, nombre_propietario = @NAMEPROP, nombre_tablero = @NAMETAB WHERE id = @ID;";
+            string queryC = "UPDATE Tarea SET nombre = @NAME, descripcion = @DESCRIPCION, id_tablero = @IDTAB, estado = @ESTADO, color = @COLOR, id_usuario_propietario = @IDUSUP WHERE id = @ID;";
             SQLiteParameter parameterId = new SQLiteParameter("@ID",tareaAEditar.Id);
             SQLiteParameter parameterIdTab = new SQLiteParameter("@IDTAB",tareaAEditar.TableroPropio.Id);
-            SQLiteParameter parameterNombreTab = new SQLiteParameter("@NAMETAB",repoTablero.GetById(tareaAEditar.TableroPropio.Id).Nombre);
             SQLiteParameter parameterNombre = new SQLiteParameter("@NAME",tareaAEditar.Nombre);
             SQLiteParameter parameterEstado = new SQLiteParameter("@ESTADO",tareaAEditar.EstadoTarea);
             SQLiteParameter parameterDescripcion = new SQLiteParameter("@DESCRIPCION",tareaAEditar.Descripcion);
             SQLiteParameter parameterColor = new SQLiteParameter("@COLOR",tareaAEditar.Color);
             SQLiteParameter parameterIdUsuP = new SQLiteParameter("@IDUSUP",tareaAEditar.Propietario.Id);
-            SQLiteParameter parameterNombreProp = new SQLiteParameter("@NAMEPROP",repoUsuario.GetById(tareaAEditar.Propietario.Id).Nombre);
             using (connectionC)
             {
                 connectionC.Open();
                 SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
                 commandC.Parameters.Add(parameterId);
                 commandC.Parameters.Add(parameterIdTab);
-                commandC.Parameters.Add(parameterNombreTab);
                 commandC.Parameters.Add(parameterNombre);
                 commandC.Parameters.Add(parameterEstado);
                 commandC.Parameters.Add(parameterDescripcion);
                 commandC.Parameters.Add(parameterColor);
                 commandC.Parameters.Add(parameterIdUsuP);
-                commandC.Parameters.Add(parameterNombreProp);
 
                 int rowsAffected = commandC.ExecuteNonQuery();
                 connectionC.Close();
@@ -275,10 +261,9 @@ namespace Proyecto.Repositories{
         public void Assign(int? idTarea, int? idUsuario){
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
-            string queryC = "UPDATE Tarea SET id_usuario_asignado = @IDUSU, nombre_asignado = @NAMEASIG WHERE id = @ID;";
+            string queryC = "UPDATE Tarea SET id_usuario_asignado = @IDUSU WHERE id = @ID;";
             SQLiteParameter parameterId = new SQLiteParameter("@ID",idTarea);
             SQLiteParameter parameterIdUsu = new SQLiteParameter("@IDUSU",idUsuario);
-            SQLiteParameter parameterNombreA= new SQLiteParameter("@NAMEASIG",repoUsuario.GetById(idUsuario).Nombre);
 
             using (connectionC)
             {
@@ -286,7 +271,6 @@ namespace Proyecto.Repositories{
                 SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
                 commandC.Parameters.Add(parameterId);
                 commandC.Parameters.Add(parameterIdUsu);
-                commandC.Parameters.Add(parameterNombreA);
 
                 int rowsAffected = commandC.ExecuteNonQuery();
                 connectionC.Close();
@@ -319,7 +303,7 @@ namespace Proyecto.Repositories{
         public void DisableByDeletedBoard(int? idTarea){
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             
-            string queryC = "UPDATE Tarea SET estado = @ESTADO, id_tablero = NULL, nombre_tablero = NULL WHERE id = @ID";
+            string queryC = "UPDATE Tarea SET estado = @ESTADO, id_tablero = NULL WHERE id = @ID;";
             SQLiteParameter parameterId = new SQLiteParameter("@ID",idTarea);
             SQLiteParameter parameterEstado = new SQLiteParameter("@ESTADO",6);
 
@@ -337,25 +321,35 @@ namespace Proyecto.Repositories{
                 }
             }
         }
-        public void DisableByDeletedUser(int? idTarea){
+        public void DisableByDeletedUser(int? idUsuario){
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             
-            string queryC = "UPDATE Tarea SET estado = @ESTADO, id_usuario_asignado = NULL, id_usuario_propietario = NULL, nombre_asignado = NULL, nombre_propietario = NULL WHERE id = @ID";
+            string queryAsignado = @"UPDATE Tarea SET id_usuario_asignado = NULL, estado = @ESTADO
+                                   WHERE id_usuario_asignado = @ID;";
+
+            string queryPropietario = @"UPDATE Tarea SET id_usuario_propietario = NULL, estado = @ESTADO
+                                      WHERE id_usuario_propietario = @ID;";
             
-            SQLiteParameter parameterId = new SQLiteParameter("@ID",idTarea);
+            SQLiteParameter parameterId = new SQLiteParameter("@ID",idUsuario);
             SQLiteParameter parameterEstado = new SQLiteParameter("@ESTADO",6);
 
             using (connectionC)
             {
                 connectionC.Open();
-                SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
-                commandC.Parameters.Add(parameterId);
-                commandC.Parameters.Add(parameterEstado);
+                
+                SQLiteCommand commandA = new SQLiteCommand(queryAsignado,connectionC);
+                commandA.Parameters.Add(parameterId);
+                commandA.Parameters.Add(parameterEstado);
+                
+                SQLiteCommand commandP = new SQLiteCommand(queryPropietario,connectionC);
+                commandP.Parameters.Add(parameterId);
+                commandP.Parameters.Add(parameterEstado);
 
-                int rowAffected =  commandC.ExecuteNonQuery();
+                int rowAffectedA =  commandA.ExecuteNonQuery();
+                int rowAffectedP =  commandP.ExecuteNonQuery();
                 connectionC.Close();
-                if (rowAffected == 0){
-                    throw new Exception("No se encontró ninguna tarea con el ID proporcionado.");
+                if (rowAffectedA == 0 && rowAffectedP == 0){
+                    throw new Exception("No se encontró ninguna tarea para el usuario proporcionado.");
                 }
             }
         }
@@ -365,8 +359,16 @@ namespace Proyecto.Repositories{
 
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             
-            string queryC = @"SELECT Tarea.id AS TareaId, Tarea.id_tablero, Tarea.nombre, Tarea.estado, Tarea.descripcion, Tarea.color, Tarea.id_usuario_asignado, Tarea.id_usuario_propietario, Tarea.nombre_tablero, Tarea.nombre_asignado, Tarea.nombre_propietario
-    	                    FROM Tarea WHERE Tarea.id_usuario_propietario = @IDUSU OR Tarea.id_usuario_asignado = @IDUSU;";
+            string queryC = @"SELECT Tarea.id AS TareaId, Tarea.id_tablero, Tarea.nombre, Tarea.estado, Tarea.descripcion, Tarea.color, Tarea.id_usuario_asignado, Tarea.id_usuario_propietario, 
+                            Tablero.nombre_tablero AS nombre_Tablero, 
+                            UsuarioAsignado.nombre_de_usuario AS nombre_asignado, 
+                            UsuarioPropietario.nombre_de_usuario AS nombre_propietario
+                            FROM Tarea
+                            INNER JOIN Tablero ON Tablero.id = Tarea.id_tablero
+                            LEFT JOIN Usuario AS UsuarioAsignado ON UsuarioAsignado.id = Tarea.id_usuario_asignado
+                            LEFT JOIN Usuario AS UsuarioPropietario ON UsuarioPropietario.id = Tarea.id_usuario_propietario
+                            WHERE Tarea.id_usuario_propietario = @IDUSU;"; 
+                            
             SQLiteParameter parameterIdTab = new SQLiteParameter("@IDUSU",idUsuario);
 
             using(connectionC)
@@ -389,7 +391,7 @@ namespace Proyecto.Repositories{
                         newTarea.TableroPropio = new Tablero();
                         if (!readerC.IsDBNull(readerC.GetOrdinal("id_tablero"))){
                             newTarea.TableroPropio.Id = Convert.ToInt32(readerC["id_tablero"]);
-                            newTarea.TableroPropio.Nombre = Convert.ToString(readerC["nombre_tablero"]);
+                            newTarea.TableroPropio.Nombre = Convert.ToString(readerC["nombre_Tablero"]);
                         }
                         newTarea.Asignado = new Usuario();
                         if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_asignado"))){

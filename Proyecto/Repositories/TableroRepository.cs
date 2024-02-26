@@ -5,11 +5,9 @@ using Proyecto.Models;
 namespace Proyecto.Repositories{
     public class TableroRepository: ITableroRepository{
         private readonly string direccionBD;
-        private readonly IUsuarioRepository repoUsuario;
-        public TableroRepository(string cadenaDeConexion, IUsuarioRepository usuRepo)
+        public TableroRepository(string cadenaDeConexion)
         {
             direccionBD = cadenaDeConexion;
-            repoUsuario = usuRepo;
         }
         public List<Tablero> GetAll(){
             List<Tablero> tableros = new List<Tablero>();
@@ -17,7 +15,7 @@ namespace Proyecto.Repositories{
 
             string queryC = @"SELECT Tablero.id AS TableroId, id_usuario_propietario, nombre_tablero, Usuario.nombre_de_usuario AS nombre_propietario, descripcion, estado 
     	                    FROM Tablero
-                            INNER JOIN Usuario ON Tablero.id_usuario_propietario = Usuario.id;";
+                            LEFT JOIN Usuario ON Tablero.id_usuario_propietario = Usuario.id;";
             using(connectionC){
                 connectionC.Open();
                 SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);

@@ -5,9 +5,13 @@ using Proyecto.Models;
 namespace Proyecto.Repositories{
     public class UsuarioRepository: IUsuarioRepository{
         private readonly string direccionBD;
-        public UsuarioRepository(string cadenaDeConexion)
+        private readonly ITableroRepository repoTablero;
+        private readonly ITareaRepository repoTarea;
+        public UsuarioRepository(string cadenaDeConexion, ITableroRepository tabRepo, ITareaRepository tarRepo)
         {
             direccionBD = cadenaDeConexion;
+            repoTablero = tabRepo;
+            repoTarea = tarRepo;
         }
         public List<Usuario> GetAll(){
             List<Usuario> usuarios = new List<Usuario>();
@@ -126,11 +130,15 @@ namespace Proyecto.Repositories{
             }
         }
         public void Remove(int? idUsuario){
-
-            /*foreach (var tarea in repoTarea.GetByOwnerUser(idUsuario))//inhabilita todas las tareas del usuario a borrar
+            
+            foreach (var tablero in repoTablero.GetAllByOwnerUser(idUsuario))//inhabilita todos los tableros del usuario a borrar
             {
-                repoTarea.Disable(tarea.Id,tarea.IdTablero);
-            }*/
+                repoTablero.Disable(tablero.Id);
+            }
+            foreach (var tarea in repoTarea.GetAllByOwnerUser(idUsuario))//inhabilita todas las tareas del usuario a borrar
+            {
+                repoTarea.DisableByDeletedUser(idUsuario);
+            }
 
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             
