@@ -15,9 +15,9 @@ namespace Proyecto.Repositories{
             List<Tablero> tableros = new List<Tablero>();
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
-            string queryC = @"SELECT Tablero.id AS TableroId, id_usuario_propietario, nombre_tablero, nombre_propietario, descripcion, estado 
+            string queryC = @"SELECT Tablero.id AS TableroId, id_usuario_propietario, nombre_tablero, Usuario.nombre_de_usuario AS nombre_propietario, descripcion, estado 
     	                    FROM Tablero
-                            LEFT JOIN Usuario ON Tablero.id_usuario_propietario = Usuario.id;";
+                            INNER JOIN Usuario ON Tablero.id_usuario_propietario = Usuario.id;";
             using(connectionC){
                 connectionC.Open();
                 SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
@@ -51,8 +51,11 @@ namespace Proyecto.Repositories{
             List<Tablero> tableros = new List<Tablero>();
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
-            string queryC = @"SELECT Tablero.id AS TableroId, id_usuario_propietario, nombre_tablero, nombre_propietario, descripcion, estado 
-    	                    FROM Tablero WHERE Tablero.id_usuario_propietario = @ID;";
+            string queryC = @"SELECT Tablero.id AS TableroId, id_usuario_propietario, nombre_tablero, Usuario.nombre_de_usuario AS nombre_propietario, descripcion, estado 
+                            FROM Tablero
+    	                    INNER JOIN Usuario ON Tablero.id_usuario_propietario = Usuario.id
+                            WHERE Tablero.id_usuario_propietario = @ID;";
+
             SQLiteParameter parameterId = new SQLiteParameter("@ID",idUsuario);
             
             using(connectionC){
@@ -89,11 +92,12 @@ namespace Proyecto.Repositories{
             List<Tablero> tableros = new List<Tablero>();
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
-            string queryC = @"SELECT DISTINCT Tablero.id AS TableroId, Tablero.id_usuario_propietario, Tablero.nombre_tablero, Tablero.nombre_propietario, Tablero.descripcion, Tablero.estado 
+            string queryC = @"SELECT Tablero.id AS TableroId, Tablero.id_usuario_propietario, Tablero.nombre_tablero, Usuario.nombre_de_usuario AS nombre_propietario, Tablero.descripcion, Tablero.estado 
                             FROM Tablero
                             INNER JOIN Tarea ON Tablero.id = Tarea.id_tablero  
-                            WHERE Tarea.id_usuario_asignado = @ID OR Tarea.id_usuario_propietario = @ID
-                            GROUP BY Tablero.id;";
+                            INNER JOIN Usuario ON Tablero.id_usuario_propietario = Usuario.id
+                            WHERE Tarea.id_usuario_asignado = @ID
+                            GROUP BY Tablero.id";
             SQLiteParameter parameterId = new SQLiteParameter("@ID",idUsuario);
 
             using(connectionC){
@@ -170,9 +174,8 @@ namespace Proyecto.Repositories{
             }
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
-            string queryC = $"INSERT INTO Tablero (id_usuario_propietario,nombre_propietario,nombre_tablero,descripcion,estado) VALUES(@IDUSU,@NAMEUSU,@NAME,@DESCRIPCION,@ESTADO)";
+            string queryC = $"INSERT INTO Tablero (id_usuario_propietario,nombre_tablero,descripcion,estado) VALUES(@IDUSU,@NAME,@DESCRIPCION,@ESTADO)";
             SQLiteParameter parameterIdUsu = new SQLiteParameter("@IDUSU",newTablero.Propietario.Id);
-            SQLiteParameter parameterNameUsu = new SQLiteParameter("@NAMEUSU",repoUsuario.GetById(newTablero.Propietario.Id).Nombre);
             SQLiteParameter parameterNombre = new SQLiteParameter("@NAME",newTablero.Nombre);
             SQLiteParameter parameterDescripcion = new SQLiteParameter("@DESCRIPCION",newTablero.Descripcion);
             SQLiteParameter parameterEstado = new SQLiteParameter("@ESTADO",newTablero.EstadoTablero);
@@ -182,7 +185,6 @@ namespace Proyecto.Repositories{
                 connectionC.Open();
                 SQLiteCommand commandC = new SQLiteCommand(queryC,connectionC);
                 commandC.Parameters.Add(parameterIdUsu);
-                commandC.Parameters.Add(parameterNameUsu);
                 commandC.Parameters.Add(parameterNombre);
                 commandC.Parameters.Add(parameterDescripcion);
                 commandC.Parameters.Add(parameterEstado);
