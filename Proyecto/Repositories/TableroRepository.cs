@@ -5,9 +5,11 @@ using Proyecto.Models;
 namespace Proyecto.Repositories{
     public class TableroRepository: ITableroRepository{
         private readonly string direccionBD;
-        public TableroRepository(string cadenaDeConexion)
+        private readonly ITareaRepository repoTarea;
+        public TableroRepository(string cadenaDeConexion, ITareaRepository tarRepo)
         {
             direccionBD = cadenaDeConexion;
+            repoTarea = tarRepo;
         }
         public List<Tablero> GetAll(){
             List<Tablero> tableros = new List<Tablero>();
@@ -92,8 +94,8 @@ namespace Proyecto.Repositories{
 
             string queryC = @"SELECT Tablero.id AS TableroId, Tablero.id_usuario_propietario, Tablero.nombre_tablero, Usuario.nombre_de_usuario AS nombre_propietario, Tablero.descripcion, Tablero.estado 
                             FROM Tablero
-                            INNER JOIN Tarea ON Tablero.id = Tarea.id_tablero  
-                            INNER JOIN Usuario ON Tablero.id_usuario_propietario = Usuario.id
+                            LEFT JOIN Tarea ON Tablero.id = Tarea.id_tablero  
+                            LEFT JOIN Usuario ON Tablero.id_usuario_propietario = Usuario.id
                             WHERE Tarea.id_usuario_asignado = @ID
                             GROUP BY Tablero.id";
             SQLiteParameter parameterId = new SQLiteParameter("@ID",idUsuario);
@@ -134,7 +136,7 @@ namespace Proyecto.Repositories{
             
             string queryC = @"SELECT Tablero.id AS TableroId, id_usuario_propietario, nombre_tablero, Usuario.nombre_de_usuario AS nombre_propietario, descripcion, estado 
                             FROM Tablero
-    	                    INNER JOIN Usuario ON Tablero.id_usuario_propietario = Usuario.id
+    	                    LEFT JOIN Usuario ON Tablero.id_usuario_propietario = Usuario.id
                             WHERE TableroId = @ID;";
             
             SQLiteParameter parameterId = new SQLiteParameter("@ID",Id);
@@ -225,6 +227,10 @@ namespace Proyecto.Repositories{
             }
         }
         public void Remove(int? idTablero){
+            foreach (var tarea in repoTarea.GetAllByOwnerBoard(idTablero))//inhabilita todos los tableros del usuario a borrar
+            {
+                repoTarea.DisableByDeletedBoard(tarea.Id);
+            }
 
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
@@ -295,10 +301,6 @@ namespace Proyecto.Repositories{
                     }
                 }
                 connectionC.Close();
-            }
-            if (validacion == false)
-            {
-                throw new Exception("No se encontraron tareas asignadas al tablero proporcionado en la base de datos.");
             }
             return validacion;
         }

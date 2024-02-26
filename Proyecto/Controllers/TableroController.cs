@@ -209,10 +209,6 @@ namespace Proyecto.Controllers{
                     TempData["Mensaje"] = "Debe iniciar sesión para acceder a esta página.";
                     return RedirectToAction("Index", "Login");
                 }
-                foreach (var tarea in repoTarea.GetAllByOwnerBoard(idTableroAEliminar))//inhabilita todos los tableros del usuario a borrar
-                {
-                    repoTarea.DisableByDeletedBoard(tarea.Id);
-                }
                 repoTablero.Remove(idTableroAEliminar);
                 return RedirectToAction("Index", "Usuario");
             }
