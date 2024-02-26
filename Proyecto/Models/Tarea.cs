@@ -74,6 +74,7 @@ namespace Proyecto.Models{
             return new Tarea
             {
                 Id = tareaVM.Id,
+                Asignado = new Usuario(tareaVM.IdUsuarioAsignado,null)
             };
         }
 

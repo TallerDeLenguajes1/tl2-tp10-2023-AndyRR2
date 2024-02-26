@@ -10,9 +10,7 @@ namespace Proyecto.ViewModels{
         [Display(Name = "Estado")]
         public EstadoTarea EstadoTarea{get;set;}
         
-        public CambiarEstadoTareaViewModel(){
-            
-        }
+        public CambiarEstadoTareaViewModel(){}
         public CambiarEstadoTareaViewModel(int? id, EstadoTarea estado){
             Id=id;
             EstadoTarea = estado;

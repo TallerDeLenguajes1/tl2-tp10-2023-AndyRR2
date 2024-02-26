@@ -23,6 +23,7 @@ namespace Proyecto.ViewModels{
         {
             AsignarTareaViewModel newTareaVM = new AsignarTareaViewModel();
             newTareaVM.Id = newTarea.Id;
+            newTareaVM.IdUsuarioAsignado = newTarea.Asignado.Id;
             return(newTareaVM);
         }
     }

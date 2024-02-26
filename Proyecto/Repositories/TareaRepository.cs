@@ -17,9 +17,14 @@ namespace Proyecto.Repositories{
             List<Tarea> tareas = new List<Tarea>();
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
 
-            string queryC = @"SELECT Tarea.id AS TareaId, Tarea.id_tablero, Tarea.nombre, Tarea.estado, Tarea.descripcion, Tarea.color, Tarea.id_usuario_asignado, Tarea.id_usuario_propietario, Tarea.nombre_tablero, Tarea.nombre_asignado, Tarea.nombre_propietario
-    	                    FROM Tarea
-                            LEFT JOIN Tablero ON Tablero.id = Tarea.id_tablero;";
+            string queryC = @"SELECT Tarea.id AS TareaId, Tarea.id_tablero, Tarea.nombre, Tarea.estado, Tarea.descripcion, Tarea.color, Tarea.id_usuario_asignado, Tarea.id_usuario_propietario, 
+                            Tablero.nombre_tablero AS nombre_Tablero, 
+                            UsuarioAsignado.nombre_de_usuario AS nombre_asignado, 
+                            UsuarioPropietario.nombre_de_usuario AS nombre_propietario
+                            FROM Tarea
+                            INNER JOIN Tablero ON Tablero.id = Tarea.id_tablero
+                            INNER JOIN Usuario AS UsuarioAsignado ON UsuarioAsignado.id = Tarea.id_usuario_asignado
+                            INNER JOIN Usuario AS UsuarioPropietario ON UsuarioPropietario.id = Tarea.id_usuario_propietario;";
 
             using (connectionC)
             {
@@ -40,7 +45,7 @@ namespace Proyecto.Repositories{
                         newTarea.TableroPropio = new Tablero();
                         if (!readerC.IsDBNull(readerC.GetOrdinal("id_tablero"))){
                             newTarea.TableroPropio.Id = Convert.ToInt32(readerC["id_tablero"]);
-                            newTarea.TableroPropio.Nombre = Convert.ToString(readerC["nombre_tablero"]);
+                            newTarea.TableroPropio.Nombre = Convert.ToString(readerC["nombre_Tablero"]);
                         }
                         newTarea.Asignado = new Usuario();
                         if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_asignado"))){
@@ -66,8 +71,15 @@ namespace Proyecto.Repositories{
             List<Tarea> tareas = new List<Tarea>();
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             
-            string queryC = @"SELECT Tarea.id AS TareaId, Tarea.id_tablero, Tarea.nombre, Tarea.estado, Tarea.descripcion, Tarea.color, Tarea.id_usuario_asignado, Tarea.id_usuario_propietario, Tarea.nombre_tablero, Tarea.nombre_asignado, Tarea.nombre_propietario
-    	                    FROM Tarea WHERE Tarea.id_tablero = @IDTAB;";
+            string queryC = @"SELECT Tarea.id AS TareaId, Tarea.id_tablero, Tarea.nombre, Tarea.estado, Tarea.descripcion, Tarea.color, Tarea.id_usuario_asignado, Tarea.id_usuario_propietario, 
+                            Tablero.nombre_tablero AS nombre_Tablero, 
+                            UsuarioAsignado.nombre_de_usuario AS nombre_asignado, 
+                            UsuarioPropietario.nombre_de_usuario AS nombre_propietario
+                            FROM Tarea
+                            INNER JOIN Tablero ON Tablero.id = Tarea.id_tablero
+                            INNER JOIN Usuario AS UsuarioAsignado ON UsuarioAsignado.id = Tarea.id_usuario_asignado
+                            INNER JOIN Usuario AS UsuarioPropietario ON UsuarioPropietario.id = Tarea.id_usuario_propietario
+                            WHERE Tarea.id_tablero = @IDTAB;"; 
             SQLiteParameter parameterIdTab = new SQLiteParameter("@IDTAB",idTablero);
 
             using(connectionC)
@@ -90,7 +102,7 @@ namespace Proyecto.Repositories{
                         newTarea.TableroPropio = new Tablero();
                         if (!readerC.IsDBNull(readerC.GetOrdinal("id_tablero"))){
                             newTarea.TableroPropio.Id = Convert.ToInt32(readerC["id_tablero"]);
-                            newTarea.TableroPropio.Nombre = Convert.ToString(readerC["nombre_tablero"]);
+                            newTarea.TableroPropio.Nombre = Convert.ToString(readerC["nombre_Tablero"]);
                         }
                         newTarea.Asignado = new Usuario();
                         if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_asignado"))){
@@ -115,7 +127,15 @@ namespace Proyecto.Repositories{
         public Tarea GetById(int? idTarea){
             SQLiteConnection connectionC = new SQLiteConnection(direccionBD);
             Tarea newTarea = new Tarea();
-            string queryC = "SELECT * FROM Tarea WHERE id = @ID";
+            string queryC = @"SELECT Tarea.id AS TareaId, Tarea.id_tablero, Tarea.nombre, Tarea.estado, Tarea.descripcion, Tarea.color, Tarea.id_usuario_asignado, Tarea.id_usuario_propietario, 
+                            Tablero.nombre_tablero AS nombre_Tablero, 
+                            UsuarioAsignado.nombre_de_usuario AS nombre_asignado, 
+                            UsuarioPropietario.nombre_de_usuario AS nombre_propietario
+                            FROM Tarea
+                            INNER JOIN Tablero ON Tablero.id = Tarea.id_tablero
+                            INNER JOIN Usuario AS UsuarioAsignado ON UsuarioAsignado.id = Tarea.id_usuario_asignado
+                            INNER JOIN Usuario AS UsuarioPropietario ON UsuarioPropietario.id = Tarea.id_usuario_propietario
+                            WHERE Tarea.id = @ID;"; 
             SQLiteParameter parameterId = new SQLiteParameter("@ID", idTarea);
             
             using (connectionC)
@@ -129,7 +149,7 @@ namespace Proyecto.Repositories{
                 {
                     while (readerC.Read())
                     {
-                        newTarea.Id = Convert.ToInt32(readerC["id"]);
+                        newTarea.Id = Convert.ToInt32(readerC["TareaId"]);
                         newTarea.Nombre = Convert.ToString(readerC["nombre"]);
                         newTarea.EstadoTarea = (EstadoTarea)Convert.ToInt32(readerC["estado"]);
                         newTarea.Descripcion = Convert.ToString(readerC["descripcion"]);
@@ -137,7 +157,7 @@ namespace Proyecto.Repositories{
                         newTarea.TableroPropio = new Tablero();
                         if (!readerC.IsDBNull(readerC.GetOrdinal("id_tablero"))){
                             newTarea.TableroPropio.Id = Convert.ToInt32(readerC["id_tablero"]);
-                            newTarea.TableroPropio.Nombre = Convert.ToString(readerC["nombre_tablero"]);
+                            newTarea.TableroPropio.Nombre = Convert.ToString(readerC["nombre_Tablero"]);
                         }
                         newTarea.Asignado = new Usuario();
                         if (!readerC.IsDBNull(readerC.GetOrdinal("id_usuario_asignado"))){
